@@ -7,8 +7,7 @@
     "clean": "hexo clean",
     "deploy": "hexo deploy",
     "server": "hexo server",
-    "map": "hexo clean && hexo generate",
-    "rss": "hexo g"
+    "map": "hexo clean && hexo generate"
   },
   "hexo": {
     "version": "7.3.0"
