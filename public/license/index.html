@@ -1,0 +1,578 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>桉南的小窝服务协议 | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本《桉南的小窝服务协议》由您与本站站长共同缔结，本协议具有法律效力。为保障您的合法权益，请您在同意并接受本协议所有条款前务必审慎阅读、充分理解各条款内容，特别是免除或者限制本站站长责任的条款、对您的权利进行限制的条款、约定争议解决方式和司法管辖的条款。如您不同意本协议的任何条款，则不得使用本站提供的相应服务。您一旦开始使用及&#x2F;或继续使用本站服务，即视为您已详细阅读并已经理解接受本协议中所有条款，且">
+<meta property="og:type" content="website">
+<meta property="og:title" content="桉南的小窝服务协议">
+<meta property="og:url" content="https://blog.yll14.cn/license/index.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="本《桉南的小窝服务协议》由您与本站站长共同缔结，本协议具有法律效力。为保障您的合法权益，请您在同意并接受本协议所有条款前务必审慎阅读、充分理解各条款内容，特别是免除或者限制本站站长责任的条款、对您的权利进行限制的条款、约定争议解决方式和司法管辖的条款。如您不同意本协议的任何条款，则不得使用本站提供的相应服务。您一旦开始使用及&#x2F;或继续使用本站服务，即视为您已详细阅读并已经理解接受本协议中所有条款，且">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&spec=640&img_type=jpg">
+<meta property="article:published_time" content="2025-03-16T09:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-09T09:47:51.636Z">
+<meta property="article:author" content="桉南">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&spec=640&img_type=jpg"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/license/index.html"><link rel="preconnect" href="https://cdn.hslzz.cn"/><link rel="preconnect" href="//www.clarity.ms"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.1"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "pvw0dcktzm");</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.hslzz.cn/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '桉南的小窝服务协议',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="花生莲子粥" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page type-license" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/108552684_p8.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">桉南的小窝服务协议</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1>桉南的小窝服务协议</h1>
+<p>更新时间：2025年5月17日</p>
+<p><strong>本《桉南的小窝服务协议》（以下简称“本协议”）由您与本站站长共同缔结，本协议具有法律效力。为保障您的合法权益，请您在同意并接受本协议所有条款前务必审慎阅读、充分理解各条款内容，特别是免除或者限制本站站长责任的条款、对您的权利进行限制的条款、约定争议解决方式和司法管辖的条款。</strong></p>
+<p><strong>如您不同意本协议的任何条款，则不得使用本站提供的相应服务。您一旦开始使用及/或继续使用本站服务，即视为您已详细阅读并已经理解接受本协议中所有条款，且同意遵守本协议的规定。</strong></p>
+<p><strong>如果您未满18周岁，请在法定监护人的陪同下阅读本协议，并特别注意未成年人使用条款。未满14周岁的用户需由监护人全程陪同使用，且监护人应承担全部责任。</strong></p>
+<p><strong>用户违反本站协议，造成的任何责任和后果，由用户承担。</strong></p>
+<p>本站坚决拥护中国共产党，热爱中华人民共和国，遵守中华人民共和国法律法规，坚决维护国家统一、民族团结和国家安全，反对一切煽动分裂国家、破坏国家统一和民族团结的行为。</p>
+<h2 id="一、定义">一、定义</h2>
+<p>1.1 本协议：指本协议正文、修订版本。上述内容一经正式发布，即为本协议不可分割的组成部分。</p>
+<p>1.2 站长：指通过桉南的小窝网站（包括但不限于网站、APP、其他社交平台等）向您提供服务的自然人，在本协议中简称为“站长”。</p>
+<p>1.3 本站：指由站长负责维护运营的《桉南的小窝》博客网站（网络域名：<a target="_blank" rel="noopener noreferrer nofollow" href="http://blog.hslzz.cn">blog.hslzz.cn</a>）、所有用于提供服务的网络资产、APP、社交平台等，包括现有的及未来发布的任何版本（含客户端软件、服务器端软件、源代码、目标代码、资源文件等）；包括相关网络服务器、官方网站、电子媒体、印刷材料等。</p>
+<p>1.4 本站服务：指本站向您提供的各项服务，包括但不限于文章阅读，评论系统，友情链接等一切本站提供的服务。</p>
+<p>1.5 本站内容：指本站上的所有内容，包括本站头像、标识、文章，评论内容，Github仓库和源代码等。无论是否为本站原创。</p>
+<p>1.6 本站文章：指本站刊载发布的所有文章，包括但不限于普通文章，服务协议等。无论是否为本站原创。</p>
+<p>1.7 原创文章：指本站刊载的一切由本站站长原创的文章。</p>
+<p>1.7 您：又称“用户”，指被授权使用本站服务的自然人。</p>
+<p>1.8 服务数据：指您在使用本站服务过程中产生的被服务器记录的各种数据，包括但不限于评论日志、浏览记录、安全日志等数据。</p>
+<h2 id="二、协议的变更">二、协议的变更</h2>
+<p>2.1 站长有权在必要时变更本协议。</p>
+<p>2.2 本协议条款变更后，如果您继续使用本站服务，即视为您已接受变更后的协议。如果您不接受变更后的协议，应当停止使用本站服务。</p>
+<p>2.3 若变更协议，我们无法另行通知，请悉知</p>
+<h2 id="三、基本权利及义务">三、基本权利及义务</h2>
+<p>3.1 在遵守本站协议的情况下用户有使用本站提供的所有服务的权利。</p>
+<p>3.2 <strong>您充分了解并同意，您必须为自己的一切行为负责，包括您所发表的任何内容以及由此产生的任何后果。如您违反本协议导致本站遭受损失的，您应负责全额赔偿。您应对本站中的内容自行加以判断，并承担因使用本站服务而引起的所有风险，包括因对本站内容的正确性、完整性或实用性的依赖而产生的风险。本站无法且不会对因前述风险而导致的任何损失或损害承担责任。</strong></p>
+<p>3.3 用户应当遵守下列规则</p>
+<ul>
+<li>
+<p>（1）使用本站服务时遵守中华人民共和国相关法律法规和本协议。</p>
+</li>
+<li>
+<p>（2）不得利用本站服务从事非法活动。</p>
+</li>
+<li>
+<p>（3）无站长授权，不得对本站进行任何形式的网络攻击。但未造成影响且联系站长进行漏洞上报的除外。</p>
+</li>
+<li>
+<p>（3）不得使用任何手段干扰本站正常服务，包括但不限于网络攻击、发表大量垃圾信息、盗取站长账密对本站内容进行修改、删除、破坏等，由此造成的责任及损失由用户承担。</p>
+</li>
+<li>
+<p>（4）本站文章采用国际通用<strong>CC BY-NC-SA 4.0协议</strong>，您阅读、转载等使用本站文章的行为时应当遵守该协议。</p>
+</li>
+<li>
+<p>（5）遵守所有使用网络服务的网络协议、规定、程序和惯例以及产品的使用说明。</p>
+</li>
+<li>
+<p>（6）使用本站服务时保护本站相关资源。</p>
+</li>
+<li>
+<p>（7）您充分理解并同意，本站不对任何服务的稳定性作出任何承诺，因任何原因中断服务导致对您造成损失的，本站不承担任何责任。</p>
+</li>
+<li>
+<p>（8）<strong>您不得未经站长授权将本站任何内容用于商业化AI模型。</strong></p>
+</li>
+<li>
+<p>（9）不得传输或发表任何带有违法犯罪的、骚扰性的、中伤他人的、辱骂性的、恐吓性的、伤害性的、庸俗的、淫秽的、不文明的等信息资料；</p>
+</li>
+<li>
+<p>（10）不得利用本站进行牟利性经营活动：</p>
+</li>
+<li>
+<p>（11）不得实施任何侵犯他人知识产权及其相关合法权利的内容，若包括用户在内的任何个人或组织存在侵权行为，应自行承担全部法律后果；</p>
+</li>
+<li>
+<p>（12）不得教唆、帮助他人从事本协议和本政策所禁止的行为。</p>
+</li>
+</ul>
+<p>3.4  您理解并同意，我们一直致力于提供文明健康、规范有序的网络环境，您不得利用本站及本站提供的服务制作、复制、发布、传播如下干扰本站的正常运营、以及侵犯其他用户或第三方合法权益的内容，包括但不限于：</p>
+<p>3.4.1  发布、传送、传播、储存违反国家法律法规禁止的内容：</p>
+<ul>
+<li>
+<p>（1）违反宪法确定的基本原则的；</p>
+</li>
+<li>
+<p>（2）危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；</p>
+</li>
+<li>
+<p>（3）损害国家荣誉和利益的；</p>
+</li>
+<li>
+<p>（4）煽动民族仇恨、民族歧视，破坏民族团结的；</p>
+</li>
+<li>
+<p>（5）破坏国家宗教政策，宣扬邪教和封建迷信的；</p>
+</li>
+<li>
+<p>（6）散布谣言，扰乱社会秩序，破坏社会稳定的；</p>
+</li>
+<li>
+<p>（7）散布淫秽、色情、赌博、暴力、恐怖或者教唆犯罪的；</p>
+</li>
+<li>
+<p>（8）侮辱或者诽谤他人，侵害他人合法权益的；</p>
+</li>
+<li>
+<p>（9）煽动非法集会、结社、游行、示威、聚众扰乱社会秩序；</p>
+</li>
+<li>
+<p>（10）以非法民间组织名义活动的；</p>
+</li>
+<li>
+<p>（11）不符合《即时通信工具公众信息服务发展管理暂行规定》及遵守法律法规、社会主义制度、国家利益、公民合法利益、公共秩序、社会道德风尚和信息真实性等“七条底线”要求的；</p>
+</li>
+<li>
+<p>（12）含有法律、行政法规禁止的其他内容的。</p>
+</li>
+</ul>
+<p>3.4.2 发布、传送、传播、储存侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容；</p>
+<p>3.4.3 违反《中华人民共和国个人信息保护法》相关规定，涉及他人隐私、个人信息或资料的。</p>
+<p>3.4.4 发表、传送、传播骚扰、广告信息及垃圾信息或含有任何性或性暗示的；</p>
+<p>3.4.5 其他违反法律法规、政策及公序良俗、社会公德或干扰本站正常运营和侵犯其他用户或第三方合法权益内容的信息。</p>
+<p>3.4.6 通过相似读音或字形等替代违禁词，尝试绕过敏感词检测的。</p>
+<p>3.4.7 其他违反互联网行业公认的准则或违背公序良俗的行为。</p>
+<p>3.5 除非法律允许或本站书面许可，您不得从事下列行为：</p>
+<ul>
+<li>
+<p>（1）在转载时删除本站内容及其副本上关于著作权的信息；</p>
+</li>
+<li>
+<p>（2）无站长授权对本站进行扫描、探查、测试，以检测、发现、查找其中可能存在的漏洞或弱点；</p>
+</li>
+</ul>
+<h2 id="四、文章系统">四、文章系统</h2>
+<p>4.1 本站所刊载的文章仅供娱乐和参考，只代表个人主观意志，不反映现实社会情况，不构成任何法律依据。您应当自行对文章内容进行判别，我们不承担因为您过度依赖本站文章提供的信息导致您受到的损失。</p>
+<p>4.2 站长享有本站所有原创文章一切合法权利。本站刊载的一切非原创内容中其作者（或版权方，以版权归属为准）享有一切合法权利。</p>
+<p>4.3 您不得利用本站文章从事任何违法犯罪活动。</p>
+<h2 id="五、评论系统">五、评论系统</h2>
+<p>5.1 本站评论系统使用<code>Twikoo</code>评论系统、<code>WeAvatar</code>头像系统、<code>Akismet</code>评论审查系统来提供评论服务。</p>
+<p>5.2 站长不定期对评论进行审查，保留无理由删除任何评论的权利，且站长保留自行决定是否进行通知的权利。</p>
+<p>5.3 若您使用本站的评论系统，即视为您我们同意公开您的省级 IP 地址和浏览器信息，若您填写了昵称、邮箱、网络域名中的任意一项，即视为您同意我们公开您的昵称、我们使用您填写的邮箱地址通过API接口从WeAvater头像系统获取到的头像、您填写的网络域名。我们不会公开您的邮件地址和IP信息，但国家有权机关要求披露的除外。</p>
+<p>5.4 填写的邮箱用于显示头像和发送回复提示邮件；非本站管理员无法看到您的邮箱地址。填写邮箱可方便管理员联系您，您可自愿放弃填写邮箱，但无法享受头像显示和回复提醒服务。</p>
+<p>5.5 使用评论系统时必须遵守中华人民共和国相关法律法规。评论内容将被公开。本站使用 <code>Akismet</code> 审查评论，您清楚认识到评论审查系统可能不起作用，本站不对您发表的言论负任何责任，您对您发表的评论负全部责任。</p>
+<p>5.6 您不得利用本站评论植入各种商业性广告或其他任何类型的商业信息，不得提供赌博资讯或以任何方式引诱他人参与赌博。</p>
+<p>5.7 由于评论系统的特殊性，您发表评论后仅站长有删除评论的权限。您在发表评论后可以联系站长删除评论，在站长删除评论前未造成不良后果的，可以适当免除责任。</p>
+<p>5.8 您清楚的认识到，评论中展示的所有内容均不代表本站及站长立场。</p>
+<p>5.9 您承担由您发布的评论带来的全部责任。</p>
+<h2 id="六、友情链接">六、友情链接</h2>
+<p>6.1 本站提供友情链接申请服务，满足如下要求您可申请本站友情链接：</p>
+<ul>
+<li>
+<ol>
+<li>您的网站已经添加本站友链，本站不接受单向友链请求。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>您的网站属于非商业性质（注：如要求关注公众号、下载 App 后浏览文章等阅读拦截行为也属于商业性质站点）。</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>您的网站符合中华人民共和国法律法规，不得刊载任何违法违规、违背公序良俗的内容，对本站存在不当言论、不符合本站协议的内容。</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>您的网站应当稳定，可在一分钟之内加载完毕。</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>本站不接受<code>us.kg</code>之类的免费域名。但<code>github.io</code>、<code>gitee.io</code>等由大型代码托管商分发的二级域名除外。</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>您已阅读并同意，遵守本站的服务协议。</li>
+</ol>
+</li>
+</ul>
+<p>6.2 若您的站点违反上述条款的内容，本站不予添加友情链接。若本站友情链接中添加您的站点后，您的站点添加了违反上述申请规定的内容，站长有权撤销您在本站的友情链接且保留自主决定是否通知您的权利。</p>
+<p>6.3 若您的网站无法访问或者将本站友情链接单方面撤销的，本站有权撤销您在本站的友情链接且保留自主决定是否通知您的权利。</p>
+<p>6.4 您清楚的认识到，本站友情链接指向的网站并非站长实控，本站友情链接指向的网站刊载的所有内容，除转载或二次创作的本站原创文章以外，均和本站无实质关系。</p>
+<p>6.5 本站不对友情链接指向的网站刊载的内容导致的一切责任负责，请您自行斟酌。</p>
+<p>6.7 若您发现本站友情链接指向的任意站点存在违法违规内容或不符合本站协议内容的，您可通过联系站长邮箱hi@hslzz.cn向站长提交反馈，核实后将会处理。</p>
+<p>6.8 本站有权自主决定是否添加您站点的友链，即使原因如何。</p>
+<h2 id="七、知识产权">七、知识产权</h2>
+<p>7.1 本站站长享有本站所有原创内容的一切合法权益（包括但不限于计算机软件著作权、美术作品著作权、商标权、专利权等所所有知识产权），受中华人民共和国法律法规和相应的国际条约保护，未经站长同意，任何人不得为任何商业或非商业目的自行或许可任何第三方实施、利用、转让上述知识产权。</p>
+<p>7.2 本站文章均采用国际通用<strong>CC BY-NC-SA 4.0协议</strong>。您可以<strong>以非商业性质为目的</strong>的转载本站文章或使用进行二次创作，但<strong>必须进行署名</strong>，且转载或二创后的文章也必须是基于CC BY-NC-SA 4.0协议。署名需包含作者（花生莲子粥）及本站相关文章链接。</p>
+<p>7.3 您不得将本站文章用于商业性质使用（注：如要求关注公众号、下载 App 后浏览文章等<strong>阅读拦截行为</strong>，以及<strong>用作商业化AI模型</strong>也将被视为商业性质站点）。<strong>不得擅自或授权第三方进行任何出版、商业盈利及其他商业使用的行为。如违反本条约定，站长将保留法律上的追诉权利。</strong></p>
+<p>7.4 您基于本站服务创作的内容归您所有。但本站不承诺永久存储，不对提供的如存储等服务的稳定性作出任何承诺，若有必要请您自行保存备份，因用户没有自行备份导致的内容丢失本站不负任何责任。</p>
+<p>7.5 <strong>用户在本站中制作、提供、上传或发布的任何内容必须遵守本协议条款，且不得侵犯他人的合法权益或违反用户与第三方之间的书面协议，否则因此导致的第三方主张的索赔、提起的诉讼，均由用户自行处理并承担所有法律责任，因此导致本站遭受损失的，用户应负责赔偿；此外，本站有权采取如下措施的一项或多项：</strong></p>
+<ul>
+<li>
+<p><strong>（1）更改、删除或屏蔽相关内容；</strong></p>
+</li>
+<li>
+<p><strong>（2）警告，封禁IP；</strong></p>
+</li>
+<li>
+<p><strong>（3）向有关监管部门或国家机关报告；</strong></p>
+</li>
+<li>
+<p><strong>（4）其他站长认为合理的措施。</strong></p>
+</li>
+</ul>
+<p>7.6 用户不可撤销地授权站长以自己的名义或委托专业第三方对侵犯上述内容合法权益的行为进行维权，维权形式包括但不限于：监测侵权行为、发送维权函、提起诉讼或仲裁、调解、和解等，本站有权对维权事宜做出决策并独立实施。</p>
+<p>7.7 本站可能涉及第三方知识产权，而该等第三方对您基于本协议使用该等知识产权有要求的，站长将以适当方式向您告知该要求，您应当一并遵守。</p>
+<p>7.8 尊重知识产权是您应尽的义务，如有违反，您需要承担损害赔偿责任，请您遵守诚实信用原则。如侵犯他人知识产权，本站有权立即终止服务，并保留追究法律责任及索赔的权利。</p>
+<h2 id="八、遵守当地法律监管"><strong>八、遵守当地法律监管</strong></h2>
+<p>8.1 您在使用本站服务过程中应当遵守当地相关的法律法规，并尊重当地的道德和风俗习惯。<strong>如果您的行为违反了当地法律法规或道德风俗，您应当为此独立承担责任。</strong></p>
+<p>8.2 <strong>您应避免因使用本站服务而使本站或站长卷入政治和公共事件，否则站长有权暂停或终止对您的服务。</strong></p>
+<h2 id="九、管辖与法律适用"><strong>九、管辖与法律适用</strong></h2>
+<p>9.1 <strong>本协议签订地为中华人民共和国福建省三明市永安市。</strong></p>
+<p>9.2 <strong>本协议的成立、生效、履行、解释及纠纷解决，适用中华人民共和国大陆地区法律（不包括冲突法）。</strong></p>
+<p>9.3 <strong>若您和本站之间因本协议发生任何纠纷或争议，首先应友好协商解决，协商不成的，您同意将纠纷或争议提交至本协议签订地（福建省三明市永安市）有管辖权的人民法院或互联网法院管辖。诉讼产生的合理费用（如律师费、公证费）由败诉方承担</strong>。</p>
+<p>9.4 本协议所有条款的标题仅为阅读方便，本身并无实际涵义，不能作为本协议涵义解释的依据。</p>
+<p>9.5 本协议条款无论因何种原因部分无效，其余条款仍有效，对各方具有约束力。</p>
+<h2 id="十、免责声明">十、免责声明</h2>
+<p>10.1 <strong>本站服务以“现状”提供给您。我们不保证：本站服务无错误及不会中断、所有缺陷已被更正、或本站服务不会受到病毒或任何其它因素的损害。除非有法律明确规定，本站在此明确声明不承担任何明示或默示的担保责任，包括但不限于对本站服务的性能、适用性或不侵权的担保。</strong></p>
+<p>10.2 在任何情况下，本站不对因不可抗力导致的您在使用本站服务过程中遭受的损失承担责任。该等不可抗力事件包括但不限于国家法律、法规、政策及国家机关的命令及其他政府行为或者其它的诸如地震、水灾、雪灾、火灾、海啸、台风、罢工、战争等不可预测、不可避免且不可克服的事件。</p>
+<p>10.3 本站可独立决定随时变更、终止、中止您对任何本站服务的使用，无须向您发出任何提前通知，但根据法律法规规定或您与本站的约定需要提前通知的除外。若因您的行为违反法律法规规定或本协议的规定，本站根据相关规定终止、中止您使用任何本站服务，则本站无须向您承担任何责任，且有权要求您承担相应的责任。</p>
+<p>10.4 本站服务可能因软件漏洞、版本更新缺陷、第三方病毒攻击或其他任何因素导致您在本站的数据发生异常。若数据发生异常，我们有权删除冻结该数据，且无须向您承担任何责任。</p>
+<p>10.5 任何由于黑客攻击、计算机病毒侵入或发作、网络传输故障、政府管制等站长现有技术和资源无法抗衡的行为致使您的权益受损，站长不承担任何责任，请自行做好信息保护，站长将协助您向作恶人维权。</p>
+<p>10.6 因用户误操作导致的损失，本站不承担责任，造成本站损失的，用户需承担所有责任。</p>
+<p>10.7 站长有权无理由对任一网络特征实行任何限制或封禁（如人机验证，封禁IP等）。</p>
+<h2 id="十一、其他">十一、其他</h2>
+<p>11.1 如果您对本协议或本站服务有意见或建议，可与站长联系，我们会给予您必要的帮助。邮箱：ll@yll14.cn。</p>
+</div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #000000;"></i></a><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=2443958507&amp;site=qq&amp;menu=yes" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #000000;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/umamiinstall.html" title="[教程]从源码安装Umami"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://qn.cdn.yll14.cn/umami/umami_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[教程]从源码安装Umami"/></a><div class="content"><a class="title" href="/posts/umamiinstall.html" title="[教程]从源码安装Umami">[教程]从源码安装Umami</a><time datetime="2025-08-03T04:10:00.000Z" title="发表于 2025-08-03 12:10:00">2025-08-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/hjbtpanel.html" title="[教程]宝塔面板设置哈基面板主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://qn.cdn.yll14.cn/哈基BT/哈基面板_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[教程]宝塔面板设置哈基面板主题"/></a><div class="content"><a class="title" href="/posts/hjbtpanel.html" title="[教程]宝塔面板设置哈基面板主题">[教程]宝塔面板设置哈基面板主题</a><time datetime="2025-07-24T23:28:00.000Z" title="发表于 2025-07-25 07:28:00">2025-07-25</time></div></div></div></div><div class="card-widget" id="card-newest-comments"><div class="item-headline"><i class="fas fa-comment-dots"></i><span>最新评论</span></div><div class="aside-list"><span>加载中...</span></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/BT/"><span class="card-category-list-name">BT</span><span class="card-category-list-count">1</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/BT/%E5%AE%9D%E5%A1%94/"><span class="card-category-list-name">宝塔</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Umami/"><span class="card-category-list-name">Umami</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Umami/" style="font-size: 1.1em; color: #999">Umami</a> <a href="/tags/%E5%AE%9D%E5%A1%94/" style="font-size: 1.1em; color: #999">宝塔</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 1.5em; color: #99a9bf">教程</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/08/">
+            <span class="card-archive-list-date">
+              八月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">2</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">1.8k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-11-09T12:30:47.005Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/108552684_p8.png);"><div id="footer-wrap"><div class="copyright">&copy;2025 By 桉南</div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a> </br><a href="https://beian.mps.gov.cn/#/query/webSearch?code=36072702000240" target="_blank" rel="noopener noreferrer nofollow" class="footer-link"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/备案图标.webp" alt="公网安备" style="vertical-align: text-top;width: 1.2em;margin-right: 4px">赣公网安备36072702000240号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/utils.min.js"></script><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/main.min.js"></script><script src="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.hslzz.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.hslzz.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.hslzz.cn/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script>window.newestComments = {
+  changeContent: content => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<code>.*?<\/code>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g, "") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0, 150) + '...'
+    }
+    return content
+  },
+
+  generateHtml: (array, ele) => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class="aside-list-item">'
+
+        if (true && array[i].avatar) {
+          const imgAttr = 'data-lazy-src'
+          const lazyloadNative = ''
+          result += `<a href="${array[i].url}" class="thumbnail"><img ${imgAttr}="${array[i].avatar}" alt="${array[i].nick}" ${lazyloadNative}></a>`
+        }
+
+        result += `<div class="content">
+        <a class="comment" href="${array[i].url}" title="${array[i].content}">${array[i].content}</a>
+        <div class="name"><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '暂无评论'
+    }
+
+    ele.innerHTML = result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh(ele)
+  },
+
+  newestCommentInit: (name, getComment) => {
+    const $dom = document.querySelector('#card-newest-comments .aside-list')
+    if ($dom) {
+      const data = btf.saveToLocal.get(name)
+      if (data) {
+        newestComments.generateHtml(JSON.parse(data), $dom)
+      } else {
+        getComment($dom)
+      }
+    }
+  },
+
+  run: (name, getComment) => {
+    newestComments.newestCommentInit(name, getComment)
+    btf.addGlobalFn('pjaxComplete', () => newestComments.newestCommentInit(name, getComment), name)
+  }
+}</script><script>window.addEventListener('load', () => {
+  const keyName = 'twikoo-newest-comments'
+  const { changeContent, generateHtml, run } = window.newestComments
+
+  const getComment = ele => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://twikoo.yll14.cn',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(res => {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        btf.saveToLocal.set(keyName, JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray, ele)
+      }).catch(err => {
+        console.error(err)
+        ele.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      btf.getScript('https://cdn.hslzz.cn/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  run(keyName, getComment)
+})</script><script src="https://cdn.hslzz.cn/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.hslzz.cn/npm/butterfly-extsrc@1.1.4/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

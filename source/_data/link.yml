@@ -1,0 +1,28 @@
+- class_name: 我的好朋友们
+  class_desc: 相谈甚多的朋友们
+  link_list:
+    - name: 清羽飞扬
+      link: https://blog.liushen.fun/
+      avatar: https://blog.liushen.fun/info/avatar.ico
+      descr: 柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜
+
+    - name: 拥抱日出的小屋
+      link: https://blog.ybrc.top/
+      avatar: https://blog.ybrc.top/upload/logo.jpg
+      descr: 拥抱日出，也拥抱生活与代码
+
+    - name: 朽丘秋雨
+      link: https://blog.koxiuqiu.cc
+      avatar: https://blog.koxiuqiu.cc/img/avatar/xiaokeb.png
+      descr: 一定会和喜欢的人在夏日夜晚牵手慢步
+
+    - name: makotowu笔记
+      link: https://makotowu.cnstlapy.cn
+      avatar: https://makotowu.cnstlapy.cn/wp-content/uploads/2024/10/cropped-4ba624a0068c1420c4f7a0f53e611469.webp
+      descr: 飞萤扑火，向「阳」而生
+
+    - name: fishcpy的小破站
+      link: https://blog.fis.ink
+      avatar: https://www.fis.ink/img/logo.png
+      descr: 非淡泊无以明志，非宁静无以致远
+

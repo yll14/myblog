@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 首页 -->
+  <url>
+    <loc>https://blog.hslzz.cn</loc>
+    <lastmod>2025-09-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 文章页 -->
+
+  <!-- Hexo框架 + Butterfly主题安装日记 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20241206110000.html</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 在Kali2024.4安装QQ Linux版 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250127150000.html</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 超简单的Butterfly引入字体教程 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250214123500.html</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- （整活）用29行C++代码写一个Deepseek -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250217135000.html</loc>
+    <lastmod>2025-02-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <!-- 给Hexo的全站外链加上rel属性 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250305191500.html</loc>
+    <lastmod>2025-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 优化Hexo博客文章永久链接的几种方法 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250412100000.html</loc>
+    <lastmod>2025-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- Ubuntu一步到位改语言、时区、更新源、DNS -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250602092500.html</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 利用CDN自定义请求报头功能实现源站精确获得访客ip -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250608224520.html</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 给自己的服务器自签SSL/TLS证书用于内网通信 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250716103520.html</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 雷池WAF-LTS版本安装教程 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250717055500.html</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 使用AllinSSL实现自动续签雷池WAF的SSL证书 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250718182520.html</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- Matrix+Synapse部署教程 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250728233050.html</loc>
+    <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 解决Ubuntu的DNS问题 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20250912183050.html</loc>
+    <lastmod>2025-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<!-- 13.在Linux中安装您的信任根证书 -->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/20251102134535.html</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- 更多页面... -->
+  <!-- 友链页 -->
+  <url>
+    <loc>https://blog.hslzz.cn/link</loc>
+    <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.1</priority>
+  </url>
+  <!-- 分类页-->
+  <url>
+    <loc>https://blog.hslzz.cn/posts/categories</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <!--标签页-->
+  <url>
+    <loc>https://blog.hslzz.cn/tags</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://blog.hslzz.cn/tags/Hexo</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://blog.hslzz.cn/tags/Butterfly</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.hslzz.cn/tags/%E6%95%99%E7%A8%8B</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.hslzz.cn/tags/Kali</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <!--时间轴页-->
+  <url>
+    <loc>https://blog.hslzz.cn/archives</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>

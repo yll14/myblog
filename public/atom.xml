@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>桉南的小窝</title>
+  <icon>https://blog.yll14.cn/favicon.ico</icon>
+  <subtitle>这里是桉南的小窝</subtitle>
+  <link href="https://blog.yll14.cn/atom.xml" rel="self"/>
+  
+  <link href="https://blog.yll14.cn/"/>
+  <updated>2025-08-03T04:10:00.000Z</updated>
+  <id>https://blog.yll14.cn/</id>
+  
+  <author>
+    <name>桉南</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>[教程]从源码安装Umami</title>
+    <link href="https://blog.yll14.cn/posts/umamiinstall.html"/>
+    <id>https://blog.yll14.cn/posts/umamiinstall.html</id>
+    <published>2025-08-03T04:10:00.000Z</published>
+    <updated>2025-08-03T04:10:00.000Z</updated>
+    
+    
+    <summary type="html">阅读这篇Umami源码安装教程，了解从源码安装Umami的方法。手把手教你从零开始搭建私有Umami网站统计工具。零基础也能轻松上手！</summary>
+    
+    
+    
+    <category term="Umami" scheme="https://blog.yll14.cn/categories/Umami/"/>
+    
+    
+    <category term="教程" scheme="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Umami" scheme="https://blog.yll14.cn/tags/Umami/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>[教程]宝塔面板设置哈基面板主题</title>
+    <link href="https://blog.yll14.cn/posts/hjbtpanel.html"/>
+    <id>https://blog.yll14.cn/posts/hjbtpanel.html</id>
+    <published>2025-07-24T23:28:00.000Z</published>
+    <updated>2025-07-24T23:28:00.000Z</updated>
+    
+    
+    <summary type="html">阅读这篇宝塔面板设置哈基面板主题教程，了解将宝塔面板设置哈基面板主题的方法。手把手教你宝塔面板设置哈基面板主题。一起使用哈基面板吧！</summary>
+    
+    
+    
+    <category term="BT" scheme="https://blog.yll14.cn/categories/BT/"/>
+    
+    <category term="宝塔" scheme="https://blog.yll14.cn/categories/BT/%E5%AE%9D%E5%A1%94/"/>
+    
+    
+    <category term="宝塔" scheme="https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/"/>
+    
+    <category term="教程" scheme="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/"/>
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,148 @@
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: 桉南的小窝
+subtitle: '这里是桉南的小窝'
+description: '如果我真的存在，也是因为你需要我'
+keywords:
+author: 桉南
+language: zh-CN
+timezone: ''
+
+# URL
+## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
+url: https://blog.yll14.cn
+#permalink: posts/:year:month:day:hour:minute:second.html
+permalink: posts/:abbrlink.html
+permalink_defaults:
+pretty_urls:
+  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
+  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+# Writing
+new_post_name: :title.md # File name of new posts
+default_layout: post
+titlecase: false # Transform title into titlecase
+external_link:
+  enable: true # Open external links in new tab
+  field: site # Apply to the whole site
+  exclude: ''
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+relative_link: false
+future: true
+syntax_highlighter: highlight.js
+highlight:
+  line_number: true
+  auto_detect: false
+  tab_replace: ''
+  wrap: true
+  hljs: false
+prismjs:
+  preprocess: true
+  line_number: true
+  tab_replace: ''
+
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+
+# Category & Tag
+default_category: uncategorized
+category_map:
+tag_map:
+
+# Metadata elements
+## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+meta_generator: true
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+## updated_option supports 'mtime', 'date', 'empty'
+updated_option: 'mtime'
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 10
+pagination_dir: page
+
+# Include / Exclude file(s)
+## include:/exclude: options only apply to the 'source/' folder
+include:
+exclude:
+ignore:
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: butterfly
+
+# Deployment
+## Docs: https://hexo.io/docs/one-command-deployment
+deploy:
+  type: ''
+
+# katex
+markdown:
+  plugins:
+    - '@renbaoshuo/markdown-it-katex'
+
+# RSS Feed
+# RSS订阅：https://github.com/hexojs/hexo-generator-feed
+feed:
+  enable: true  # 启用或禁用Feed插件，true为启用，false为禁用
+  type: # 设置Feed的类型，可以是atom或rss2，或者两者都输出
+    - atom
+    - rss2
+  path: # 设置Feed文件的路径，当输出两种类型时，需要按照类型顺序设置路径
+    - atom.xml
+    - rss2.xml
+  limit: false  # 设置Feed中显示的文章数量上限，0或false表示显示所有文章
+  hub:  # PubSubHubbub中心URL，如果不使用可以留空
+  content: false # 是否在Feed中包含文章全文内容，true为包含，false为不包含
+  content_limit:  # 设置Feed中文章内容的长度限制，仅当content为true时有效
+  content_limit_delim: ' '  # 设置内容长度限制的分割符，默认为空格
+  order_by: -date  # 设置Feed中文章的排序方式，默认按日期倒序
+  icon: favicon.ico  # 设置Feed的图标，默认使用_config.yml中指定的电子邮件的gravatar
+  autodiscovery: true  # 是否启用Feed的自动发现功能，true为启用，false为禁用
+  template:  # 设置自定义Feed模板的路径，可以指定一个或多个模板
+sitemap:
+  path: sitemap.xml
+
+
+# hexo-abbrlink
+abbrlink:
+  alg: crc32      #支持crc16和crc32算法（默认crc16）
+  rep: dec        #支持dec和hex值（默认dec）
+  drafts: false   #(true)Process draft,(false)Do not process draft. false(default) 
+  # Generate categories from directory-tree
+  # depth: the max_depth of directory-tree you want to generate, should > 0
+  auto_category:
+     enable: true  #true(default)
+     depth:        #3(default)
+     over_write: false 
+  auto_title: false #enable auto title, it can auto fill the title by path
+  auto_date: false #enable auto date, it can auto fill the date by time today
+  force: false #enable force mode,in this mode, the plugin will ignore the cache, and calc the abbrlink for every post even it already had abbrlink.

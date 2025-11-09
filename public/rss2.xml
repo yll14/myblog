@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>桉南的小窝</title>
+    <link>https://blog.yll14.cn/</link>
+    
+    <image>
+      <url>https://blog.yll14.cn/favicon.ico</url>
+      <title>桉南的小窝</title>
+      <link>https://blog.yll14.cn/</link>
+    </image>
+    
+    <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>如果我真的存在，也是因为你需要我</description>
+    <pubDate>Sun, 03 Aug 2025 04:10:00 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>[教程]从源码安装Umami</title>
+      <link>https://blog.yll14.cn/posts/umamiinstall.html</link>
+      <guid>https://blog.yll14.cn/posts/umamiinstall.html</guid>
+      <pubDate>Sun, 03 Aug 2025 04:10:00 GMT</pubDate>
+      
+      <description>阅读这篇Umami源码安装教程，了解从源码安装Umami的方法。手把手教你从零开始搭建私有Umami网站统计工具。零基础也能轻松上手！</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/Umami/">Umami</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/">教程</category>
+      
+      <category domain="https://blog.yll14.cn/tags/Umami/">Umami</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/umamiinstall.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[教程]宝塔面板设置哈基面板主题</title>
+      <link>https://blog.yll14.cn/posts/hjbtpanel.html</link>
+      <guid>https://blog.yll14.cn/posts/hjbtpanel.html</guid>
+      <pubDate>Thu, 24 Jul 2025 23:28:00 GMT</pubDate>
+      
+      <description>阅读这篇宝塔面板设置哈基面板主题教程，了解将宝塔面板设置哈基面板主题的方法。手把手教你宝塔面板设置哈基面板主题。一起使用哈基面板吧！</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/BT/">BT</category>
+      
+      <category domain="https://blog.yll14.cn/categories/BT/%E5%AE%9D%E5%A1%94/">宝塔</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/">宝塔</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/">教程</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/hjbtpanel.html#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>
