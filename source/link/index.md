@@ -12,8 +12,7 @@ type: 'link'
   - name: 桉南的小窝
 	link: https://blog.yll14.cn/
 	avatar: https://blog.yll14.cn/assets/img/favicon.png
-	descr: 与世无争，不染于泥
-	
+	descr: 如果我真的存在，也是因为你需要我
 	RSS:
 	atom: https://blog.yll14.cn/atom.xml
 	rss2: https://blog.yll14.cn/rss2.xml
