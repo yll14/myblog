@@ -813,7 +813,7 @@ cloudflare_analytics:
 
 # Microsoft Clarity 分析配置
 # 官方网站：https://clarity.microsoft.com/
-microsoft_clarity: pvw0dcktzm
+microsoft_clarity: 
 
 # --------------------------------------
 # 广告配置
@@ -1021,9 +1021,9 @@ fireworks:
 # 鼠标点击效果: 心形符号
 click_heart:
   # 是否启用心形符号效果
-  enable: true
+  enable: false
   # 是否在移动设备上启用
-  mobile: true
+  mobile: false
 
 # 鼠标点击效果: 文字
 clickShowText:
@@ -1222,7 +1222,7 @@ inject:
     - <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
     - <link rel="shortcut icon" href="/favicon.ico" />
     - <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-    - <meta name="apple-mobile-web-app-title" content="花生莲子粥" />
+    - <meta name="apple-mobile-web-app-title" content="桉南" />
     - <link rel="manifest" href="/favicon/site.webmanifest" />
   bottom:
     # - <script src="xxxx"></script>
