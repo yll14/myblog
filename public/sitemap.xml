@@ -65,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://blog.yll14.cn/shuoshuo/index.html</loc>
+    <loc>https://blog.yll14.cn/tags/index.html</loc>
     
     <lastmod>2025-11-07</lastmod>
     
@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://blog.yll14.cn/tags/index.html</loc>
+    <loc>https://blog.yll14.cn/shuoshuo/index.html</loc>
     
     <lastmod>2025-11-07</lastmod>
     
@@ -119,7 +119,7 @@
 
   
   <url>
-    <loc>https://blog.yll14.cn/tags/Umami/</loc>
+    <loc>https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -133,7 +133,7 @@
   </url>
   
   <url>
-    <loc>https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/</loc>
+    <loc>https://blog.yll14.cn/tags/Umami/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -170,14 +170,14 @@
 
   
   <url>
-    <loc>https://blog.yll14.cn/categories/Umami/</loc>
+    <loc>https://blog.yll14.cn/categories/BT/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.yll14.cn/categories/BT/</loc>
+    <loc>https://blog.yll14.cn/categories/Umami/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -198,6 +198,13 @@
   </url>
   
   <url>
+    <loc>https://blog.yll14.cn/categories/BT/%E5%AE%9D%E5%A1%94/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.yll14.cn/categories/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -206,13 +213,6 @@
   
   <url>
     <loc>https://blog.yll14.cn/categories/%E6%96%B0%E5%B9%B4/</loc>
-    <lastmod>2026-01-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.yll14.cn/categories/BT/%E5%AE%9D%E5%A1%94/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

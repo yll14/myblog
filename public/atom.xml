@@ -111,9 +111,9 @@
     <category term="Umami" scheme="https://blog.yll14.cn/categories/Umami/"/>
     
     
-    <category term="Umami" scheme="https://blog.yll14.cn/tags/Umami/"/>
-    
     <category term="教程" scheme="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Umami" scheme="https://blog.yll14.cn/tags/Umami/"/>
     
   </entry>
   
@@ -134,9 +134,9 @@
     <category term="宝塔" scheme="https://blog.yll14.cn/categories/BT/%E5%AE%9D%E5%A1%94/"/>
     
     
-    <category term="教程" scheme="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/"/>
-    
     <category term="宝塔" scheme="https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/"/>
+    
+    <category term="教程" scheme="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/"/>
     
   </entry>
   
