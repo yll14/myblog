@@ -11,7 +11,7 @@ type: 'link'
 ```yaml
   - name: 桉南的小窝
 	link: https://blog.yll14.cn/
-	avatar: https://blog.yll14.cn/assets/img/favicon.png
+	avatar: https://blog.yll14.cn/img/avatar.png
 	descr: 如果我真的存在，也是因为你需要我
 	RSS:
 	atom: https://blog.yll14.cn/atom.xml
