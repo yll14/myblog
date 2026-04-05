@@ -52,8 +52,8 @@ code_blocks:
 #   icon: 链接 || 描述 || 颜色
 social:
   fab fa-github: https://github.com/yll14 || Github || "#hdhfbb"
-  fas fa-envelope: mailto:ll@yll14.cn || Email || "#000000"
-  fab fa-qq: https://wpa.qq.com/msgrd?v=3&uin=2443958507&site=qq&menu=yes || QQ || "#000000"
+  fas fa-envelope: mailto:ll@yll14.cn || Email || "#hdhfbb"
+  fab fa-qq: https://wpa.qq.com/msgrd?v=3&uin=2443958507&site=qq&menu=yes || QQ || "#hdhfbb"
 # --------------------------------------
 # 图片设置
 # --------------------------------------
