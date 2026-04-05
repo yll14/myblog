@@ -7,19 +7,14 @@
       descr: 柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜
 
     - name: 拥抱日出的小屋
-      link: https://blog.ybrc.top/
-      avatar: http://blog.ybrc.top/upload/headimg_dl.jpg
-      descr: 拥抱日出，也拥抱生活与代码
+      link: https://ybrc.byside.top/
+      avatar: https://ybrc.byside.top/upload/logo.jpg
+      descr: 拥抱日出，也拥抱生活
 
     - name: 朽丘秋雨
       link: https://koxiuqiu.cn/
       avatar: https://koxiuqiu.cn/img/avatar/avatar.png
       descr: 一定会和喜欢的人在夏日夜晚牵手慢步
-
-    - name: makotowu笔记
-      link: https://makotowu.cnstlapy.cn
-      avatar: https://makotowu.cnstlapy.cn/wp-content/uploads/2024/10/cropped-4ba624a0068c1420c4f7a0f53e611469.webp
-      descr: 飞萤扑火，向「阳」而生
 
     - name: fishcpy的小破站
       link: https://blog.fis.ink
@@ -31,3 +26,7 @@
        avatar: https://hslzz.cn/assets/img/favicon.png
        descr: 与世无争，不染于泥
 
+#  - name: makotowu笔记
+#    link: https://makotowu.cnstlapy.cn
+#    avatar: https://makotowu.cnstlapy.cn/wp-content/uploads/2024/10/cropped-4ba624a0068c1420c4f7a0f53e611469.webp
+#    descr: 飞萤扑火，向「阳」而生
