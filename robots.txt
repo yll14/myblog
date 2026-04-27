@@ -1,0 +1,4 @@
+User-agent: *
+Crawl-delay: 5
+Sitemap: https://blog.yll14.cn/sitemap.xml
+Disallow:
