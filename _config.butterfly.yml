@@ -305,8 +305,7 @@ footer:
     # 网站创建年份
     since: 2025
   # 自定义文本
-  custom_text: '<a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">赣ICP备2025061952号</a>
-  </br><a href="https://beian.mps.gov.cn/#/query/webSearch?code=36072702000240" target="_blank" rel="noopener noreferrer nofollow" class="footer-link"><img src="/img/备案图标.webp" alt="公网安备" style="vertical-align: text-top;width: 1.2em;margin-right: 4px">赣公网安备36072702000240号</a>'
+  custom_text: '<a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">赣ICP备2025061952号</a>'
   # 主题和框架的版权声明
   copyright: false
 
