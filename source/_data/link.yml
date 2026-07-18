@@ -1,6 +1,11 @@
 - class_name: 我的好朋友们
   class_desc: 相谈甚多的朋友们
   link_list:
+    - name: Aurora.歆の小破站
+      link: https://blog.lruriawa.top/
+      avatar: https://blog.lruriawa.top/wp-content/uploads/2026/07/cropped-b_aee06ac80b532db02a05fd3b445d74ba.jpg
+      descr: 欢迎你的到来！
+
     - name: 清羽飞扬
       link: https://blog.liushen.fun/
       avatar: https://blog.liushen.fun/info/avatar.ico
