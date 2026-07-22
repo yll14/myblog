@@ -79,7 +79,7 @@ meta_generator: true
 ## You can customize the date format as defined in
 ## http://momentjs.com/docs/#/displaying/format/
 date_format: YYYY-MM-DD
-time_format: HH:mm:ss
+time_format: HH:mm
 ## updated_option supports 'mtime', 'date', 'empty'
 updated_option: 'mtime'
 
@@ -134,7 +134,7 @@ sitemap:
 
 # hexo-abbrlink
 abbrlink:
-  alg: crc32      #支持crc16和crc32算法（默认crc16）
+  alg: crc16      #支持crc16和crc32算法（默认crc16）
   rep: dec        #支持dec和hex值（默认dec）
   drafts: false   #(true)Process draft,(false)Do not process draft. false(default) 
   # Generate categories from directory-tree

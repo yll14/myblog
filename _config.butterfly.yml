@@ -13,8 +13,8 @@ nav:
 menu:
   首页: / || fas fa-home
   时间轴: /archives/ || fas fa-archive
-  标签: /tags/ || fas fa-tags
-  分类: /categories/ || fas fa-folder-open
+  #标签: /tags/ || fas fa-tags
+  #分类: /categories/ || fas fa-folder-open
   说说: /shuoshuo/ || fas fa-comment
   友链: /link/ || fas fa-link
   关于: /about/ || fas fa-heart
@@ -142,9 +142,9 @@ post_meta:
     # 日期格式: date / relative
     date_format: date
     # 是否显示分类
-    categories: true
+    categories: false
     # 是否显示标签
-    tags: true
+    tags: false
     # 是否显示文字标签
     label: true
   # 文章页面
@@ -371,7 +371,7 @@ aside:
     avatar: true
   card_categories:
     # 是否显示分类卡片
-    enable: true
+    enable: false
     # 显示分类数量，0 表示显示所有
     limit: 8
     # 选择：none / true / false
@@ -379,7 +379,7 @@ aside:
     sort_order:
   card_tags:
     # 是否显示标签卡片
-    enable: true
+    enable: false
     # 显示标签数量，0 表示显示所有
     limit: 40
     # 是否启用颜色
@@ -391,7 +391,7 @@ aside:
     sort_order:
   card_archives:
     # 是否显示归档卡片
-    enable: true
+    enable: false
     # 归档类型：monthly / yearly
     type: monthly
     # 日期格式，例如：YYYY年MM月

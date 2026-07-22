@@ -1,12 +1,12 @@
 ---
 title: 关于
-date: 2025-11-9 00:00:00
+date: 2026-7-22 00:00:00
 type: 'about'
 ---
 
 # 个人简介
 
-你好！我是<b>桉南</b>，目前是一名高二学生。
+你好！我是<b>桉南</b>，目前是一名高三学生。
 
 > 2024年9月，我进入了本地的职业高中，就读高考班。
 
@@ -23,7 +23,7 @@ type: 'about'
 
 ### 联系方式
 
-- QQ:[2443958507](https://wpa.qq.com/msgrd?v=3&uin=2443958507&site=qq&menu=yes) 
+- QQ:[2443958507](https://qm.qq.com/q/HAXlbifl2E) 
 - mail:[ll@yll14.cn](mailto:ll@yll14.cn) wx:yll14cn 
 
 ### 开源平台
