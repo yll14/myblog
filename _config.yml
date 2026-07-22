@@ -119,7 +119,7 @@ feed:
   path: # 设置Feed文件的路径，当输出两种类型时，需要按照类型顺序设置路径
     - atom.xml
     - rss2.xml
-  limit: false  # 设置Feed中显示的文章数量上限，0或false表示显示所有文章
+  limit: 20  # 设置Feed中显示的文章数量上限，0或false表示显示所有文章
   hub:  # PubSubHubbub中心URL，如果不使用可以留空
   content: false # 是否在Feed中包含文章全文内容，true为包含，false为不包含
   content_limit:  # 设置Feed中文章内容的长度限制，仅当content为true时有效
@@ -130,6 +130,9 @@ feed:
   template:  # 设置自定义Feed模板的路径，可以指定一个或多个模板
 sitemap:
   path: sitemap.xml
+  tag: true
+  category: true
+  archive: true
 
 
 # hexo-abbrlink

@@ -1,4 +1,11 @@
 User-agent: *
-Crawl-delay: 5
+Allow: /
+Allow: /posts/
+Allow: /archives/
+
+Disallow: /js/
+Disallow: /css/
+Disallow: /images/
+Disallow: /vendors/
+
 Sitemap: https://blog.yll14.cn/sitemap.xml
-Disallow:
