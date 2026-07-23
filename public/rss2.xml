@@ -15,13 +15,63 @@
     <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>如果我真的存在，也是因为你需要我</description>
-    <pubDate>Sat, 04 Apr 2026 12:00:00 GMT</pubDate>
+    <pubDate>Thu, 23 Jul 2026 07:24:00 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
+      <title>[分享]什么是CC攻击？</title>
+      <link>https://blog.yll14.cn/posts/260723.html</link>
+      <guid>https://blog.yll14.cn/posts/260723.html</guid>
+      <pubDate>Thu, 23 Jul 2026 07:24:00 GMT</pubDate>
+      
+      <description>CC 攻击（Challenge Collapsar）是一种应用层 DDoS 攻击，通过大量合法请求耗尽服务器资源。本文详解其攻击原理、常见手段与防御策略。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260723.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]什么是DDOS攻击？</title>
+      <link>https://blog.yll14.cn/posts/260722.html</link>
+      <guid>https://blog.yll14.cn/posts/260722.html</guid>
+      <pubDate>Wed, 22 Jul 2026 09:42:00 GMT</pubDate>
+      
+      <description>本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260722.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
       <title>去看电影啦！</title>
-      <link>https://blog.yll14.cn/posts/tiancaiyouxi.html</link>
-      <guid>https://blog.yll14.cn/posts/tiancaiyouxi.html</guid>
+      <link>https://blog.yll14.cn/posts/260404.html</link>
+      <guid>https://blog.yll14.cn/posts/260404.html</guid>
       <pubDate>Sat, 04 Apr 2026 12:00:00 GMT</pubDate>
       
       <description>今天去看了《天才游戏》这部电影，拍了几张我觉得不错的照片分享给大家看看</description>
@@ -33,14 +83,14 @@
       <category domain="https://blog.yll14.cn/tags/%E6%97%A5%E5%B8%B8/">日常</category>
       
       
-      <comments>https://blog.yll14.cn/posts/tiancaiyouxi.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/260404.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>2026新年快乐！</title>
-      <link>https://blog.yll14.cn/posts/26yuandan.html</link>
-      <guid>https://blog.yll14.cn/posts/26yuandan.html</guid>
+      <link>https://blog.yll14.cn/posts/260101.html</link>
+      <guid>https://blog.yll14.cn/posts/260101.html</guid>
       <pubDate>Wed, 31 Dec 2025 16:00:00 GMT</pubDate>
       
       <description>新的一年新的起点，再见2025，你好2026！</description>
@@ -54,14 +104,14 @@
       <category domain="https://blog.yll14.cn/tags/%E6%97%A5%E5%B8%B8/">日常</category>
       
       
-      <comments>https://blog.yll14.cn/posts/26yuandan.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/260101.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>[分享]关于阿里云盘下载速率</title>
-      <link>https://blog.yll14.cn/posts/alipan.html</link>
-      <guid>https://blog.yll14.cn/posts/alipan.html</guid>
+      <link>https://blog.yll14.cn/posts/251207.html</link>
+      <guid>https://blog.yll14.cn/posts/251207.html</guid>
       <pubDate>Sun, 07 Dec 2025 12:58:00 GMT</pubDate>
       
       <description>阿里云下载速度慢？开了会员还是慢？不妨看看这篇文章说不定对你有所帮助。</description>
@@ -72,19 +122,19 @@
       <category domain="https://blog.yll14.cn/categories/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/">阿里云盘</category>
       
       
-      <category domain="https://blog.yll14.cn/tags/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/">阿里云盘</category>
-      
       <category domain="https://blog.yll14.cn/tags/%E5%88%86%E4%BA%AB/">分享</category>
       
+      <category domain="https://blog.yll14.cn/tags/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/">阿里云盘</category>
       
-      <comments>https://blog.yll14.cn/posts/alipan.html#disqus_thread</comments>
+      
+      <comments>https://blog.yll14.cn/posts/251207.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>我17岁啦</title>
-      <link>https://blog.yll14.cn/posts/17thbirthday.html</link>
-      <guid>https://blog.yll14.cn/posts/17thbirthday.html</guid>
+      <link>https://blog.yll14.cn/posts/251122.html</link>
+      <guid>https://blog.yll14.cn/posts/251122.html</guid>
       <pubDate>Sat, 22 Nov 2025 14:28:00 GMT</pubDate>
       
       <description>祝我17岁生日快乐！</description>
@@ -98,14 +148,14 @@
       <category domain="https://blog.yll14.cn/tags/%E6%97%A5%E5%B8%B8/">日常</category>
       
       
-      <comments>https://blog.yll14.cn/posts/17thbirthday.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/251122.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>[分享]关于四层转发</title>
-      <link>https://blog.yll14.cn/posts/layer4forward.html</link>
-      <guid>https://blog.yll14.cn/posts/layer4forward.html</guid>
+      <link>https://blog.yll14.cn/posts/251115.html</link>
+      <guid>https://blog.yll14.cn/posts/251115.html</guid>
       <pubDate>Sat, 15 Nov 2025 12:39:00 GMT</pubDate>
       
       <description>四层转发是什么？有什么作用吗？这个问题困扰了我有一段时间。闲来无事不如学习一下，然后便有了这篇关于四层转发的文章。</description>
@@ -121,14 +171,14 @@
       <category domain="https://blog.yll14.cn/tags/IT/">IT</category>
       
       
-      <comments>https://blog.yll14.cn/posts/layer4forward.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/251115.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>[教程]从源码安装Umami</title>
-      <link>https://blog.yll14.cn/posts/umamiinstall.html</link>
-      <guid>https://blog.yll14.cn/posts/umamiinstall.html</guid>
+      <link>https://blog.yll14.cn/posts/250803.html</link>
+      <guid>https://blog.yll14.cn/posts/250803.html</guid>
       <pubDate>Sun, 03 Aug 2025 04:10:00 GMT</pubDate>
       
       <description>阅读这篇Umami源码安装教程，了解从源码安装Umami的方法。手把手教你从零开始搭建私有Umami网站统计工具。零基础也能轻松上手！</description>
@@ -144,14 +194,14 @@
       <category domain="https://blog.yll14.cn/tags/%E6%95%99%E7%A8%8B/">教程</category>
       
       
-      <comments>https://blog.yll14.cn/posts/umamiinstall.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/250803.html#disqus_thread</comments>
       
     </item>
     
     <item>
       <title>[教程]宝塔面板设置哈基面板主题</title>
-      <link>https://blog.yll14.cn/posts/hjbtpanel.html</link>
-      <guid>https://blog.yll14.cn/posts/hjbtpanel.html</guid>
+      <link>https://blog.yll14.cn/posts/250725.html</link>
+      <guid>https://blog.yll14.cn/posts/250725.html</guid>
       <pubDate>Thu, 24 Jul 2025 23:28:00 GMT</pubDate>
       
       <description>阅读这篇宝塔面板设置哈基面板主题教程，了解将宝塔面板设置哈基面板主题的方法。手把手教你宝塔面板设置哈基面板主题。一起使用哈基面板吧！</description>
@@ -169,7 +219,7 @@
       <category domain="https://blog.yll14.cn/tags/%E5%AE%9D%E5%A1%94/">宝塔</category>
       
       
-      <comments>https://blog.yll14.cn/posts/hjbtpanel.html#disqus_thread</comments>
+      <comments>https://blog.yll14.cn/posts/250725.html#disqus_thread</comments>
       
     </item>
     

@@ -6,7 +6,7 @@
   <link href="https://blog.yll14.cn/atom.xml" rel="self"/>
   
   <link href="https://blog.yll14.cn/"/>
-  <updated>2026-04-04T12:00:00.000Z</updated>
+  <updated>2026-07-23T07:24:00.000Z</updated>
   <id>https://blog.yll14.cn/</id>
   
   <author>
@@ -17,9 +17,55 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>[分享]什么是CC攻击？</title>
+    <link href="https://blog.yll14.cn/posts/260723.html"/>
+    <id>https://blog.yll14.cn/posts/260723.html</id>
+    <published>2026-07-23T07:24:00.000Z</published>
+    <updated>2026-07-23T07:24:00.000Z</updated>
+    
+    
+    <summary type="html">CC 攻击（Challenge Collapsar）是一种应用层 DDoS 攻击，通过大量合法请求耗尽服务器资源。本文详解其攻击原理、常见手段与防御策略。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>[分享]什么是DDOS攻击？</title>
+    <link href="https://blog.yll14.cn/posts/260722.html"/>
+    <id>https://blog.yll14.cn/posts/260722.html</id>
+    <published>2026-07-22T09:42:00.000Z</published>
+    <updated>2026-07-22T09:42:00.000Z</updated>
+    
+    
+    <summary type="html">本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
     <title>去看电影啦！</title>
-    <link href="https://blog.yll14.cn/posts/tiancaiyouxi.html"/>
-    <id>https://blog.yll14.cn/posts/tiancaiyouxi.html</id>
+    <link href="https://blog.yll14.cn/posts/260404.html"/>
+    <id>https://blog.yll14.cn/posts/260404.html</id>
     <published>2026-04-04T12:00:00.000Z</published>
     <updated>2026-04-04T12:00:00.000Z</updated>
     
@@ -35,8 +81,8 @@
   
   <entry>
     <title>2026新年快乐！</title>
-    <link href="https://blog.yll14.cn/posts/26yuandan.html"/>
-    <id>https://blog.yll14.cn/posts/26yuandan.html</id>
+    <link href="https://blog.yll14.cn/posts/260101.html"/>
+    <id>https://blog.yll14.cn/posts/260101.html</id>
     <published>2025-12-31T16:00:00.000Z</published>
     <updated>2025-12-31T16:00:00.000Z</updated>
     
@@ -54,8 +100,8 @@
   
   <entry>
     <title>[分享]关于阿里云盘下载速率</title>
-    <link href="https://blog.yll14.cn/posts/alipan.html"/>
-    <id>https://blog.yll14.cn/posts/alipan.html</id>
+    <link href="https://blog.yll14.cn/posts/251207.html"/>
+    <id>https://blog.yll14.cn/posts/251207.html</id>
     <published>2025-12-07T12:58:00.000Z</published>
     <updated>2025-12-07T12:58:00.000Z</updated>
     
@@ -67,16 +113,16 @@
     <category term="阿里云盘" scheme="https://blog.yll14.cn/categories/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/"/>
     
     
-    <category term="阿里云盘" scheme="https://blog.yll14.cn/tags/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/"/>
-    
     <category term="分享" scheme="https://blog.yll14.cn/tags/%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="阿里云盘" scheme="https://blog.yll14.cn/tags/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98/"/>
     
   </entry>
   
   <entry>
     <title>我17岁啦</title>
-    <link href="https://blog.yll14.cn/posts/17thbirthday.html"/>
-    <id>https://blog.yll14.cn/posts/17thbirthday.html</id>
+    <link href="https://blog.yll14.cn/posts/251122.html"/>
+    <id>https://blog.yll14.cn/posts/251122.html</id>
     <published>2025-11-22T14:28:00.000Z</published>
     <updated>2025-11-22T14:28:00.000Z</updated>
     
@@ -94,8 +140,8 @@
   
   <entry>
     <title>[分享]关于四层转发</title>
-    <link href="https://blog.yll14.cn/posts/layer4forward.html"/>
-    <id>https://blog.yll14.cn/posts/layer4forward.html</id>
+    <link href="https://blog.yll14.cn/posts/251115.html"/>
+    <id>https://blog.yll14.cn/posts/251115.html</id>
     <published>2025-11-15T12:39:00.000Z</published>
     <updated>2025-11-15T12:39:00.000Z</updated>
     
@@ -115,8 +161,8 @@
   
   <entry>
     <title>[教程]从源码安装Umami</title>
-    <link href="https://blog.yll14.cn/posts/umamiinstall.html"/>
-    <id>https://blog.yll14.cn/posts/umamiinstall.html</id>
+    <link href="https://blog.yll14.cn/posts/250803.html"/>
+    <id>https://blog.yll14.cn/posts/250803.html</id>
     <published>2025-08-03T04:10:00.000Z</published>
     <updated>2025-08-03T04:10:00.000Z</updated>
     
@@ -136,8 +182,8 @@
   
   <entry>
     <title>[教程]宝塔面板设置哈基面板主题</title>
-    <link href="https://blog.yll14.cn/posts/hjbtpanel.html"/>
-    <id>https://blog.yll14.cn/posts/hjbtpanel.html</id>
+    <link href="https://blog.yll14.cn/posts/250725.html"/>
+    <id>https://blog.yll14.cn/posts/250725.html</id>
     <published>2025-07-24T23:28:00.000Z</published>
     <updated>2025-07-24T23:28:00.000Z</updated>
     
