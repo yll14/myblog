@@ -9,8 +9,16 @@
 
 
     <url>
+        <loc>https://blog.yll14.cn/posts/260724.html</loc>
+        <lastmod>2026-07-24T07:24:00.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://blog.yll14.cn/posts/260723.html</loc>
-        <lastmod>2026-07-23T07:21:00.000Z</lastmod>
+        <lastmod>2026-07-23T07:24:00.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

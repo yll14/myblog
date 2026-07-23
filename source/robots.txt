@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Allow: /posts/
 Allow: /archives/
 
 Disallow: /js/
