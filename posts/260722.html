@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是DDOS攻击？ | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽&#x2F;协议&#x2F;应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是DDOS攻击？">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260722.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽&#x2F;协议&#x2F;应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260722/260722_0.webp">
+<meta property="article:published_time" content="2026-07-22T09:42:00.000Z">
+<meta property="article:modified_time" content="2026-07-22T09:42:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="知识分享">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260722/260722_0.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是DDOS攻击？",
+  "url": "https://blog.yll14.cn/posts/260722.html",
+  "image": "https://blog.yll14.cn/blogimage/260722/260722_0.webp",
+  "datePublished": "2026-07-22T09:42:00.000Z",
+  "dateModified": "2026-07-22T09:42:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260722.html"><link rel="preconnect" href="https://cdn.hslzz.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.1"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.hslzz.cn/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是DDOS攻击？',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是DDOS攻击？</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是DDOS攻击？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-22T09:42:00.000Z" title="发表于 2026-07-22 17:42">2026-07-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-22T09:42:00.000Z" title="更新于 2026-07-22 17:42">2026-07-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-22 17:42&quot;}" hidden></div><p><i>分布式拒绝服务攻击（DDoS），核心就是用海量垃圾流量或恶意请求，把目标的网络、服务器或应用资源彻底耗尽，让正常用户无法访问。<br>
+要深度理解它，得从&quot;拒绝服务&quot;的本质、为什么&quot;分布式&quot;、攻击的几种层次、以及攻防博弈这几个角度来拆解。<br>
+</i></p>
+<h2 id="从-DoS-到-DDoS：单线突破-→-饱和打击">从 DoS 到 DDoS：单线突破 → 饱和打击</h2>
+<ul>
+<li><b>DoS（拒绝服务攻击）</b> 的原始思路很简单：一台机器，利用协议缺陷或疯狂发包，把目标打趴。早期的攻击分为两种：一种是<b>漏洞利用型</b>，比如 “Ping of Death”（发送超大ICMP包导致系统崩溃或重启），这类靠打补丁修复；另一种是<b>资源耗尽型</b>，靠单机不断发包占满目标带宽或连接数。</li>
+</ul>
+<p>但单打独斗有瓶颈：攻击者的带宽和算力有限，很容易被服务器禁封IP或通过带宽优势硬抗过去。</p>
+<ul>
+<li><b>DDoS（分布式拒绝服务攻击）</b> 改变了游戏规则。它的核心是 <b>“分布式”</b>：攻击者不亲自出手，而是控制成千上万台被黑的&quot;肉鸡&quot;（僵尸网络），在同一时间向同一目标发起攻击。这股合力的流量级别可以高达每秒数T比特，任何单点防御都难以招架。</li>
+</ul>
+<h2 id="核心攻击原理：耗尽三层资源">核心攻击原理：耗尽三层资源</h2>
+<p>任何网络服务的正常运作，都依赖一个&quot;漏斗模型&quot;：</p>
+<p><b>用户请求 → 网络带宽 → 服务器连接表 → 应用处理能力 → 响应</b></p>
+<p>DDoS的攻击逻辑，就是精准地堵死这个漏斗的某一层或多层。根据攻击目标的不同，主要分为三类：</p>
+<h3 id="第一层：带宽耗尽型（堵死入口）">第一层：带宽耗尽型（堵死入口）</h3>
+<p>攻击目标是目标的<b>入网带宽</b>。当垃圾流量挤满整个管道，正常用户的请求连门都进不来。</p>
+<blockquote>
+<p><b> 典型手段：</b></p>
+<blockquote>
+<ul>
+<li>UDP 洪水：发送大量巨型UDP包，占满带宽。</li>
+<li>ICMP 洪水：疯狂Ping，填满通道。</li>
+<li>反射放大攻击：这是最致命的。攻击者伪装成目标IP，向网络上大量开放、会返回大响应的服务（如DNS、NTP、Memcached）发送小请求。这些服务会&quot;忠实地&quot;把大几十倍的响应数据打给目标。</li>
+</ul>
+</blockquote>
+</blockquote>
+<p><i>   例子：发送一个70字节的DNS查询，服务器返回一个3000字节的响应，放大倍数超过40倍。攻击者用1G带宽，就能打出40G的流量。Memcached服务的放大倍数甚至可达5万倍。</i></p>
+<h3 id="第二层：协议耗尽型（打垮连接机制）">第二层：协议耗尽型（打垮连接机制）</h3>
+<p>攻击目标是网络层和传输层的<b>连接状态表</b>。防火墙、负载均衡器和服务器都维护着TCP连接状态表，这个表的大小有限。</p>
+<ul>
+<li>
+<p><b>SYN 洪水</b>：利用TCP三次握手的特性。攻击者发送海量SYN包，服务器回应SYN-ACK后，攻击者故意不完成最后一步ACK。服务器会傻等一段时间（数秒到数十秒），大量半开连接瞬间填满状态表，导致新连接无法建立。这叫&quot;背板耗尽&quot;。</p>
+</li>
+<li>
+<p><b>畸形包攻击</b>：发送分片后重组会越界或导致系统崩溃的异常数据包，针对协议栈的代码缺陷。不过这类依赖漏洞的攻击如今已不常见，更多时候被用作干扰防御设备解析能力的辅助手段。</p>
+</li>
+</ul>
+<h3 id="第三层：应用层耗尽型（累死业务逻辑）">第三层：应用层耗尽型（累死业务逻辑）</h3>
+<p>攻击目标是应用本身的<b>处理能力</b>。这类攻击流量可能完全正常，能通过协议验证，但请求的资源极其消耗服务器算力，用极低成本造成极高消耗。</p>
+<ul>
+<li>
+<p><b>HTTP/HTTPS 洪水</b>：看似正常地不断请求网站的高消耗页面（如搜索、大文件下载、复杂数据库查询），导致服务器CPU和内存满载，数据库连接池耗尽。</p>
+</li>
+<li>
+<p><b>Slowloris 慢速攻击</b>：不完全发送HTTP请求，隔很久发一个Header，保持连接不关闭，快速耗尽服务器的最大并发连接数。</p>
+</li>
+<li>
+<p><b>低慢速攻击</b>：以极低速率（如每秒几十个请求）攻击应用的关键慢接口，正好压在&quot;防DDoS阈值&quot;之下，但对数据库伤害巨大，俗称&quot;慢死&quot;。</p>
+</li>
+<li>
+<p><b>业务逻辑耗尽</b>：攻击者模拟正常用户请求高消耗业务接口，如&quot;秒杀&quot;下单、短信验证码发送、AI图像生成等。这类请求完全合法，但会迅速耗尽数据库行锁、线程池或GPU算力，让防御设备难以区分真假。</p>
+</li>
+</ul>
+<p><b><i>Tips: </b></i>现实中，专业攻击通常是<b>混合型</b>：先用协议洪水打瘫防火墙的状态表，再用应用层攻击榨干后端服务器。</p>
+<h2 id="攻击背后的引擎：僵尸网络与反射网">攻击背后的引擎：僵尸网络与反射网</h2>
+<p>一次T级规模的DDoS攻击，不可能由一个人手动触发。其力量来自：</p>
+<ul>
+<li>
+<p><b>僵尸网络（Botnet）</b>：攻击者通过病毒、蠕虫感染全球数百万计算机、智能摄像头、路由器等物联网设备，组成可远程操控的&quot;大军&quot;。指令一下，所有肉鸡同时访问目标。Mirai病毒就是典型的IoT僵尸网络，它感染的摄像头设备性能弱，发出的数据包常残缺不全，反而让某些依赖协议栈校验的清洗设备处理起来更吃力。</p>
+</li>
+<li>
+<p><b>反射/放大网</b>：不需要控制大量肉鸡，只需要知道互联网上哪些服务可以被利用。攻击者扫描并收集开放的DNS、NTP、Memcached等反射器，组建&quot;反射军团&quot;。</p>
+</li>
+<li>
+<p><b>DDoS租赁服务</b>：甚至形成了黑产市场，花几十美元就能买到特定时长和强度的DDoS攻击，让零技术的人也能发起攻击。</p>
+</li>
+</ul>
+<h2 id="攻击动机：远不止恶作剧">攻击动机：远不止恶作剧</h2>
+<ul>
+<li>
+<p><b>敲诈勒索</b>：发邮件&quot;支付XX比特币，否则断你业务&quot;，尤其在商业竞争激烈的行业。</p>
+</li>
+<li>
+<p><b>商业竞争</b>：恶性竞争，在对手大促或关键节点时直接打瘫其服务。</p>
+</li>
+<li>
+<p><b>网络战与意识形态</b>：国家级黑客组织攻击政府、关键基础设施或媒体，作为现代冲突手段。</p>
+</li>
+<li>
+<p><b>报复或炫耀</b>：游戏里被打怒了，攻击游戏服务器或对战平台。</p>
+</li>
+<li>
+<p><b>声东击西（烟雾弹）</b>：用DDoS制造混乱，吸引安全团队全部精力，同时悄悄进行数据窃取、渗透等更致命的攻击。</p>
+</li>
+</ul>
+<h2 id="防御哲学：这是一场不对等的消耗战">防御哲学：这是一场不对等的消耗战</h2>
+<p>防御DDoS的核心不是&quot;防住&quot;，而是<b>提高攻击成本，降低自身体积，并具备弹性伸缩能力</b>。没有任何单点方案能通杀，需要分层防御。</p>
+<h3 id="第一层：上游清洗（最根本）">第一层：上游清洗（最根本）</h3>
+<p>你不可能用自己的1G带宽去对抗10G的攻击。必须依靠运营商或专业云防护厂商（如Cloudflare、腾讯云、阿里云），把流量先引到他们带宽巨大的清洗中心。</p>
+<p>   <b>原理</b>：BGP引流或DNS重定向，将访问目标IP的所有流量先导至清洗中心，中心通过深度包检测、行为建模、信誉库等识别并丢弃恶意流量，把清洗干净的流量回注到真实服务器。</p>
+<p>   <b>补充视角</b>：现实中，防御带宽的成本远高于攻击者发起攻击的成本——购买1Gbps防御带宽的价格，往往够攻击者打出100Gbps的反射流量。因此，单靠硬抗并不经济，更依赖运营商的&quot;近源压制&quot;（在攻击流量进入骨干网之前由源头运营商丢弃）和全球Anycast节点分散流量。</p>
+<h3 id="第二层：网络层与传输层防御">第二层：网络层与传输层防御</h3>
+<ul>
+<li>
+<p><b>SYN Cookie</b>：服务器不为SYN分配资源，而是根据客户端IP等信息计算一个Cookie放在SYN-ACK的序列号里，只有收到携带正确Cookie的ACK包才建立连接。</p>
+</li>
+<li>
+<p><b>SYN Proxy（代理模式）</b>：防火墙直接替后端服务器完成三次握手，校验通过后再与服务器建立新连接。这比SYN Cookie更耗费防火墙性能，但能彻底隔离后端服务器被半连接耗尽的风险。</p>
+</li>
+<li>
+<p><b>Anycast 网络</b>：将同一IP地址广播到全球多个节点，攻击流量会被分散到最近节点，被各节点分担吸收。</p>
+</li>
+<li>
+<p><b>严格的限速与黑名单</b>：对超出基线流量的IP或协议进行限速。</p>
+</li>
+</ul>
+<h3 id="第三层：应用层防御">第三层：应用层防御</h3>
+<ul>
+<li>
+<p><b>人机验证（CAPTCHA）</b>：判断是否为真人浏览器。</p>
+</li>
+<li>
+<p><b>WAF（Web应用防火墙）</b>：识别并拦截异常的HTTP模式。</p>
+</li>
+<li>
+<p><b>行为分析</b>：建立正常用户的访问模型，识别出非人类、聚集性的异常行为（如每个请求都来自不同IP和UA但行为路径一致）。</p>
+</li>
+<li>
+<p><b>影子队列（拖延战术）</b>：对于无法判定善恶的请求，不直接丢弃（避免触发攻击者更快重试），而是放入延迟队列慢慢处理，用时间消耗攻击者的耐心和资源。</p>
+</li>
+<li>
+<p><b>资源隔离</b>：耗资源的搜索、报表接口独立部署，限流队列，不拖垮主站。</p>
+</li>
+</ul>
+<h3 id="终极哲学：不单点依赖">终极哲学：不单点依赖</h3>
+<p>采用高防IP、智能DNS、多CDN调度，甚至<b>静默资产</b>（核心业务地址完全不公开，攻击者打的是CDN节点）。让攻击者找不着、打不垮、花不起钱。</p>
+<h2 id="总结">总结</h2>
+<p>DDoS 不是精巧的病毒，而是一场利用数量暴力压制资源的战争。它利用互联网开放与平等的本质——任何人都可以给你发数据来进行攻击。只要发起攻击的成本低于防御的成本，这场攻防就会永远继续下去。今天的DDoS，已是大量物联网僵尸网络、反射放大技术、混合多层攻击和黑产运营化的综合体，防御它需要从架构设计的最初阶段就开始考虑，而不是事后打补丁。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260722.html">https://blog.yll14.cn/posts/260722.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></div></div><nav class="pagination-post" id="pagination"></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是ARP攻击？</div></div><div class="info-2"><div class="info-item-1">ARP 欺骗是一种局域网 ARP 协议漏洞攻击，攻击者伪造 MAC 地址实现断网或中间人窃听。本文详解攻击原理、工具与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是UDP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">UDP 洪水攻击是一种利用 UDP 协议"无连接、不验证"特性的流量型攻击，攻击者通过肉鸡直连或反射放大向目标狂塞数据包，造成带宽拥堵与服务宕机。本文详解攻击原理、三种攻击路线与防御体系。</div></div></div></a><a class="pagination-related" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是ICMP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260723.html" title="[分享]什么是CC攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是CC攻击？</div></div><div class="info-2"><div class="info-item-1">CC 攻击（Challenge Collapsar）是一种应用层 DDoS 攻击，通过大量合法请求耗尽服务器资源。本文详解其攻击原理、常见手段与防御策略。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E-DoS-%E5%88%B0-DDoS%EF%BC%9A%E5%8D%95%E7%BA%BF%E7%AA%81%E7%A0%B4-%E2%86%92-%E9%A5%B1%E5%92%8C%E6%89%93%E5%87%BB"><span class="toc-number">1.</span> <span class="toc-text">从 DoS 到 DDoS：单线突破 → 饱和打击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86%EF%BC%9A%E8%80%97%E5%B0%BD%E4%B8%89%E5%B1%82%E8%B5%84%E6%BA%90"><span class="toc-number">2.</span> <span class="toc-text">核心攻击原理：耗尽三层资源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E5%B8%A6%E5%AE%BD%E8%80%97%E5%B0%BD%E5%9E%8B%EF%BC%88%E5%A0%B5%E6%AD%BB%E5%85%A5%E5%8F%A3%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">第一层：带宽耗尽型（堵死入口）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9A%E5%8D%8F%E8%AE%AE%E8%80%97%E5%B0%BD%E5%9E%8B%EF%BC%88%E6%89%93%E5%9E%AE%E8%BF%9E%E6%8E%A5%E6%9C%BA%E5%88%B6%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">第二层：协议耗尽型（打垮连接机制）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82%E8%80%97%E5%B0%BD%E5%9E%8B%EF%BC%88%E7%B4%AF%E6%AD%BB%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">第三层：应用层耗尽型（累死业务逻辑）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%83%8C%E5%90%8E%E7%9A%84%E5%BC%95%E6%93%8E%EF%BC%9A%E5%83%B5%E5%B0%B8%E7%BD%91%E7%BB%9C%E4%B8%8E%E5%8F%8D%E5%B0%84%E7%BD%91"><span class="toc-number">3.</span> <span class="toc-text">攻击背后的引擎：僵尸网络与反射网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8A%A8%E6%9C%BA%EF%BC%9A%E8%BF%9C%E4%B8%8D%E6%AD%A2%E6%81%B6%E4%BD%9C%E5%89%A7"><span class="toc-number">4.</span> <span class="toc-text">攻击动机：远不止恶作剧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E5%93%B2%E5%AD%A6%EF%BC%9A%E8%BF%99%E6%98%AF%E4%B8%80%E5%9C%BA%E4%B8%8D%E5%AF%B9%E7%AD%89%E7%9A%84%E6%B6%88%E8%80%97%E6%88%98"><span class="toc-number">5.</span> <span class="toc-text">防御哲学：这是一场不对等的消耗战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E4%B8%8A%E6%B8%B8%E6%B8%85%E6%B4%97%EF%BC%88%E6%9C%80%E6%A0%B9%E6%9C%AC%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">第一层：上游清洗（最根本）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%B1%82%E4%B8%8E%E4%BC%A0%E8%BE%93%E5%B1%82%E9%98%B2%E5%BE%A1"><span class="toc-number">5.2.</span> <span class="toc-text">第二层：网络层与传输层防御</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82%E9%98%B2%E5%BE%A1"><span class="toc-number">5.3.</span> <span class="toc-text">第三层：应用层防御</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E6%9E%81%E5%93%B2%E5%AD%A6%EF%BC%9A%E4%B8%8D%E5%8D%95%E7%82%B9%E4%BE%9D%E8%B5%96"><span class="toc-number">5.4.</span> <span class="toc-text">终极哲学：不单点依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-post-series"><div class="item-headline"><i class="fa-solid fa-layer-group"></i><span>系列文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260722.html" title="[分享]什么是DDOS攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260722/260722_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是DDOS攻击？"></a><div class="content"><a class="title" href="/posts/260722.html" title="[分享]什么是DDOS攻击？">[分享]什么是DDOS攻击？</a><time datetime="2026-07-22T09:42:00.000Z" title="发表于 2026-07-22 17:42">2026-07-22</time></div></div></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是SQL注入？"/></a><div class="content"><a class="title" href="/posts/260724.2.html" title="[分享]什么是SQL注入？">[分享]什么是SQL注入？</a><time datetime="2026-07-24T07:00:00.000Z" title="发表于 2026-07-24 15:00">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是ICMP洪水攻击？"/></a><div class="content"><a class="title" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？">[分享]什么是ICMP洪水攻击？</a><time datetime="2026-07-24T06:00:00.000Z" title="发表于 2026-07-24 14:00">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是UDP洪水攻击？"/></a><div class="content"><a class="title" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？">[分享]什么是UDP洪水攻击？</a><time datetime="2026-07-24T03:30:00.000Z" title="发表于 2026-07-24 11:30">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是ARP攻击？"/></a><div class="content"><a class="title" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？">[分享]什么是ARP攻击？</a><time datetime="2026-07-23T13:26:00.000Z" title="发表于 2026-07-23 21:26">2026-07-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260723.html" title="[分享]什么是CC攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是CC攻击？"/></a><div class="content"><a class="title" href="/posts/260723.html" title="[分享]什么是CC攻击？">[分享]什么是CC攻击？</a><time datetime="2026-07-23T07:24:00.000Z" title="发表于 2026-07-23 15:24">2026-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By 桉南</div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/utils.min.js"></script><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/main.min.js"></script><script src="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.hslzz.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.hslzz.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.hslzz.cn/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.hslzz.cn/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
