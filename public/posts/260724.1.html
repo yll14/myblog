@@ -1,0 +1,354 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是ICMP洪水攻击？ | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是ICMP洪水攻击？">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260724.1.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260724/260724_1.webp">
+<meta property="article:published_time" content="2026-07-24T06:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-24T06:00:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="知识分享">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260724/260724_1.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是ICMP洪水攻击？",
+  "url": "https://blog.yll14.cn/posts/260724.1.html",
+  "image": "https://blog.yll14.cn/blogimage/260724/260724_1.webp",
+  "datePublished": "2026-07-24T06:00:00.000Z",
+  "dateModified": "2026-07-24T06:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260724.1.html"><link rel="preconnect" href="https://cdn.hslzz.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.1"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.hslzz.cn/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是ICMP洪水攻击？',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是ICMP洪水攻击？</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是ICMP洪水攻击？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-24T06:00:00.000Z" title="发表于 2026-07-24 14:00">2026-07-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-24T06:00:00.000Z" title="更新于 2026-07-24 14:00">2026-07-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-24 14:00&quot;}" hidden></div><h2 id="ICMP-Flood（Ping-洪水）：最古老的-敲门-攻击">ICMP Flood（Ping 洪水）：最古老的&quot;敲门&quot;攻击</h2>
+<p>如果说 UDP 洪水是&quot;不分青红皂白地往门缝里塞传单&quot;，那 ICMP Flood 就是&quot;成千上万人同时疯狂敲你家门铃&quot;——它利用的是互联网中最基础、最常用于&quot;打招呼&quot;的协议，用最简单的指令，造成最原始却也最有效的破坏。</p>
+<h2 id="ICMP-协议：网络世界的-回声测距仪">ICMP 协议：网络世界的&quot;回声测距仪&quot;</h2>
+<p>ICMP（Internet Control Message Protocol，互联网控制报文协议）是 TCP/IP 协议栈中的&quot;辅助型选手&quot;。它不负责传输业务数据，而是承担<strong>网络状态诊断和错误报告</strong>的功能。</p>
+<p>你日常中最常接触 ICMP 的场景就是 <strong><code>ping</code> 命令</strong>。当你敲下 <code>ping baidu.com</code> 时，你的电脑实际上发送了一个 <strong>ICMP Echo Request（回显请求）</strong> 包，如果目标在线且允许响应，它会回复一个 <strong>ICMP Echo Reply（回显应答）</strong> 包。通过计算往返时间，你就能判断网络通不通、延迟高不高。</p>
+<p>这个机制在设计上极其简洁，也正是这种简洁，让它成了攻击者的完美武器。它的工作逻辑是：</p>
+<ul>
+<li><strong>无连接</strong>：不需要像 TCP 那样先握手建立连接。</li>
+<li><strong>有求必应</strong>：大多数操作系统和网络设备默认都会响应 ICMP Echo Request。</li>
+<li><strong>资源消耗不对称</strong>：处理一个 ICMP Echo Request 并构造 Reply 需要 CPU 参与，同时每个回复包本身也要占用网络带宽。</li>
+</ul>
+<blockquote>
+<p><strong>历史注脚</strong>：ICMP 协议在 1981 年随着 RFC 777 被定义，彼时互联网还是一个学术互信网络，设计者压根没想过会有人用它来搞破坏。这种&quot;生于纯真年代&quot;的协议，几乎都带着与生俱来的安全缺陷。</p>
+</blockquote>
+<h2 id="攻击原理：以-问-代-攻-，以量取胜">攻击原理：以&quot;问&quot;代&quot;攻&quot;，以量取胜</h2>
+<p>ICMP Flood 的核心逻辑很简单：<strong>向目标发送海量的 ICMP Echo Request 包，让目标疲于回复，直到网络带宽被占满或 CPU 被耗尽。</strong></p>
+<h3 id="1-带宽饱和（堵死通道）">1. 带宽饱和（堵死通道）</h3>
+<p>攻击者通过僵尸网络或伪造源 IP，向目标发送大量 ICMP 请求包。这些包本身很小（通常 64 字节），但数量极大。当每秒数百万个包涌向目标时，即使每个包只有几十字节，总流量也能轻松突破 Gbps 级别，占满目标机房的入站带宽。</p>
+<h3 id="2-CPU-资源耗尽（累垮系统）">2. CPU 资源耗尽（累垮系统）</h3>
+<p>这比带宽饱和更致命。目标主机的网络协议栈每收到一个 ICMP 包，都需要：</p>
+<ul>
+<li>触发中断，将数据包从网卡搬到内核缓冲区。</li>
+<li>校验包的完整性（IP 头校验和、ICMP 头校验和）。</li>
+<li>判断这个包是 Echo Request 还是其他类型。</li>
+<li>如果是 Echo Request，需要构造一个 Echo Reply，将源 IP 和目标 IP 互换，计算新的校验和，再将包发出去。</li>
+</ul>
+<p>当攻击流量达到每秒数十万包时，服务器 CPU 的<strong>中断处理开销</strong>和**软中断（SoftIRQ）**负载会急剧飙升，大量 CPU 时间被消耗在&quot;处理完一个包、再处理下一个包&quot;的循环中，业务进程根本抢不到 CPU 时间片。</p>
+<h3 id="3-不对称的消耗比">3. 不对称的消耗比</h3>
+<p>这是 ICMP Flood 最核心的攻击逻辑：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>操作</th>
+<th>资源消耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>攻击者</td>
+<td>发送一个 64 字节的 Echo Request</td>
+<td>微乎其微（仅出站带宽和发包指令）</td>
+</tr>
+<tr>
+<td>目标</td>
+<td>接收、校验、构造 Reply、发送回复</td>
+<td>CPU 中断 + 内存操作 + 出站带宽</td>
+</tr>
+</tbody>
+</table>
+<p>一个 Echo Reply 包的大小通常与 Request 相同，所以攻击者用 1Mbps 的带宽，就能迫使目标消耗约 1Mbps 的<strong>出站带宽</strong>用于回复，同时还占用大量 CPU。虽然不像 DNS 反射能达到几十倍的&quot;放大&quot;效应，但 ICMP Flood 的<strong>优势在于简单、通用、所有设备都响应</strong>——你不需要去扫描和利用第三方服务，直接打目标本身就行。</p>
+<h2 id="攻击变种：从-直拳-到-组合拳">攻击变种：从&quot;直拳&quot;到&quot;组合拳&quot;</h2>
+<h3 id="变种一：Ping-of-Death（死亡之-Ping）——已过时但经典">变种一：Ping of Death（死亡之 Ping）——已过时但经典</h3>
+<p>这是 1996 年左右出现的一种利用 ICMP 协议缺陷的古老攻击。攻击者发送一个<strong>总长度超过 65535 字节</strong>的 ICMP 包（通过 IP 分片拼接），某些旧操作系统在重组这个&quot;超规格&quot;包时会发生缓冲区溢出，导致系统崩溃或重启。</p>
+<p>这个漏洞早已被所有现代系统修复，如今已基本绝迹。但它标志着&quot;利用协议实现缺陷发动攻击&quot;这种思路的起点，影响深远。</p>
+<h3 id="变种二：Smurf-攻击（反射放大的雏形）">变种二：Smurf 攻击（反射放大的雏形）</h3>
+<p>这是 ICMP Flood 的&quot;升级版&quot;，属于反射放大攻击的早期形态。攻击者伪造受害者的 IP 地址，向<strong>子网广播地址</strong>（如 192.168.1.255）发送 ICMP Echo Request。子网内所有存活的主机都会响应，把 Reply 发向受害者。一个请求能被放大为几十甚至上百个回复。</p>
+<p>如今，大多数路由器默认禁止转发指向广播地址的流量，这种攻击方式已基本销声匿迹，但它的思路被后来的 DNS/NTP 反射放大所继承。</p>
+<h3 id="变种三：分布式-ICMP-Flood">变种三：分布式 ICMP Flood</h3>
+<p>最主流的现代 ICMP Flood 攻击形态。攻击者利用僵尸网络（大量肉鸡）同时向目标发送 ICMP Echo Request，每个肉鸡的流量不大，但数十万肉鸡的合力足以撑爆任何单点带宽。</p>
+<h2 id="为什么-ICMP-Flood-至今仍然有效？">为什么 ICMP Flood 至今仍然有效？</h2>
+<p>你可能会问：“ping 这么古老的东西，为什么现在还能用来攻击？”</p>
+<p>原因有三：</p>
+<ol>
+<li><strong>难以区分善恶</strong>：正常的网络诊断工具（如 ping、traceroute）也会发送 ICMP 包。防火墙无法简单判断一个 ICMP 请求是&quot;管理员在测延迟&quot;还是&quot;肉鸡在攻击&quot;。</li>
+<li><strong>协议栈必响应</strong>：大多数操作系统和网络设备默认开启 ICMP 响应，且难以彻底关闭（关闭会影响正常的网络诊断和 PMTU 发现）。</li>
+<li><strong>攻击工具极廉价</strong>：几行 Python 代码加上 scapy 库就能发起小型攻击，租赁肉鸡的成本也远低于防御租用高防带宽的成本。</li>
+</ol>
+<blockquote>
+<p>物联网设备（摄像头、路由器）的大量普及，让肉鸡的数量和分布范围急剧扩大。一台被感染的智能摄像头，性能虽弱，但足够每秒发出几百个 ICMP 包——当这样的设备有几十万台时，打瘫任何大型网站都绰绰有余。</p>
+</blockquote>
+<h2 id="防御之道：让-敲门声-不再扰民">防御之道：让&quot;敲门声&quot;不再扰民</h2>
+<h3 id="第一层：上游清洗（最根本）">第一层：上游清洗（最根本）</h3>
+<p>与 UDP Flood 一样，靠本地机房带宽硬抗 ICMP Flood 是不现实的。必须依赖运营商的 DDoS 清洗中心，将攻击流量在骨干网层面就识别并丢弃。</p>
+<ul>
+<li><strong>流量牵引 + 深度包检测</strong>：清洗中心通过分析包速率、包大小分布、源 IP 分布等特征，区分正常 ping 和洪水攻击。</li>
+<li><strong>近源压制</strong>：在攻击流量进入骨干网之前，由上游运营商直接丢弃 ICMP 流量，从源头卸力。</li>
+</ul>
+<h3 id="第二层：网络层限速与策略">第二层：网络层限速与策略</h3>
+<ul>
+<li>
+<p><strong>ICMP 速率限制（Rate Limiting）</strong>：在路由器或防火墙上设置每个源 IP 每秒允许通过的 ICMP 包数量上限。超过阈值则丢弃或延迟处理。这是最简单且最有效的单点防御手段。</p>
+</li>
+<li>
+<p><strong>首包丢弃（First Packet Drop）</strong>：对于高频 ICMP 流，不直接全部丢弃，而是丢弃最先到达的几个包，观察后续流量行为。这种方法可以在不完全阻断 ICMP 的前提下，有效削减突发洪水的冲击峰值。</p>
+</li>
+<li>
+<p><strong>IP 信誉拦截</strong>：结合威胁情报库，对已知的僵尸网络 IP、Tor 出口节点、VPN 出口 IP 等高风险来源，直接前置封堵。</p>
+</li>
+</ul>
+<h3 id="第三层：系统层加固（视业务而定）">第三层：系统层加固（视业务而定）</h3>
+<ul>
+<li>
+<p><strong>关闭 ICMP Echo 响应</strong>：在服务器内核中设置参数，让系统不回复任何 ICMP Echo Request。</p>
+<ul>
+<li>Linux：<code>net.ipv4.icmp_echo_ignore_all = 1</code></li>
+<li>Windows：防火墙入站规则中禁用&quot;文件和打印机共享（回显请求 - ICMPv4-In）&quot;</li>
+</ul>
+<p><strong>但需注意</strong>：关闭 ICMP 响应会影响正常的网络诊断（如外部无法 ping 通你的服务器），也会影响 PMTU 发现（Path MTU Discovery）机制，可能导致某些大包传输出现异常。</p>
+</li>
+<li>
+<p><strong>调整中断亲和性（IRQ Affinity）</strong>：将网卡中断绑定到特定的 CPU 核心，确保处理网络包的负载不会挤占业务进程所在的 CPU 核心。这是一种&quot;让出空间&quot;的策略，不能解决洪水本身，但可以保证核心业务不完全卡死。</p>
+</li>
+</ul>
+<h3 id="第四层：架构级防御">第四层：架构级防御</h3>
+<ul>
+<li><strong>使用高防 IP</strong>：将公网暴露的 IP 替换为高防 IP，所有流量先经过高防节点进行清洗。</li>
+<li><strong>Anycast 网络</strong>：将同一个 IP 广播到全球多个节点，ICMP Flood 流量会被分散到离攻击源最近的节点分别吸收，源站感受不到冲击。</li>
+</ul>
+<h2 id="总结">总结</h2>
+<p>ICMP Flood 是网络攻击中最&quot;古老&quot;也最&quot;直白&quot;的一种。它没有 SYN Flood 那样精妙的协议逻辑利用，也没有 DNS 反射那样惊人的放大倍数，但它凭借 <strong>“每个网络设备都必须响应该协议”</strong> 的特性，至今仍然是 DDoS 攻击的常用手段之一。</p>
+<p>它的存在提醒我们：<strong>互联网协议栈的底层设计，几乎都建立在一个&quot;所有人都是善意&quot;的假设之上。</strong> 当这个假设被打破时，最基础的功能就可能变成最致命的漏洞。防御 ICMP Flood，本质就是在这个&quot;不得不开放&quot;的协议上，叠加一层层的&quot;有条件信任&quot;——<strong>可以敲门，但不能把门敲烂。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260724.1.html">https://blog.yll14.cn/posts/260724.1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></div></div><nav class="pagination-post" id="pagination"></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是ARP攻击？</div></div><div class="info-2"><div class="info-item-1">ARP 欺骗是一种局域网 ARP 协议漏洞攻击，攻击者伪造 MAC 地址实现断网或中间人窃听。本文详解攻击原理、工具与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260722.html" title="[分享]什么是DDOS攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260722/260722_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-22</div><div class="info-item-2">[分享]什么是DDOS攻击？</div></div><div class="info-2"><div class="info-item-1">本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</div></div></div></a><a class="pagination-related" href="/posts/260723.html" title="[分享]什么是CC攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是CC攻击？</div></div><div class="info-2"><div class="info-item-1">CC 攻击（Challenge Collapsar）是一种应用层 DDoS 攻击，通过大量合法请求耗尽服务器资源。本文详解其攻击原理、常见手段与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是UDP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">UDP 洪水攻击是一种利用 UDP 协议"无连接、不验证"特性的流量型攻击，攻击者通过肉鸡直连或反射放大向目标狂塞数据包，造成带宽拥堵与服务宕机。本文详解攻击原理、三种攻击路线与防御体系。</div></div></div></a><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP-Flood%EF%BC%88Ping-%E6%B4%AA%E6%B0%B4%EF%BC%89%EF%BC%9A%E6%9C%80%E5%8F%A4%E8%80%81%E7%9A%84-%E6%95%B2%E9%97%A8-%E6%94%BB%E5%87%BB"><span class="toc-number">1.</span> <span class="toc-text">ICMP Flood（Ping 洪水）：最古老的&quot;敲门&quot;攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP-%E5%8D%8F%E8%AE%AE%EF%BC%9A%E7%BD%91%E7%BB%9C%E4%B8%96%E7%95%8C%E7%9A%84-%E5%9B%9E%E5%A3%B0%E6%B5%8B%E8%B7%9D%E4%BB%AA"><span class="toc-number">2.</span> <span class="toc-text">ICMP 协议：网络世界的&quot;回声测距仪&quot;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86%EF%BC%9A%E4%BB%A5-%E9%97%AE-%E4%BB%A3-%E6%94%BB-%EF%BC%8C%E4%BB%A5%E9%87%8F%E5%8F%96%E8%83%9C"><span class="toc-number">3.</span> <span class="toc-text">攻击原理：以&quot;问&quot;代&quot;攻&quot;，以量取胜</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B8%A6%E5%AE%BD%E9%A5%B1%E5%92%8C%EF%BC%88%E5%A0%B5%E6%AD%BB%E9%80%9A%E9%81%93%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. 带宽饱和（堵死通道）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CPU-%E8%B5%84%E6%BA%90%E8%80%97%E5%B0%BD%EF%BC%88%E7%B4%AF%E5%9E%AE%E7%B3%BB%E7%BB%9F%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2. CPU 资源耗尽（累垮系统）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%8D%E5%AF%B9%E7%A7%B0%E7%9A%84%E6%B6%88%E8%80%97%E6%AF%94"><span class="toc-number">3.3.</span> <span class="toc-text">3. 不对称的消耗比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8F%98%E7%A7%8D%EF%BC%9A%E4%BB%8E-%E7%9B%B4%E6%8B%B3-%E5%88%B0-%E7%BB%84%E5%90%88%E6%8B%B3"><span class="toc-number">4.</span> <span class="toc-text">攻击变种：从&quot;直拳&quot;到&quot;组合拳&quot;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E7%A7%8D%E4%B8%80%EF%BC%9APing-of-Death%EF%BC%88%E6%AD%BB%E4%BA%A1%E4%B9%8B-Ping%EF%BC%89%E2%80%94%E2%80%94%E5%B7%B2%E8%BF%87%E6%97%B6%E4%BD%86%E7%BB%8F%E5%85%B8"><span class="toc-number">4.1.</span> <span class="toc-text">变种一：Ping of Death（死亡之 Ping）——已过时但经典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E7%A7%8D%E4%BA%8C%EF%BC%9ASmurf-%E6%94%BB%E5%87%BB%EF%BC%88%E5%8F%8D%E5%B0%84%E6%94%BE%E5%A4%A7%E7%9A%84%E9%9B%8F%E5%BD%A2%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">变种二：Smurf 攻击（反射放大的雏形）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E7%A7%8D%E4%B8%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F-ICMP-Flood"><span class="toc-number">4.3.</span> <span class="toc-text">变种三：分布式 ICMP Flood</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-ICMP-Flood-%E8%87%B3%E4%BB%8A%E4%BB%8D%E7%84%B6%E6%9C%89%E6%95%88%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">为什么 ICMP Flood 至今仍然有效？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E4%B9%8B%E9%81%93%EF%BC%9A%E8%AE%A9-%E6%95%B2%E9%97%A8%E5%A3%B0-%E4%B8%8D%E5%86%8D%E6%89%B0%E6%B0%91"><span class="toc-number">6.</span> <span class="toc-text">防御之道：让&quot;敲门声&quot;不再扰民</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E4%B8%8A%E6%B8%B8%E6%B8%85%E6%B4%97%EF%BC%88%E6%9C%80%E6%A0%B9%E6%9C%AC%EF%BC%89"><span class="toc-number">6.1.</span> <span class="toc-text">第一层：上游清洗（最根本）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%B1%82%E9%99%90%E9%80%9F%E4%B8%8E%E7%AD%96%E7%95%A5"><span class="toc-number">6.2.</span> <span class="toc-text">第二层：网络层限速与策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9A%E7%B3%BB%E7%BB%9F%E5%B1%82%E5%8A%A0%E5%9B%BA%EF%BC%88%E8%A7%86%E4%B8%9A%E5%8A%A1%E8%80%8C%E5%AE%9A%EF%BC%89"><span class="toc-number">6.3.</span> <span class="toc-text">第三层：系统层加固（视业务而定）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%EF%BC%9A%E6%9E%B6%E6%9E%84%E7%BA%A7%E9%98%B2%E5%BE%A1"><span class="toc-number">6.4.</span> <span class="toc-text">第四层：架构级防御</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-post-series"><div class="item-headline"><i class="fa-solid fa-layer-group"></i><span>系列文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是ICMP洪水攻击？"></a><div class="content"><a class="title" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？">[分享]什么是ICMP洪水攻击？</a><time datetime="2026-07-24T06:00:00.000Z" title="发表于 2026-07-24 14:00">2026-07-24</time></div></div></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是SQL注入？"/></a><div class="content"><a class="title" href="/posts/260724.2.html" title="[分享]什么是SQL注入？">[分享]什么是SQL注入？</a><time datetime="2026-07-24T07:00:00.000Z" title="发表于 2026-07-24 15:00">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是ICMP洪水攻击？"/></a><div class="content"><a class="title" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？">[分享]什么是ICMP洪水攻击？</a><time datetime="2026-07-24T06:00:00.000Z" title="发表于 2026-07-24 14:00">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是UDP洪水攻击？"/></a><div class="content"><a class="title" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？">[分享]什么是UDP洪水攻击？</a><time datetime="2026-07-24T03:30:00.000Z" title="发表于 2026-07-24 11:30">2026-07-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是ARP攻击？"/></a><div class="content"><a class="title" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？">[分享]什么是ARP攻击？</a><time datetime="2026-07-23T13:26:00.000Z" title="发表于 2026-07-23 21:26">2026-07-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260723.html" title="[分享]什么是CC攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_0.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是CC攻击？"/></a><div class="content"><a class="title" href="/posts/260723.html" title="[分享]什么是CC攻击？">[分享]什么是CC攻击？</a><time datetime="2026-07-23T07:24:00.000Z" title="发表于 2026-07-23 15:24">2026-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By 桉南</div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/utils.min.js"></script><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/main.min.js"></script><script src="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.hslzz.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.hslzz.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.hslzz.cn/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.hslzz.cn/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
