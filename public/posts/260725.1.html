@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是MAC泛洪攻击？ | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是MAC泛洪攻击？">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260725.1.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260725/260725_1.webp">
+<meta property="article:published_time" content="2026-07-25T06:18:00.000Z">
+<meta property="article:modified_time" content="2026-07-25T06:18:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="知识分享">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260725/260725_1.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是MAC泛洪攻击？",
+  "url": "https://blog.yll14.cn/posts/260725.1.html",
+  "image": "https://blog.yll14.cn/blogimage/260725/260725_1.webp",
+  "datePublished": "2026-07-25T06:18:00.000Z",
+  "dateModified": "2026-07-25T06:18:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260725.1.html"><link rel="preconnect" href="https://cdn.hslzz.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.1"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.hslzz.cn/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是MAC泛洪攻击？',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是MAC泛洪攻击？</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是MAC泛洪攻击？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-25T06:18:00.000Z" title="发表于 2026-07-25 14:18">2026-07-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-25T06:18:00.000Z" title="更新于 2026-07-25 14:18">2026-07-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-25 14:18&quot;}" hidden></div><h2 id="MAC-泛洪：交换机里的-地址簿轰炸">MAC 泛洪：交换机里的&quot;地址簿轰炸&quot;</h2>
+<p>在一个典型的局域网里，交换机是核心的&quot;交通指挥员&quot;。它手里有一本&quot;地址簿&quot;——<strong>CAM 表（Content Addressable Memory，内容可寻址存储器）</strong>，里面记录着每个 MAC 地址对应哪个端口。当数据包到达时，交换机查一下这本地址簿，就知道该把数据从哪个口送出去。</p>
+<p><strong>MAC 泛洪（MAC Flooding）</strong> 攻击，就是用海量的伪造 MAC 地址，把交换机的这本&quot;地址簿&quot;活活塞爆。一旦地址簿满了，交换机就会退化成最原始的状态——像一个老式集线器一样，把收到的每一个数据包<strong>广播到所有端口</strong>。这时候，攻击者就可以在网络的任何一个角落，看到所有人的通信内容。</p>
+<h2 id="从-精准投递-到-大喇叭广播-：交换机的工作原理">从&quot;精准投递&quot;到&quot;大喇叭广播&quot;：交换机的工作原理</h2>
+<p>要理解 MAC 泛洪的危害，得先搞清楚交换机是怎么工作的。</p>
+<p>交换机工作在数据链路层（OSI 模型的第二层），它的核心任务是：<strong>根据目标 MAC 地址，把数据帧从正确的端口转发出去</strong>。</p>
+<ul>
+<li><strong>学习阶段</strong>：当交换机从一个端口收到一个数据帧时，它会读取帧头中的<strong>源 MAC 地址</strong>，并记录到 CAM 表中：“MAC 地址 X 来自端口 1”。</li>
+<li><strong>转发阶段</strong>：当交换机收到一个目标为 MAC 地址 X 的数据帧时，它查 CAM 表，发现 X 在端口 1，于是只把数据从端口 1 发出去。其他端口完全不受影响。</li>
+<li><strong>未知处理</strong>：如果 CAM 表中没有目标 MAC 地址的记录，交换机不知道目标在哪，就只能把数据帧<strong>广播到所有端口</strong>（除接收端口外），等待真正的目标回应。</li>
+</ul>
+<p>这种&quot;精确转发&quot;机制带来了两个关键特性：</p>
+<ol>
+<li><strong>效率高</strong>：数据只送到需要的人那里，不像集线器一样全网广播浪费带宽。</li>
+<li><strong>隔离性好</strong>：端口 1 和端口 2 之间的通信，端口 3 是<strong>听不到的</strong>——这是局域网安全的基础。</li>
+</ol>
+<p>MAC 泛洪攻击要摧毁的，正是这个&quot;隔离性&quot;。</p>
+<h2 id="攻击原理：把地址簿撑爆">攻击原理：把地址簿撑爆</h2>
+<p>CAM 表的大小是有限的。一台普通的企业级交换机可能只能存储 8,000 到 16,000 条 MAC 地址记录，低端家用交换机甚至只有 1,000 条左右。一旦这个表被填满，交换机的行为就会发生变化。</p>
+<p>攻击者需要做的，就是<strong>以极快的速度向交换机发送大量数据帧，每个数据帧都使用不同的伪造源 MAC 地址</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据帧1：源MAC = AA:AA:AA:AA:AA:01 → 交换机记录：AA:AA:AA:AA:AA:01 在端口 3</span><br><span class="line">数据帧2：源MAC = AA:AA:AA:AA:AA:02 → 交换机记录：AA:AA:AA:AA:AA:02 在端口 3</span><br><span class="line">数据帧3：源MAC = AA:AA:AA:AA:AA:03 → 交换机记录：AA:AA:AA:AA:AA:03 在端口 3</span><br><span class="line">...</span><br><span class="line">数据帧N：源MAC = AA:AA:AA:AA:AA:N → 交换机记录：AA:AA:AA:AA:AA:N 在端口 3</span><br></pre></td></tr></table></figure>
+<p>当伪造的 MAC 地址数量超过 CAM 表的容量上限时，交换机就会进入 <strong>Fail-open Mode（失败开放模式）</strong>——安全失败，而非安全失败的反面。既然地址簿不管用了，那就干脆<strong>把收到的所有数据帧广播到每一个端口</strong>。</p>
+<p>这时候，攻击者只要把自己的网卡设为<strong>混杂模式（Promiscuous Mode）</strong>，就能收到该交换机下所有端口之间的通信流量——包括别人的登录密码、聊天记录、邮件内容、文件传输……</p>
+<blockquote>
+<p><strong>与 ARP 欺骗的对比</strong>：ARP 欺骗是&quot;冒充他人身份&quot;，让数据流向攻击者；MAC 泛洪是&quot;让交换机丧失判断能力&quot;，迫使数据流向所有人。前者是精确打击，后者是地毯式轰炸。两者最终都能实现流量窃听，但 MAC 泛洪不需要伪造任何特定 IP 或 MAC 的映射关系，暴力填表即可。</p>
+</blockquote>
+<h2 id="攻击后果：不止是窃听">攻击后果：不止是窃听</h2>
+<p>MAC 泛洪攻击带来的影响不仅是流量广播，还会引发连锁反应：</p>
+<h3 id="1-流量窃听">1. 流量窃听</h3>
+<p>这是 MAC 泛洪最主要、最直接的危害。一旦交换机退化为广播模式，攻击者就能监听到同一 VLAN 内<strong>所有设备之间的通信</strong>。如果这些通信没有加密（比如 HTTP、FTP、Telnet），账号密码就相当于明文传输。</p>
+<h3 id="2-网络性能严重下降">2. 网络性能严重下降</h3>
+<p>原本被精确转发的数据，现在要复制到每一个端口。交换机需要处理的数据量瞬间乘以端口数，内部带宽被迅速占满，网络延迟急剧增加，丢包率上升。对于企业网络来说，这等同于一次拒绝服务攻击。</p>
+<h3 id="3-交换机-CPU-过载">3. 交换机 CPU 过载</h3>
+<p>CAM 表溢出后，交换机如果还不断收到新的 MAC 地址，它会持续尝试&quot;学习&quot;并更新表项，这个过程消耗 CPU 资源。在严重情况下，交换机的管理界面可能完全无响应，甚至自动重启。</p>
+<h3 id="4-逃避安全监控">4. 逃避安全监控</h3>
+<p>某些安全设备（如 IDS/IPS）依赖交换机的端口镜像（SPAN）来监控流量。MAC 泛洪导致的流量广播模式，实际上&quot;打乱了&quot;端口镜像的定向监听，攻击者可能利用这种混乱掩护其他更隐蔽的渗透行为。</p>
+<h2 id="为什么-MAC-泛洪至今仍然有效？">为什么 MAC 泛洪至今仍然有效？</h2>
+<p>MAC 泛洪攻击最早在 1990 年代末就被发现，二十多年过去了，它依然是局域网渗透测试中的常用手段。原因很现实：</p>
+<ol>
+<li><strong>低端交换机的 CAM 表容量小</strong>：很多中小企业的网络设备仍在使用入门级交换机，CAM 表容量只有 1,000-4,000 条。一台普通的笔记本电脑，用 <code>macof</code> 工具几秒钟就能打满。</li>
+<li><strong>默认配置不安全</strong>：绝大多数交换机出厂时没有开启 MAC 地址限制或端口安全功能，管理员也常常忽略这些配置。</li>
+<li><strong>攻击工具极其成熟</strong>：Kali Linux 等渗透测试系统中自带的 <code>macof</code> 工具，可以轻松生成数百万个随机 MAC 地址的泛洪流量。</li>
+<li><strong>物联网设备大量涌入</strong>：智能灯泡、摄像头、门锁等设备的 MAC 地址随机且数量庞大，企业网络的&quot;地址簿&quot;压力比十年前大得多。</li>
+</ol>
+<h2 id="防御之道：限制-学新东西-的速度">防御之道：限制&quot;学新东西&quot;的速度</h2>
+<p>MAC 泛洪的防御思路很清晰：<strong>不让攻击者有机会把 CAM 表填满。</strong></p>
+<h3 id="第一层：端口安全（Port-Security）——最直接的防线">第一层：端口安全（Port Security）——最直接的防线</h3>
+<p>这是防御 MAC 泛洪最有效、最标准的配置。在交换机的每个端口上设置：</p>
+<ul>
+<li>
+<p><strong>最大 MAC 地址数量</strong>：限制一个端口上允许学习到的 MAC 地址数量。比如把连接终端设备的端口设置为 1-3 个 MAC 地址（电脑本身 + 可能的有线网卡 + 虚拟机网卡），攻击者从该端口发来的大量伪造 MAC 就会被直接丢弃。</p>
+</li>
+<li>
+<p><strong>违规处理动作</strong>：当端口学习到的 MAC 地址超过设定数量时，可以配置三种处理方式：</p>
+<ul>
+<li><code>Protect</code>：丢弃超出的流量，但端口保持可用。</li>
+<li><code>Restrict</code>：丢弃流量并产生日志告警。</li>
+<li><code>Shutdown</code>：直接关闭该端口（最彻底，需管理员手动恢复）。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Cisco 交换机配置示例</span><br><span class="line">interface GigabitEthernet0/1</span><br><span class="line"> switchport port-security</span><br><span class="line"> switchport port-security maximum 3</span><br><span class="line"> switchport port-security violation shutdown</span><br></pre></td></tr></table></figure>
+<h3 id="第二层：MAC-地址绑定（静态-CAM-表）">第二层：MAC 地址绑定（静态 CAM 表）</h3>
+<p>在网络比较稳定的环境中，管理员可以手动把合法设备的 MAC 地址和端口绑定起来，关闭端口的&quot;自动学习&quot;功能。</p>
+<ul>
+<li>优点是绝对安全——伪造地址无效。</li>
+<li>缺点是维护成本高——设备变更需要手动更新配置，不适合频繁变动的工作场景。</li>
+</ul>
+<h3 id="第三层：VLAN-隔离（缩小攻击面）">第三层：VLAN 隔离（缩小攻击面）</h3>
+<p>MAC 泛洪攻击的影响范围被限制在<strong>同一 VLAN 内</strong>。通过合理的 VLAN 划分，把不同部门、不同安全等级的设备隔离开来，即使一个 VLAN 内的交换机被泛洪攻破，攻击者也无法跨 VLAN 监听其他区域的流量。</p>
+<h3 id="第四层：802-1X-网络访问控制（企业级解决方案）">第四层：802.1X 网络访问控制（企业级解决方案）</h3>
+<p>这是一种基于端口的网络准入控制机制。设备在接入网络前，必须先通过 RADIUS 服务器进行身份认证（用户名/密码或数字证书），认证通过后才允许访问网络。</p>
+<p>802.1X 可以在<strong>设备连接交换机的瞬间就拒绝恶意流量进入</strong>，从源头上杜绝 MAC 泛洪的机会。这是大型企业网络的标准安全配置之一。</p>
+<h3 id="第五层：监控与告警">第五层：监控与告警</h3>
+<ul>
+<li><strong>SNMP 监控</strong>：定期读取交换机的 CAM 表利用率，当使用率异常飙升时触发告警。</li>
+<li><strong>日志审计</strong>：检查交换机的系统日志，发现 <code>port-security violation</code> 或 CAM 表溢出告警时及时响应。</li>
+</ul>
+<h2 id="攻击者的视角：简单到让人不安">攻击者的视角：简单到让人不安</h2>
+<p>攻击 MAC 泛洪的门槛极低。Kali Linux 系统下，只需一条命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">macof -i eth0</span><br></pre></td></tr></table></figure>
+<p>这个工具会以每秒数千甚至数万个包的速度，向交换机发送大量随机 MAC 地址的数据包。运行几秒钟，目标交换机就可能陷入&quot;广播模式&quot;。</p>
+<p>攻击者接下来只需要启动 Wireshark 等抓包工具，把网卡设为混杂模式，就能看到所有广播流量中的敏感信息。</p>
+<p><strong>如果业务数据完全没有加密，攻击者获得的成果可能包括</strong>：</p>
+<ul>
+<li>HTTP POST 请求中的用户名和密码</li>
+<li>FTP 传输的文件内容</li>
+<li>Telnet 会话中的管理员操作命令</li>
+<li>邮件协议的正文内容</li>
+</ul>
+<h2 id="真实世界的连锁反应">真实世界的连锁反应</h2>
+<p>在一次典型的企业内网渗透测试中，安全团队通过 MAC 泛洪攻破了一台接入层交换机。由于该交换机连接着同一楼层所有工位的网络端口，攻击者获取了以下信息：</p>
+<ol>
+<li>一个开发人员的 Git 提交记录中包含了数据库连接字符串。</li>
+<li>一个运维人员的 HTTP 登录会话中捕获了服务器管理平台的账号密码。</li>
+<li>从这些凭证横向扩展，最终拿下了整个测试环境的控制权。</li>
+</ol>
+<p><strong>链条是</strong>：交换机未配置端口安全 → MAC 泛洪导致广播 → 混杂模式抓取明文流量 → 获取敏感凭证 → 横向扩展内网。</p>
+<h2 id="加密能解决一切吗？">加密能解决一切吗？</h2>
+<p>值得注意的是，<strong>即使 MAC 泛洪成功使交换机进入广播模式，HTTPS、SSH、VPN 等加密协议仍然可以保护传输内容的机密性</strong>。攻击者虽然能看到数据包，但无法解密其中的内容。</p>
+<p>因此，全站 HTTPS、使用 SSH 替代 Telnet、启用 VPN 等加密措施，是<strong>防御 MAC 泛洪窃听后果的最后一道防线</strong>。但这并不意味着可以忽视交换机本身的加固——加密不能防止网络性能下降，也不能阻止交换机 CPU 过载导致的网络瘫痪。</p>
+<h2 id="总结">总结</h2>
+<p>MAC 泛洪攻击的本质，是利用交换机 CAM 表容量有限的物理限制，用海量伪造 MAC 地址&quot;挤爆&quot;地址簿，迫使交换机从&quot;精准投递&quot;退化为&quot;大喇叭广播&quot;。</p>
+<p>它的破坏路径是：<strong>填满 CAM 表 → 交换机退化为广播模式 → 攻击者监听所有端口流量 → 窃取未加密的敏感信息</strong>。</p>
+<p>防御的核心思路是<strong>限制端口上的 MAC 地址学习数量</strong>——这是端口安全最基本、最有效的配置。结合 VLAN 隔离、802.1X 准入控制和全站加密，MAC 泛洪即使发生，其破坏力也会被降到最低。</p>
+<blockquote>
+<p><strong>网络安全的底线是：不做默认的&quot;好人&quot;。</strong> 交换机默认信任所有接入设备、默认允许无限学习 MAC 地址——这份&quot;默认的善意&quot;，正是攻击者最喜欢利用的突破口。从 CAM 表到 ARP 缓存，从 DNS 记录到 Cookie 存储，安全配置的第一原则永远是&quot;默认拒绝，按需放行&quot;。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260725.1.html">https://blog.yll14.cn/posts/260725.1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></div></div><nav class="pagination-post" id="pagination"></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是ARP攻击？</div></div><div class="info-2"><div class="info-item-1">ARP 欺骗是一种局域网 ARP 协议漏洞攻击，攻击者伪造 MAC 地址实现断网或中间人窃听。本文详解攻击原理、工具与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260722.html" title="[分享]什么是DDOS攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260722/260722_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-22</div><div class="info-item-2">[分享]什么是DDOS攻击？</div></div><div class="info-2"><div class="info-item-1">本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</div></div></div></a><a class="pagination-related" href="/posts/260723.html" title="[分享]什么是CC攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是CC攻击？</div></div><div class="info-2"><div class="info-item-1">CC 攻击（Challenge Collapsar）是一种应用层 DDoS 攻击，通过大量合法请求耗尽服务器资源。本文详解其攻击原理、常见手段与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是UDP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">UDP 洪水攻击是一种利用 UDP 协议"无连接、不验证"特性的流量型攻击，攻击者通过肉鸡直连或反射放大向目标狂塞数据包，造成带宽拥堵与服务宕机。本文详解攻击原理、三种攻击路线与防御体系。</div></div></div></a><a class="pagination-related" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是ICMP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MAC-%E6%B3%9B%E6%B4%AA%EF%BC%9A%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%87%8C%E7%9A%84-%E5%9C%B0%E5%9D%80%E7%B0%BF%E8%BD%B0%E7%82%B8"><span class="toc-number">1.</span> <span class="toc-text">MAC 泛洪：交换机里的&quot;地址簿轰炸&quot;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E-%E7%B2%BE%E5%87%86%E6%8A%95%E9%80%92-%E5%88%B0-%E5%A4%A7%E5%96%87%E5%8F%AD%E5%B9%BF%E6%92%AD-%EF%BC%9A%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">从&quot;精准投递&quot;到&quot;大喇叭广播&quot;：交换机的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86%EF%BC%9A%E6%8A%8A%E5%9C%B0%E5%9D%80%E7%B0%BF%E6%92%91%E7%88%86"><span class="toc-number">3.</span> <span class="toc-text">攻击原理：把地址簿撑爆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%90%8E%E6%9E%9C%EF%BC%9A%E4%B8%8D%E6%AD%A2%E6%98%AF%E7%AA%83%E5%90%AC"><span class="toc-number">4.</span> <span class="toc-text">攻击后果：不止是窃听</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%B5%81%E9%87%8F%E7%AA%83%E5%90%AC"><span class="toc-number">4.1.</span> <span class="toc-text">1. 流量窃听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E4%B8%A5%E9%87%8D%E4%B8%8B%E9%99%8D"><span class="toc-number">4.2.</span> <span class="toc-text">2. 网络性能严重下降</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BA%A4%E6%8D%A2%E6%9C%BA-CPU-%E8%BF%87%E8%BD%BD"><span class="toc-number">4.3.</span> <span class="toc-text">3. 交换机 CPU 过载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%80%83%E9%81%BF%E5%AE%89%E5%85%A8%E7%9B%91%E6%8E%A7"><span class="toc-number">4.4.</span> <span class="toc-text">4. 逃避安全监控</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-MAC-%E6%B3%9B%E6%B4%AA%E8%87%B3%E4%BB%8A%E4%BB%8D%E7%84%B6%E6%9C%89%E6%95%88%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">为什么 MAC 泛洪至今仍然有效？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E4%B9%8B%E9%81%93%EF%BC%9A%E9%99%90%E5%88%B6-%E5%AD%A6%E6%96%B0%E4%B8%9C%E8%A5%BF-%E7%9A%84%E9%80%9F%E5%BA%A6"><span class="toc-number">6.</span> <span class="toc-text">防御之道：限制&quot;学新东西&quot;的速度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E7%AB%AF%E5%8F%A3%E5%AE%89%E5%85%A8%EF%BC%88Port-Security%EF%BC%89%E2%80%94%E2%80%94%E6%9C%80%E7%9B%B4%E6%8E%A5%E7%9A%84%E9%98%B2%E7%BA%BF"><span class="toc-number">6.1.</span> <span class="toc-text">第一层：端口安全（Port Security）——最直接的防线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9AMAC-%E5%9C%B0%E5%9D%80%E7%BB%91%E5%AE%9A%EF%BC%88%E9%9D%99%E6%80%81-CAM-%E8%A1%A8%EF%BC%89"><span class="toc-number">6.2.</span> <span class="toc-text">第二层：MAC 地址绑定（静态 CAM 表）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9AVLAN-%E9%9A%94%E7%A6%BB%EF%BC%88%E7%BC%A9%E5%B0%8F%E6%94%BB%E5%87%BB%E9%9D%A2%EF%BC%89"><span class="toc-number">6.3.</span> <span class="toc-text">第三层：VLAN 隔离（缩小攻击面）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%EF%BC%9A802-1X-%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%EF%BC%88%E4%BC%81%E4%B8%9A%E7%BA%A7%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">6.4.</span> <span class="toc-text">第四层：802.1X 网络访问控制（企业级解决方案）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E5%B1%82%EF%BC%9A%E7%9B%91%E6%8E%A7%E4%B8%8E%E5%91%8A%E8%AD%A6"><span class="toc-number">6.5.</span> <span class="toc-text">第五层：监控与告警</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%80%85%E7%9A%84%E8%A7%86%E8%A7%92%EF%BC%9A%E7%AE%80%E5%8D%95%E5%88%B0%E8%AE%A9%E4%BA%BA%E4%B8%8D%E5%AE%89"><span class="toc-number">7.</span> <span class="toc-text">攻击者的视角：简单到让人不安</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9C%9F%E5%AE%9E%E4%B8%96%E7%95%8C%E7%9A%84%E8%BF%9E%E9%94%81%E5%8F%8D%E5%BA%94"><span class="toc-number">8.</span> <span class="toc-text">真实世界的连锁反应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E8%83%BD%E8%A7%A3%E5%86%B3%E4%B8%80%E5%88%87%E5%90%97%EF%BC%9F"><span class="toc-number">9.</span> <span class="toc-text">加密能解决一切吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-post-series"><div class="item-headline"><i class="fa-solid fa-layer-group"></i><span>系列文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是MAC泛洪攻击？"></a><div class="content"><a class="title" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？">[分享]什么是MAC泛洪攻击？</a><time datetime="2026-07-25T06:18:00.000Z" title="发表于 2026-07-25 14:18">2026-07-25</time></div></div></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260725.3.html" title="[分享]什么是DNS放大攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是DNS放大攻击？"/></a><div class="content"><a class="title" href="/posts/260725.3.html" title="[分享]什么是DNS放大攻击？">[分享]什么是DNS放大攻击？</a><time datetime="2026-07-25T13:30:00.000Z" title="发表于 2026-07-25 21:30">2026-07-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260725.2.html" title="[分享]什么是DHCP耗尽攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是DHCP耗尽攻击？"/></a><div class="content"><a class="title" href="/posts/260725.2.html" title="[分享]什么是DHCP耗尽攻击？">[分享]什么是DHCP耗尽攻击？</a><time datetime="2026-07-25T11:37:00.000Z" title="发表于 2026-07-25 19:37">2026-07-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_1.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是MAC泛洪攻击？"/></a><div class="content"><a class="title" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？">[分享]什么是MAC泛洪攻击？</a><time datetime="2026-07-25T06:18:00.000Z" title="发表于 2026-07-25 14:18">2026-07-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260725.html" title="[分享]什么是XSS注入？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是XSS注入？"/></a><div class="content"><a class="title" href="/posts/260725.html" title="[分享]什么是XSS注入？">[分享]什么是XSS注入？</a><time datetime="2026-07-25T01:00:00.000Z" title="发表于 2026-07-25 09:00">2026-07-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]什么是SQL注入？"/></a><div class="content"><a class="title" href="/posts/260724.2.html" title="[分享]什么是SQL注入？">[分享]什么是SQL注入？</a><time datetime="2026-07-24T07:00:00.000Z" title="发表于 2026-07-24 15:00">2026-07-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By 桉南</div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/utils.min.js"></script><script src="https://cdn.hslzz.cn/npm/hexo-theme-butterfly@5.3.1/source/js/main.min.js"></script><script src="https://cdn.hslzz.cn/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.hslzz.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.hslzz.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.hslzz.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.hslzz.cn/npm/katex@0.16.19/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.hslzz.cn/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.hslzz.cn/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

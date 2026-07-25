@@ -15,8 +15,108 @@
     <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>如果我真的存在，也是因为你需要我</description>
-    <pubDate>Fri, 24 Jul 2026 07:00:00 GMT</pubDate>
+    <pubDate>Sat, 25 Jul 2026 13:30:00 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>[分享]什么是DNS放大攻击？</title>
+      <link>https://blog.yll14.cn/posts/260725.3.html</link>
+      <guid>https://blog.yll14.cn/posts/260725.3.html</guid>
+      <pubDate>Sat, 25 Jul 2026 13:30:00 GMT</pubDate>
+      
+      <description>DNS放大攻击是一种利用开放DNS解析器放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小查询，使服务器向目标返回数十倍的响应数据。本文详解其放大原理、DNSSEC等放大媒介及防御策略。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260725.3.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]什么是DHCP耗尽攻击？</title>
+      <link>https://blog.yll14.cn/posts/260725.2.html</link>
+      <guid>https://blog.yll14.cn/posts/260725.2.html</guid>
+      <pubDate>Sat, 25 Jul 2026 11:37:00 GMT</pubDate>
+      
+      <description>DHCP耗尽是一种通过伪造海量MAC地址发起大量DHCP请求，占满服务器地址池的攻击手段，可导致新设备无法获取IP地址。本文详解其攻击原理、两种攻击模式及DHCP Snooping等防御策略。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260725.2.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]什么是MAC泛洪攻击？</title>
+      <link>https://blog.yll14.cn/posts/260725.1.html</link>
+      <guid>https://blog.yll14.cn/posts/260725.1.html</guid>
+      <pubDate>Sat, 25 Jul 2026 06:18:00 GMT</pubDate>
+      
+      <description>MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260725.1.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]什么是XSS注入？</title>
+      <link>https://blog.yll14.cn/posts/260725.html</link>
+      <guid>https://blog.yll14.cn/posts/260725.html</guid>
+      <pubDate>Sat, 25 Jul 2026 01:00:00 GMT</pubDate>
+      
+      <description>XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260725.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>[分享]什么是SQL注入？</title>

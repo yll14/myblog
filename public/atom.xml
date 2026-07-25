@@ -6,7 +6,7 @@
   <link href="https://blog.yll14.cn/atom.xml" rel="self"/>
   
   <link href="https://blog.yll14.cn/"/>
-  <updated>2026-07-24T07:00:00.000Z</updated>
+  <updated>2026-07-25T13:30:00.000Z</updated>
   <id>https://blog.yll14.cn/</id>
   
   <author>
@@ -15,6 +15,98 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>[分享]什么是DNS放大攻击？</title>
+    <link href="https://blog.yll14.cn/posts/260725.3.html"/>
+    <id>https://blog.yll14.cn/posts/260725.3.html</id>
+    <published>2026-07-25T13:30:00.000Z</published>
+    <updated>2026-07-25T13:30:00.000Z</updated>
+    
+    
+    <summary type="html">DNS放大攻击是一种利用开放DNS解析器放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小查询，使服务器向目标返回数十倍的响应数据。本文详解其放大原理、DNSSEC等放大媒介及防御策略。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>[分享]什么是DHCP耗尽攻击？</title>
+    <link href="https://blog.yll14.cn/posts/260725.2.html"/>
+    <id>https://blog.yll14.cn/posts/260725.2.html</id>
+    <published>2026-07-25T11:37:00.000Z</published>
+    <updated>2026-07-25T11:37:00.000Z</updated>
+    
+    
+    <summary type="html">DHCP耗尽是一种通过伪造海量MAC地址发起大量DHCP请求，占满服务器地址池的攻击手段，可导致新设备无法获取IP地址。本文详解其攻击原理、两种攻击模式及DHCP Snooping等防御策略。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>[分享]什么是MAC泛洪攻击？</title>
+    <link href="https://blog.yll14.cn/posts/260725.1.html"/>
+    <id>https://blog.yll14.cn/posts/260725.1.html</id>
+    <published>2026-07-25T06:18:00.000Z</published>
+    <updated>2026-07-25T06:18:00.000Z</updated>
+    
+    
+    <summary type="html">MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>[分享]什么是XSS注入？</title>
+    <link href="https://blog.yll14.cn/posts/260725.html"/>
+    <id>https://blog.yll14.cn/posts/260725.html</id>
+    <published>2026-07-25T01:00:00.000Z</published>
+    <updated>2026-07-25T01:00:00.000Z</updated>
+    
+    
+    <summary type="html">XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。</summary>
+    
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="知识分享" scheme="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/"/>
+    
+    <category term="网络安全" scheme="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>[分享]什么是SQL注入？</title>
