@@ -1223,6 +1223,7 @@ inject:
     - <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
     - <meta name="apple-mobile-web-app-title" content="桉南" />
     - <link rel="manifest" href="/favicon/site.webmanifest" />
+    - <meta name="baidu-site-verification" content="codeva-RltT77T5Mn" />
   bottom:
     # - <script src="xxxx"></script>
 
