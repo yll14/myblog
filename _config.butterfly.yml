@@ -552,8 +552,8 @@ math:
 search:
   # 选择：algolia_search / local_search / docsearch
   # 如果不需要搜索功能，保持为空
-  use:
-  placeholder:
+  use: local_search
+  placeholder: 搜索文章、标签...
 
   # Algolia 搜索
   algolia_search:
@@ -563,9 +563,9 @@ search:
   # 本地搜索
   local_search:
     # 页面加载时预加载搜索数据
-    preload: false
+    preload: true
     # 每篇文章显示的顶部 n 个搜索结果，设置为 -1 显示所有结果
-    top_n_per_article: 1
+    top_n_per_article: -1
     # 将 HTML 字符串反转义为可读内容
     unescape: false
     CDN:
