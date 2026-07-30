@@ -15,8 +15,33 @@
     <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>如果我真的存在，也是因为你需要我</description>
-    <pubDate>Mon, 27 Jul 2026 12:54:00 GMT</pubDate>
+    <pubDate>Wed, 29 Jul 2026 08:25:00 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>[分享]什么是JavaScript</title>
+      <link>https://blog.yll14.cn/posts/260729.html</link>
+      <guid>https://blog.yll14.cn/posts/260729.html</guid>
+      <pubDate>Wed, 29 Jul 2026 08:25:00 GMT</pubDate>
+      
+      <description>JavaScript 是一门为网页添加交互与动态效果的脚本语言，与 HTML 和 CSS 共同构成 Web 开发三大基石。本文介绍其核心特点、基本组成及在浏览器中的能力边界。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260729.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>[分享]HTML的各种标签与用法</title>
@@ -31,12 +56,12 @@
       
       <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
       
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E8%BF%90%E7%BB%B4/">运维</category>
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
       
       
       <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
       
-      <category domain="https://blog.yll14.cn/tags/%E8%BF%90%E7%BB%B4/">运维</category>
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
       
       
       <comments>https://blog.yll14.cn/posts/260727.4.html#disqus_thread</comments>
@@ -56,12 +81,12 @@
       
       <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
       
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E8%BF%90%E7%BB%B4/">运维</category>
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
       
       
       <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
       
-      <category domain="https://blog.yll14.cn/tags/%E8%BF%90%E7%BB%B4/">运维</category>
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
       
       
       <comments>https://blog.yll14.cn/posts/260727.3.html#disqus_thread</comments>
@@ -478,27 +503,6 @@
       
       
       <comments>https://blog.yll14.cn/posts/251207.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>我17岁啦</title>
-      <link>https://blog.yll14.cn/posts/251122.html</link>
-      <guid>https://blog.yll14.cn/posts/251122.html</guid>
-      <pubDate>Sat, 22 Nov 2025 14:28:00 GMT</pubDate>
-      
-      <description>祝我17岁生日快乐！</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/17%E5%B2%81%E7%94%9F%E6%97%A5/">17岁生日</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E6%97%A5%E5%B8%B8/">日常</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/251122.html#disqus_thread</comments>
       
     </item>
     
