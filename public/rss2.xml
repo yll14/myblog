@@ -15,8 +15,108 @@
     <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>如果我真的存在，也是因为你需要我</description>
-    <pubDate>Thu, 30 Jul 2026 13:05:00 GMT</pubDate>
+    <pubDate>Fri, 31 Jul 2026 12:33:00 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>[分享]PHP基础语法</title>
+      <link>https://blog.yll14.cn/posts/260731.3.html</link>
+      <guid>https://blog.yll14.cn/posts/260731.3.html</guid>
+      <pubDate>Fri, 31 Jul 2026 12:33:00 GMT</pubDate>
+      
+      <description>PHP 基础语法是编写 PHP 代码的核心规则，涵盖变量、常量、数据类型、运算符、控制结构、函数与超级全局变量等关键内容。本文系统讲解 PHP 的基本语法结构与用法。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260731.3.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]什么是PHP</title>
+      <link>https://blog.yll14.cn/posts/260731.2.html</link>
+      <guid>https://blog.yll14.cn/posts/260731.2.html</guid>
+      <pubDate>Fri, 31 Jul 2026 09:59:00 GMT</pubDate>
+      
+      <description>PHP 是一种开源的服务器端脚本语言，专为 Web 开发设计，可嵌入 HTML 并生成动态页面内容。本文介绍 PHP 的定义、发展历程、核心能力及应用场景。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260731.2.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]CSS编程</title>
+      <link>https://blog.yll14.cn/posts/260731.1.html</link>
+      <guid>https://blog.yll14.cn/posts/260731.1.html</guid>
+      <pubDate>Fri, 31 Jul 2026 07:39:00 GMT</pubDate>
+      
+      <description>CSS 编程是使用 CSS 变量、数学函数、条件逻辑、模块化作用域等特性构建复杂样式系统的工程化方法论。本文完整系统地讲解 CSS 自定义属性、calc/min/clamp 等运算函数、@media/@supports/@container 条件查询、@layer/@scope 模块化机制、设计系统与主题构建、CSS 与 JavaScript 协同，以及嵌套、:has()、视图过渡等最新演进特性，涵盖 CSS 从基础到工程化的完整知识体系。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260731.1.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]CSS进阶语法</title>
+      <link>https://blog.yll14.cn/posts/260731.html</link>
+      <guid>https://blog.yll14.cn/posts/260731.html</guid>
+      <pubDate>Fri, 31 Jul 2026 01:05:00 GMT</pubDate>
+      
+      <description>CSS 进阶语法涵盖自定义属性、嵌套规则与高级选择器等核心特性，用于编写更高效、可维护的样式代码。本文系统讲解 CSS 变量声明与作用域、嵌套语法及 &amp; 选择器、结构伪类与属性选择器的进阶用法。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260731.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>[分享]CSS的基本语法</title>
@@ -415,106 +515,6 @@
       
       
       <comments>https://blog.yll14.cn/posts/260725.1.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是XSS注入？</title>
-      <link>https://blog.yll14.cn/posts/260725.html</link>
-      <guid>https://blog.yll14.cn/posts/260725.html</guid>
-      <pubDate>Sat, 25 Jul 2026 01:00:00 GMT</pubDate>
-      
-      <description>XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260725.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是SQL注入？</title>
-      <link>https://blog.yll14.cn/posts/260724.2.html</link>
-      <guid>https://blog.yll14.cn/posts/260724.2.html</guid>
-      <pubDate>Fri, 24 Jul 2026 07:00:00 GMT</pubDate>
-      
-      <description>SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260724.2.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是ICMP洪水攻击？</title>
-      <link>https://blog.yll14.cn/posts/260724.1.html</link>
-      <guid>https://blog.yll14.cn/posts/260724.1.html</guid>
-      <pubDate>Fri, 24 Jul 2026 06:00:00 GMT</pubDate>
-      
-      <description>ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260724.1.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是UDP洪水攻击？</title>
-      <link>https://blog.yll14.cn/posts/260724.html</link>
-      <guid>https://blog.yll14.cn/posts/260724.html</guid>
-      <pubDate>Fri, 24 Jul 2026 03:30:00 GMT</pubDate>
-      
-      <description>UDP 洪水攻击是一种利用 UDP 协议&quot;无连接、不验证&quot;特性的流量型攻击，攻击者通过肉鸡直连或反射放大向目标狂塞数据包，造成带宽拥堵与服务宕机。本文详解攻击原理、三种攻击路线与防御体系。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260724.html#disqus_thread</comments>
       
     </item>
     
