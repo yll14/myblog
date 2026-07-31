@@ -403,7 +403,7 @@ aside:
     sort_order:
   card_post_series:
     # 是否显示系列文章卡片
-    enable: true
+    enable: false
     # 标题显示系列名称
     series_title: false
     # 排序方式：title 或 date
@@ -1243,7 +1243,7 @@ CDN:
   # 自定义格式
   # 例如：https://cdn.staticfile.org/${cdnjs_name}/${version}/${min_cdnjs_file}
   # custom_format: https://cdn.jsdmirror.com/npm/${name}@${version}/${min_file} # 其他的jsd链接都会给你换成这个的，刚才那个好像有些资源不起作用，所以换成了这个，速度很快
-  custom_format: https://cdn.hslzz.cn/npm/${name}@${version}/${min_file}
+  custom_format: https://cdn.yll14.cn/npm/${name}@${version}/${min_file}
 
 
   option:
