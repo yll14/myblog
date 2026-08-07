@@ -126,7 +126,7 @@ error_img:
 # 简单的 404 页面
 error_404:
   # 是否启用 404 页面
-  enable: true
+  enable: false
   # 404 页面的副标题
   subtitle: '嗷呜，你似乎来到了没有知识的荒漠。'
   # 404 页面的卡片背景图片

@@ -15,8 +15,158 @@
     <atom:link href="https://blog.yll14.cn/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>如果我真的存在，也是因为你需要我</description>
-    <pubDate>Fri, 31 Jul 2026 12:33:00 GMT</pubDate>
+    <pubDate>Fri, 07 Aug 2026 12:56:00 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>[分享]PHP的扩展模块</title>
+      <link>https://blog.yll14.cn/posts/260807.5.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.5.html</guid>
+      <pubDate>Fri, 07 Aug 2026 12:56:00 GMT</pubDate>
+      
+      <description>PHP 扩展是 PHP 语言功能的延伸与增强，涵盖数据库驱动、网络通信、图像处理、数据格式、加密安全、数学计算、国际化、性能优化、队列缓存、NoSQL 等完整分类。本文系统梳理 PHP 扩展的概念、完整分类列表、各扩展详细代码用法及安装管理方法，帮助开发者全面掌握 PHP 扩展的应用。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.5.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]PHP的SQLite数据库调用</title>
+      <link>https://blog.yll14.cn/posts/260807.4.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.4.html</guid>
+      <pubDate>Fri, 07 Aug 2026 10:06:00 GMT</pubDate>
+      
+      <description>PHP 调用 SQLite 数据库主要通过 SQLite3 扩展和 PDO_SQLITE 驱动实现。本文系统讲解环境配置、两种连接方式、数据增删改查、预处理语句防护 SQL 注入、事务处理、内存数据库及错误处理机制，帮助 PHP 开发者快速掌握轻量级嵌入式数据库的使用方法。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.4.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]PHP的PgSQL数据库调用</title>
+      <link>https://blog.yll14.cn/posts/260807.3.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.3.html</guid>
+      <pubDate>Fri, 07 Aug 2026 07:56:00 GMT</pubDate>
+      
+      <description>PHP 调用 PostgreSQL 数据库主要通过 pgsql 扩展和 PDO_PGSQL 驱动实现。本文系统讲解环境配置、两种连接方式、SQL 语句执行、预处理语句防护 SQL 注入、事务处理、错误处理机制及 JSON/UUID 等 PostgreSQL 特有数据类型操作，帮助 PHP 开发者安全高效地连接和使用 PostgreSQL 数据库。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.3.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]PHP的MySQL数据库调用</title>
+      <link>https://blog.yll14.cn/posts/260807.2.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.2.html</guid>
+      <pubDate>Fri, 07 Aug 2026 05:36:00 GMT</pubDate>
+      
+      <description>PHP 调用 MySQL 数据库主要通过 MySQLi 和 PDO_MySQL 两种扩展实现。本文系统讲解环境配置、连接管理、SQL 语句执行、预处理语句防护 SQL 注入、错误处理机制及 SSL 加密连接等核心内容，帮助 PHP 开发者安全高效地操作 MySQL 数据库。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.2.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]PHP的Redis数据库调用</title>
+      <link>https://blog.yll14.cn/posts/260807.1.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.1.html</guid>
+      <pubDate>Fri, 07 Aug 2026 03:16:00 GMT</pubDate>
+      
+      <description>PHP 调用 Redis 数据库主要通过 PhpRedis 扩展或 Predis 客户端实现。本文系统介绍 Redis 服务安装、PhpRedis 与 Predis 的连接配置、字符串/哈希/列表/集合等数据结构操作，以及缓存、会话存储、限流计数器等典型应用场景，帮助 PHP 开发者快速集成 Redis 高性能内存数据库。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.1.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>[分享]PHP进阶语法</title>
+      <link>https://blog.yll14.cn/posts/260807.html</link>
+      <guid>https://blog.yll14.cn/posts/260807.html</guid>
+      <pubDate>Fri, 07 Aug 2026 01:45:00 GMT</pubDate>
+      
+      <description>PHP 进阶语法涵盖现代语言特性、面向对象高级编程及工程化实践。本文系统讲解 PHP 8.x 新特性（构造函数属性提升、匹配表达式、空安全运算符、属性挂钩）、Trait 代码复用、生成器内存优化、SOLID 设计原则及 Composer 依赖管理等进阶内容，帮助开发者编写可维护、可扩展的高质量 PHP 代码。</description>
+      
+      
+      
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
+      
+      <category domain="https://blog.yll14.cn/tags/%E5%BB%BA%E7%AB%99/">建站</category>
+      
+      
+      <comments>https://blog.yll14.cn/posts/260807.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>[分享]PHP基础语法</title>
@@ -365,156 +515,6 @@
       
       
       <comments>https://blog.yll14.cn/posts/260727.2.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]wrk与wrk2的区别与使用</title>
-      <link>https://blog.yll14.cn/posts/260727.1.html</link>
-      <guid>https://blog.yll14.cn/posts/260727.1.html</guid>
-      <pubDate>Mon, 27 Jul 2026 04:49:00 GMT</pubDate>
-      
-      <description>wrk 是一个基于 C 语言的高性能 HTTP 基准测试工具，支持多线程与 Lua 脚本扩展；wrk2 在其基础上增加了恒定吞吐量控制与协调遗漏修正，提供更精确的延迟数据。本文介绍两款工具的安装、参数及适用场景。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E8%BF%90%E7%BB%B4/">运维</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E8%BF%90%E7%BB%B4/">运维</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260727.1.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是autocannon及其使用方法？</title>
-      <link>https://blog.yll14.cn/posts/260727.html</link>
-      <guid>https://blog.yll14.cn/posts/260727.html</guid>
-      <pubDate>Mon, 27 Jul 2026 01:55:00 GMT</pubDate>
-      
-      <description>autocannon 是一个基于 Node.js 的 HTTP/1.1 基准测试工具，用于对 Web 服务进行压力测试。本文介绍其安装、常用参数、测试结果解读及 Node.js 脚本集成方法。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E8%BF%90%E7%BB%B4/">运维</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E8%BF%90%E7%BB%B4/">运维</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260727.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是NTP/SSDP反射攻击？</title>
-      <link>https://blog.yll14.cn/posts/260726.html</link>
-      <guid>https://blog.yll14.cn/posts/260726.html</guid>
-      <pubDate>Sun, 26 Jul 2026 13:55:00 GMT</pubDate>
-      
-      <description>NTP/SSDP反射攻击是利用网络时间协议和UPnP设备放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小请求，使服务器返回数十至数百倍的响应数据。本文详解其攻击原理、放大机制与防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260726.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是DNS放大攻击？</title>
-      <link>https://blog.yll14.cn/posts/260725.3.html</link>
-      <guid>https://blog.yll14.cn/posts/260725.3.html</guid>
-      <pubDate>Sat, 25 Jul 2026 13:30:00 GMT</pubDate>
-      
-      <description>DNS放大攻击是一种利用开放DNS解析器放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小查询，使服务器向目标返回数十倍的响应数据。本文详解其放大原理、DNSSEC等放大媒介及防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260725.3.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是DHCP耗尽攻击？</title>
-      <link>https://blog.yll14.cn/posts/260725.2.html</link>
-      <guid>https://blog.yll14.cn/posts/260725.2.html</guid>
-      <pubDate>Sat, 25 Jul 2026 11:37:00 GMT</pubDate>
-      
-      <description>DHCP耗尽是一种通过伪造海量MAC地址发起大量DHCP请求，占满服务器地址池的攻击手段，可导致新设备无法获取IP地址。本文详解其攻击原理、两种攻击模式及DHCP Snooping等防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260725.2.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>[分享]什么是MAC泛洪攻击？</title>
-      <link>https://blog.yll14.cn/posts/260725.1.html</link>
-      <guid>https://blog.yll14.cn/posts/260725.1.html</guid>
-      <pubDate>Sat, 25 Jul 2026 06:18:00 GMT</pubDate>
-      
-      <description>MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。</description>
-      
-      
-      
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</category>
-      
-      <category domain="https://blog.yll14.cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</category>
-      
-      
-      <comments>https://blog.yll14.cn/posts/260725.1.html#disqus_thread</comments>
       
     </item>
     
