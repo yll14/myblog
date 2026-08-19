@@ -1,0 +1,449 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是NTP/SSDP反射攻击？ | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="NTP&#x2F;SSDP反射攻击是利用网络时间协议和UPnP设备放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小请求，使服务器返回数十至数百倍的响应数据。本文详解其攻击原理、放大机制与防御策略。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是NTP&#x2F;SSDP反射攻击？">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260726.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="NTP&#x2F;SSDP反射攻击是利用网络时间协议和UPnP设备放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小请求，使服务器返回数十至数百倍的响应数据。本文详解其攻击原理、放大机制与防御策略。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260726/260726.webp">
+<meta property="article:published_time" content="2026-07-26T13:55:00.000Z">
+<meta property="article:modified_time" content="2026-07-26T13:55:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="知识分享">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260726/260726.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是NTP/SSDP反射攻击？",
+  "url": "https://blog.yll14.cn/posts/260726.html",
+  "image": "https://blog.yll14.cn/blogimage/260726/260726.webp",
+  "datePublished": "2026-07-26T13:55:00.000Z",
+  "dateModified": "2026-07-26T13:55:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260726.html"><link rel="preconnect" href="https://cdn.yll14.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.yll14.cn/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是NTP/SSDP反射攻击？',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="baidu-site-verification" content="codeva-RltT77T5Mn" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是NTP/SSDP反射攻击？</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是NTP/SSDP反射攻击？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-26T13:55:00.000Z" title="发表于 2026-07-26 21:55">2026-07-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-26T13:55:00.000Z" title="更新于 2026-07-26 21:55">2026-07-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-26 21:55&quot;}" hidden></div><blockquote>
+<p><i>引言：<br>
+NTP/SSDP反射攻击是利用网络时间协议和UPnP设备放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小请求，使服务器返回数十至数百倍的响应数据。本文详解其攻击原理、放大机制与防御策略。</i></p>
+</blockquote>
+<h2 id="NTP-反射攻击：时间服务器的-回声走廊">NTP 反射攻击：时间服务器的&quot;回声走廊&quot;</h2>
+<p>网络时间协议（NTP，Network Time Protocol）是互联网基础设施中一个低调但关键的组成部分——它的工作就是帮所有设备<strong>对表</strong>。服务器、路由器、交易系统，都需要通过 NTP 服务器获取精确的时间，以确保日志一致、证书有效、交易顺序正确。</p>
+<p>大多数 NTP 服务器是&quot;乐于助人&quot;的：只要有人问时间，它们就会回复。这种&quot;乐于助人&quot;在 2014 年前后，成了一场大规模 DDoS 攻击的催化剂。</p>
+<p><strong>NTP 反射攻击</strong>，利用的是 NTP 协议中一个名为 <code>monlist</code>（或 <code>MON_GETLIST</code>）的调试命令。攻击者向 NTP 服务器发送一个很小的 <code>monlist</code> 请求，伪造源 IP 为受害者地址，服务器则会返回一份<strong>与该服务器通信过的所有客户端的 IP 列表</strong>——这份列表的大小可以达到请求的 <strong>200 倍以上</strong>。</p>
+<hr>
+<h2 id="monlist：一个调试接口如何成为攻击武器">monlist：一个调试接口如何成为攻击武器</h2>
+<h3 id="什么是-monlist">什么是 monlist</h3>
+<p><code>monlist</code> 是 NTP 协议中用于<strong>监控和调试</strong>的一个功能。当管理员向 NTP 服务器发送 <code>monlist</code> 请求时，服务器会返回一份<strong>最近与它通信过的客户端 IP 地址列表</strong>，包括每个客户端最后一次通信的时间戳。</p>
+<p>这个功能的设计初衷是帮助管理员了解 NTP 服务器的负载情况、识别异常客户端。但它的&quot;副作用&quot;是：<strong>返回的数据量远大于请求本身</strong>。</p>
+<ul>
+<li>一个 <code>monlist</code> 请求的大小约为 <strong>80 字节</strong>。</li>
+<li>如果一台 NTP 服务器最近与数百上千个客户端通信过，响应数据包可能达到 <strong>16,000 字节</strong>甚至更多。</li>
+<li><strong>放大倍数：200 倍以上</strong>。</li>
+</ul>
+<h3 id="攻击原理">攻击原理</h3>
+<p>NTP 反射攻击的技术链路与 DNS 放大如出一辙：</p>
+<ol>
+<li>攻击者扫描互联网上开放的 NTP 服务器（默认端口 123）。</li>
+<li>向这些服务器发送伪造源 IP 的 <code>monlist</code> 请求（源 IP = 受害者地址）。</li>
+<li>服务器将庞大的 <code>monlist</code> 响应数据发向受害者。</li>
+<li>成千上万台 NTP 服务器的响应同时涌来，受害者的带宽被瞬间撑爆。</li>
+</ol>
+<p>由于 UDP 不验证源 IP，服务器全程不知道自己在参与一场攻击。</p>
+<h3 id="为何效果比-DNS-放大更猛">为何效果比 DNS 放大更猛</h3>
+<p>在 NTP 反射攻击的高峰期（2014-2015 年），它的&quot;流行度&quot;甚至一度超过 DNS 放大，原因在于：</p>
+<ul>
+<li><strong>放大的效率更高</strong>：DNS 放大的典型倍数是 10-60 倍，而 NTP <code>monlist</code> 可以稳定达到 200 倍以上。</li>
+<li><strong>对服务器的&quot;知名度&quot;要求低</strong>：<code>monlist</code> 返回的是服务器自身记录的访问者列表，不需要查询特定域名的庞大记录集，任何运行 NTP 服务的服务器都可以被利用。</li>
+<li><strong>协议简单、实现统一</strong>：大多数 NTP 服务器基于相同的参考实现，可利用的服务器数量巨大。</li>
+</ul>
+<p><strong>2014 年的峰值数据</strong>：互联网上可被利用的开放 NTP 服务器超过 40 万台。攻击者只需控制一个 1 Gbps 的僵尸网络，就能通过 NTP 反射打出超过 200 Gbps 的攻击流量。</p>
+<hr>
+<h2 id="后续演进：NTP-协议的安全加固">后续演进：NTP 协议的安全加固</h2>
+<h3 id="monlist-被禁用">monlist 被禁用</h3>
+<p>2014 年底，NTP 官方在 4.2.7p26 版本中<strong>默认禁用了 <code>monlist</code> 命令</strong>。该功能被替换为更安全的 <code>mrulist</code>，后者支持更精细的访问控制和速率限制。</p>
+<p>但问题在于：<strong>大量老旧 NTP 服务器至今未升级</strong>。尤其是嵌入式设备（路由器、工业控制设备、摄像头等）中的 NTP 服务，其软件版本停留在数年前，<code>monlist</code> 仍然对外开放。</p>
+<h3 id="社区应对">社区应对</h3>
+<p>NTP 社区提出了一系列缓解措施：</p>
+<ul>
+<li>限制 <code>monlist</code> 只对本地管理员开放。</li>
+<li>在 NTP 服务器上配置响应速率限制（Response Rate Limiting）。</li>
+<li>关闭递归查询或限制查询来源 IP 范围。</li>
+</ul>
+<p><strong>NTP 的教训</strong>：一个本为&quot;帮助管理员&quot;而设计的调试功能，在被滥用后，最终被默认关闭。安全社区在功能设计与安全控制之间的权衡，经过了深刻反思。</p>
+<hr>
+<h2 id="SSDP-反射攻击：智能家居的-广播风暴">SSDP 反射攻击：智能家居的&quot;广播风暴&quot;</h2>
+<h3 id="SSDP-协议简介">SSDP 协议简介</h3>
+<p>SSDP（Simple Service Discovery Protocol，简单服务发现协议）是 <strong>UPnP（通用即插即用）</strong> 框架中的核心协议。它被用于设备在局域网中自动发现彼此——比如当你把一台智能电视接入网络，它可以通过 SSDP 发现同一网络里的媒体服务器、打印机或音箱。</p>
+<p>SSDP 的工作方式是：新设备加入网络后，向组播地址 <code>239.255.255.250:1900</code> 发送一个 <strong>M-SEARCH</strong> 请求，广播询问：&quot;网络里有哪些可用的服务？&quot;所有支持 UPnP 的设备都会回复，报告自己的服务类型和 URL。</p>
+<p>这个协议的设计初衷是<strong>让家庭和小型办公网络中的设备即插即用</strong>。但当攻击者把这个机制搬到公网上时，同样的问题再次出现。</p>
+<h3 id="攻击原理-2">攻击原理</h3>
+<p>SSDP 反射攻击的技术路径与 NTP 完全相同：</p>
+<ol>
+<li>攻击者扫描互联网上开放了 SSDP 服务（UDP 端口 1900）的设备。</li>
+<li>向这些设备发送伪造源 IP 的 M-SEARCH 请求。</li>
+<li>设备返回包含自身服务列表的响应数据。</li>
+</ol>
+<p><strong>放大倍数</strong>：一个 M-SEARCH 请求通常小于 100 字节。一个 UPnP 设备的服务描述响应通常在 <strong>500 到 1500 字节</strong>之间，放大倍数约为 <strong>5-30 倍</strong>。</p>
+<p>虽然 SSDP 的放大倍数不如 NTP，但它的独特优势在于<strong>攻击面极其广泛</strong>：</p>
+<ul>
+<li>智能电视、路由器、打印机、网络摄像头、智能音箱、游戏主机……几乎所有支持 UPnP 的设备都暴露了 SSDP 端口。</li>
+<li>这些设备的固件更新缓慢，且大多数用户不知道如何关闭 UPnP。</li>
+<li>一些设备不仅响应，还会在响应中携带<strong>大量的服务描述 XML 数据</strong>，进一步增加了响应大小。</li>
+</ul>
+<h3 id="现实中的规模">现实中的规模</h3>
+<p>2016 年，安全研究人员发现了超过 <strong>150 万个</strong>暴露在公网上的 SSDP 服务。利用其中一小部分，就能制造出 Gbps 级别的攻击流量。虽然 SSDP 的单次放大倍数有限，但它胜在&quot;设备数量多、分布广&quot;。</p>
+<hr>
+<h2 id="为什么-NTP-SSDP-反射攻击仍然存在？">为什么 NTP/SSDP 反射攻击仍然存在？</h2>
+<p>与 DNS 放大一样，NTP 和 SSDP 反射攻击的持久性来源于几个现实问题：</p>
+<ol>
+<li><strong>老版本 NTP 服务器依然大量运行</strong>：许多网络设备中的 NTP 服务长期不更新，<code>monlist</code> 命令仍然可用。企业内部的 NTP 服务器如果对外开放，同样可能被利用。</li>
+<li><strong>UPnP 是默认开启的</strong>：绝大多数消费级路由器、智能设备默认启用 UPnP，用户没有能力或意愿关闭它。</li>
+<li><strong>源 IP 伪造仍然是常态</strong>：ISP 层面的入口过滤（BCP 38）执行率仍然不足，攻击者可以继续伪造源 IP。</li>
+<li><strong>攻击的门槛极低</strong>：开源工具（如 <code>ntp-amplification</code>、<code>ssdp-scanner</code>）加上公开的扫描列表，任何人都可以在几分钟内发起攻击。</li>
+</ol>
+<hr>
+<h2 id="防御之道：从关闭到过滤">防御之道：从关闭到过滤</h2>
+<h3 id="作为受害者——依赖上游清洗">作为受害者——依赖上游清洗</h3>
+<p>与 DNS 放大一样，本地机房的带宽无法硬抗反射攻击。唯一现实的手段是<strong>云防护厂商的流量清洗服务</strong>：</p>
+<ul>
+<li>流量牵引到高防机房，清洗中心识别并丢弃 NTP/SSDP 反射流量。</li>
+<li>利用 Anycast 网络分散攻击压力。</li>
+</ul>
+<h3 id="作为潜在放大者——关闭和限制（最根本的全球责任）">作为潜在放大者——关闭和限制（最根本的全球责任）</h3>
+<p><strong>NTP 服务器管理员</strong>：</p>
+<ul>
+<li><strong>升级到 NTP 4.2.7p26 或更高版本</strong>，默认禁用 <code>monlist</code>。</li>
+<li>如果必须保留 <code>monlist</code>，在配置文件中限制访问来源 IP：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">restrict default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict 127.0.0.1</span><br></pre></td></tr></table></figure>
+其中 <code>noquery</code> 禁止了外部对 <code>monlist</code> 等状态查询接口的访问。</li>
+<li>使用 <code>mrulist</code> 替代 <code>monlist</code>，并启用速率限制。</li>
+</ul>
+<p><strong>UPnP 设备用户/管理员</strong>：</p>
+<ul>
+<li><strong>在路由器上全局禁用 UPnP</strong>。对于大多数家庭用户，UPnP 提供的便利性远小于其带来的安全风险。</li>
+<li><strong>在防火墙上阻止外部对 UDP 1900 端口的访问</strong>。SSDP 本应只在局域网内工作，公网上的 1900 端口暴露几乎总是配置错误。</li>
+<li><strong>对物联网设备进行网络隔离</strong>：将智能设备放在独立的 VLAN 中，避免它们直接暴露在公网。</li>
+</ul>
+<h3 id="作为网络运营商——实施-BCP-38">作为网络运营商——实施 BCP 38</h3>
+<p>ISP 层面的入口过滤（Ingress Filtering）是让伪造源 IP 失效的根本手段。如果从攻击者所在 ISP 发出的每一个伪造 IP 包都被丢弃，整个反射攻击链的&quot;第一块多米诺骨牌&quot;就倒不了。</p>
+<p><strong>BCP 38 的实施进展缓慢，但它是唯一能从源头上杜绝反射攻击的方案。</strong></p>
+<hr>
+<h2 id="NTP-vs-SSDP-vs-DNS：反射攻击的三种形态">NTP vs. SSDP vs. DNS：反射攻击的三种形态</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>DNS 反射</th>
+<th>NTP 反射</th>
+<th>SSDP 反射</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>利用协议</td>
+<td>DNS（53）</td>
+<td>NTP（123）</td>
+<td>SSDP/UPnP（1900）</td>
+</tr>
+<tr>
+<td>请求类型</td>
+<td>ANY 查询</td>
+<td>monlist</td>
+<td>M-SEARCH</td>
+</tr>
+<tr>
+<td>典型放大倍数</td>
+<td>10-60 倍</td>
+<td>100-200 倍</td>
+<td>5-30 倍</td>
+</tr>
+<tr>
+<td>可被利用的服务器数量</td>
+<td>数百万（开放解析器）</td>
+<td>数十万（NTP 服务器）</td>
+<td>数百万（UPnP 设备）</td>
+</tr>
+<tr>
+<td>现状</td>
+<td>仍然常见</td>
+<td>大幅减少但未消失</td>
+<td>持续存在，缓慢下降</td>
+</tr>
+<tr>
+<td>根本缓解方式</td>
+<td>关闭开放解析器 + BCP 38</td>
+<td>升级 NTP 版本 + BCP 38</td>
+<td>关闭 UPnP + BCP 38</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="总结">总结</h2>
+<p>NTP 反射攻击和 SSDP 反射攻击，是&quot;协议功能被滥用&quot;的典型案例。它们利用的不是协议本身的漏洞，而是协议中<strong>为&quot;便利&quot;和&quot;调试&quot;而设计的功能</strong>，在网络规模从学术网扩展到全球互联网的过程中，这些功能的安全风险被严重低估。</p>
+<ul>
+<li>NTP 的 <code>monlist</code> 原本是管理员排查问题的帮手，结果成了 DDoS 的放大器。</li>
+<li>SSDP 的 M-SEARCH 原本是让智能设备即插即用，结果成了物联网&quot;被征用&quot;的通道。</li>
+</ul>
+<p>这些攻击的防御路径已经清晰：<strong>升级协议版本、默认关闭高风险功能、限制响应范围、运营商实施入口过滤</strong>。每一个环节的落实，都需要管理员、厂商和运营商共同承担责任。</p>
+<blockquote>
+<p>NTP 的教训被安全社区反复讨论后，催生了一个新的&quot;默认行为&quot;趋势：<strong>任何调试接口、状态查询功能、列表返回接口，在设计之初就应考虑&quot;是否默认关闭、是否需要认证、是否限制响应大小&quot;</strong>。一个开放给管理员的便利功能，可能被全世界的攻击者利用。便利和安全的平衡，需要在设计阶段就开始权衡，而不是被攻击后才追悔。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260726.html">https://blog.yll14.cn/posts/260726.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/260727.html" title="[分享]什么是autocannon及其使用方法？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260727/260727.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">[分享]什么是autocannon及其使用方法？</div></div><div class="info-2"><div class="info-item-1">autocannon 是一个基于 Node.js 的 HTTP/1.1 基准测试工具，用于对 Web 服务进行压力测试。本文介绍其安装、常用参数、测试结果解读及 Node.js 脚本集成方法。</div></div></div></a><a class="pagination-related" href="/posts/260725.3.html" title="[分享]什么是DNS放大攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_3.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">[分享]什么是DNS放大攻击？</div></div><div class="info-2"><div class="info-item-1">DNS放大攻击是一种利用开放DNS解析器放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小查询，使服务器向目标返回数十倍的响应数据。本文详解其放大原理、DNSSEC等放大媒介及防御策略。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260725.3.html" title="[分享]什么是DNS放大攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-25</div><div class="info-item-2">[分享]什么是DNS放大攻击？</div></div><div class="info-2"><div class="info-item-1">DNS放大攻击是一种利用开放DNS解析器放大流量的反射型DDoS攻击，攻击者通过伪造源IP发起小查询，使服务器向目标返回数十倍的响应数据。本文详解其放大原理、DNSSEC等放大媒介及防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.2.html" title="[分享]什么是SQL注入？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是SQL注入？</div></div><div class="info-2"><div class="info-item-1">SQL 注入是一种通过恶意 SQL 代码操纵数据库的攻击方式，可导致数据泄露、删库甚至服务器沦陷。本文详解其原理、攻击手法与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260722.html" title="[分享]什么是DDOS攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260722/260722_0.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-22</div><div class="info-item-2">[分享]什么是DDOS攻击？</div></div><div class="info-2"><div class="info-item-1">本文从拒绝服务的本质出发，深入拆解DDoS攻击的核心原理、三种流量耗尽层次（带宽/协议/应用）、僵尸网络与反射放大技术、常见攻击动机，以及分层防御策略，帮你建立对DDoS攻防体系的完整认知。</div></div></div></a><a class="pagination-related" href="/posts/260723.1.html" title="[分享]什么是ARP攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260723/260723_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">[分享]什么是ARP攻击？</div></div><div class="info-2"><div class="info-item-1">ARP 欺骗是一种局域网 ARP 协议漏洞攻击，攻击者伪造 MAC 地址实现断网或中间人窃听。本文详解攻击原理、工具与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260724.1.html" title="[分享]什么是ICMP洪水攻击？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260724/260724_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-24</div><div class="info-item-2">[分享]什么是ICMP洪水攻击？</div></div><div class="info-2"><div class="info-item-1">ICMP Flood（Ping 洪水）是一种利用 ICMP 协议请求耗尽目标资源的 DDoS 攻击。本文详解其攻击原理、历史变种与防御策略。</div></div></div></a><a class="pagination-related" href="/posts/260725.html" title="[分享]什么是XSS注入？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260725/260725.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-25</div><div class="info-item-2">[分享]什么是XSS注入？</div></div><div class="info-2"><div class="info-item-1">XSS（跨站脚本攻击）是一种通过注入恶意脚本在用户浏览器中执行的安全漏洞，可导致会话劫持、数据窃取和网页篡改。本文详解其存储型、反射型与DOM型三种形态、攻击手法及防御策略。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#NTP-%E5%8F%8D%E5%B0%84%E6%94%BB%E5%87%BB%EF%BC%9A%E6%97%B6%E9%97%B4%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84-%E5%9B%9E%E5%A3%B0%E8%B5%B0%E5%BB%8A"><span class="toc-number">1.</span> <span class="toc-text">NTP 反射攻击：时间服务器的&quot;回声走廊&quot;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#monlist%EF%BC%9A%E4%B8%80%E4%B8%AA%E8%B0%83%E8%AF%95%E6%8E%A5%E5%8F%A3%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E6%94%BB%E5%87%BB%E6%AD%A6%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">monlist：一个调试接口如何成为攻击武器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-monlist"><span class="toc-number">2.1.</span> <span class="toc-text">什么是 monlist</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">攻击原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E6%95%88%E6%9E%9C%E6%AF%94-DNS-%E6%94%BE%E5%A4%A7%E6%9B%B4%E7%8C%9B"><span class="toc-number">2.3.</span> <span class="toc-text">为何效果比 DNS 放大更猛</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD%E6%BC%94%E8%BF%9B%EF%BC%9ANTP-%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA"><span class="toc-number">3.</span> <span class="toc-text">后续演进：NTP 协议的安全加固</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#monlist-%E8%A2%AB%E7%A6%81%E7%94%A8"><span class="toc-number">3.1.</span> <span class="toc-text">monlist 被禁用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BE%E5%8C%BA%E5%BA%94%E5%AF%B9"><span class="toc-number">3.2.</span> <span class="toc-text">社区应对</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSDP-%E5%8F%8D%E5%B0%84%E6%94%BB%E5%87%BB%EF%BC%9A%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85%E7%9A%84-%E5%B9%BF%E6%92%AD%E9%A3%8E%E6%9A%B4"><span class="toc-number">4.</span> <span class="toc-text">SSDP 反射攻击：智能家居的&quot;广播风暴&quot;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSDP-%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B"><span class="toc-number">4.1.</span> <span class="toc-text">SSDP 协议简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86-2"><span class="toc-number">4.2.</span> <span class="toc-text">攻击原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E5%AE%9E%E4%B8%AD%E7%9A%84%E8%A7%84%E6%A8%A1"><span class="toc-number">4.3.</span> <span class="toc-text">现实中的规模</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-NTP-SSDP-%E5%8F%8D%E5%B0%84%E6%94%BB%E5%87%BB%E4%BB%8D%E7%84%B6%E5%AD%98%E5%9C%A8%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">为什么 NTP&#x2F;SSDP 反射攻击仍然存在？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E4%B9%8B%E9%81%93%EF%BC%9A%E4%BB%8E%E5%85%B3%E9%97%AD%E5%88%B0%E8%BF%87%E6%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">防御之道：从关闭到过滤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E4%B8%BA%E5%8F%97%E5%AE%B3%E8%80%85%E2%80%94%E2%80%94%E4%BE%9D%E8%B5%96%E4%B8%8A%E6%B8%B8%E6%B8%85%E6%B4%97"><span class="toc-number">6.1.</span> <span class="toc-text">作为受害者——依赖上游清洗</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E4%B8%BA%E6%BD%9C%E5%9C%A8%E6%94%BE%E5%A4%A7%E8%80%85%E2%80%94%E2%80%94%E5%85%B3%E9%97%AD%E5%92%8C%E9%99%90%E5%88%B6%EF%BC%88%E6%9C%80%E6%A0%B9%E6%9C%AC%E7%9A%84%E5%85%A8%E7%90%83%E8%B4%A3%E4%BB%BB%EF%BC%89"><span class="toc-number">6.2.</span> <span class="toc-text">作为潜在放大者——关闭和限制（最根本的全球责任）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E4%B8%BA%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E5%95%86%E2%80%94%E2%80%94%E5%AE%9E%E6%96%BD-BCP-38"><span class="toc-number">6.3.</span> <span class="toc-text">作为网络运营商——实施 BCP 38</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NTP-vs-SSDP-vs-DNS%EF%BC%9A%E5%8F%8D%E5%B0%84%E6%94%BB%E5%87%BB%E7%9A%84%E4%B8%89%E7%A7%8D%E5%BD%A2%E6%80%81"><span class="toc-number">7.</span> <span class="toc-text">NTP vs. SSDP vs. DNS：反射攻击的三种形态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260819/260819.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]ESA一站式网站安全服务"/></a><div class="content"><a class="title" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务">[分享]ESA一站式网站安全服务</a><time datetime="2026-08-19T03:48:00.000Z" title="发表于 2026-08-19 11:48">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的扩展模块"/></a><div class="content"><a class="title" href="/posts/260807.5.html" title="[分享]PHP的扩展模块">[分享]PHP的扩展模块</a><time datetime="2026-08-07T12:56:00.000Z" title="发表于 2026-08-07 20:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_4.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的SQLite数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用">[分享]PHP的SQLite数据库调用</a><time datetime="2026-08-07T10:06:00.000Z" title="发表于 2026-08-07 18:06">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的PgSQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用">[分享]PHP的PgSQL数据库调用</a><time datetime="2026-08-07T07:56:00.000Z" title="发表于 2026-08-07 15:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的MySQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用">[分享]PHP的MySQL数据库调用</a><time datetime="2026-08-07T05:36:00.000Z" title="发表于 2026-08-07 13:36">2026-08-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 桉南</span></div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/utils.min.js"></script><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/main.min.js"></script><script src="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.yll14.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.yll14.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.yll14.cn/npm/katex@0.17.0/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.yll14.cn/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.yll14.cn/npm/twikoo@1.7.14/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.yll14.cn/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章、标签..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/search/local-search.min.js"></script></div></div></body></html>

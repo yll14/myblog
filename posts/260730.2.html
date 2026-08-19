@@ -1,0 +1,478 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]JavaScript的BOM操作 | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="BOM 操作是 JavaScript 与浏览器窗口及环境交互的接口，涵盖窗口控制、页面导航、历史管理、浏览器信息、本地存储等完整能力。本文系统讲解 window、location、history、navigator 等核心 BOM 对象的属性与方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]JavaScript的BOM操作">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260730.2.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="BOM 操作是 JavaScript 与浏览器窗口及环境交互的接口，涵盖窗口控制、页面导航、历史管理、浏览器信息、本地存储等完整能力。本文系统讲解 window、location、history、navigator 等核心 BOM 对象的属性与方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260730/260730_2.webp">
+<meta property="article:published_time" content="2026-07-30T06:07:00.000Z">
+<meta property="article:modified_time" content="2026-07-30T06:07:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="建站">
+<meta property="article:tag" content="知识分享">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260730/260730_2.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]JavaScript的BOM操作",
+  "url": "https://blog.yll14.cn/posts/260730.2.html",
+  "image": "https://blog.yll14.cn/blogimage/260730/260730_2.webp",
+  "datePublished": "2026-07-30T06:07:00.000Z",
+  "dateModified": "2026-07-30T06:07:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260730.2.html"><link rel="preconnect" href="https://cdn.yll14.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.yll14.cn/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]JavaScript的BOM操作',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="baidu-site-verification" content="codeva-RltT77T5Mn" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]JavaScript的BOM操作</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]JavaScript的BOM操作</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-30T06:07:00.000Z" title="发表于 2026-07-30 14:07">2026-07-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-30T06:07:00.000Z" title="更新于 2026-07-30 14:07">2026-07-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-30 14:07&quot;}" hidden></div><blockquote>
+<p><i>引言：<br>
+BOM 操作是 JavaScript 与浏览器窗口及环境交互的接口，涵盖窗口控制、页面导航、历史管理、浏览器信息、本地存储等完整能力。本文系统讲解 window、location、history、navigator 等核心 BOM 对象的属性与方法。</i></p>
+</blockquote>
+<h2 id="JavaScript-BOM-操作详解">JavaScript BOM 操作详解</h2>
+<p>当你使用 JavaScript 开发网页应用时，除了操作页面内容（DOM），还需要与<strong>浏览器本身</strong>进行交互。<strong>BOM（Browser Object Model，浏览器对象模型）</strong> 就是 JavaScript 与浏览器对话的接口。</p>
+<p>BOM 提供了操作浏览器窗口、历史记录、导航信息、屏幕属性等能力。与 DOM 不同，BOM 没有统一的标准，不同浏览器可能在细节上有所差异，但核心对象已被所有现代浏览器广泛支持。</p>
+<h2 id="一、什么是-BOM？">一、什么是 BOM？</h2>
+<p>BOM 是浏览器提供的对象集合，用于访问和操作浏览器窗口及浏览器功能。它的核心是 <strong><code>window</code></strong> 对象，所有 BOM 对象和方法都从属于它。</p>
+<p>BOM 主要包括以下核心对象：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">对象</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>window</code></td>
+<td style="text-align:left">浏览器窗口，BOM 的顶层对象</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>navigator</code></td>
+<td style="text-align:left">浏览器信息（如名称、版本、用户代理）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>location</code></td>
+<td style="text-align:left">当前页面的 URL 信息</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>history</code></td>
+<td style="text-align:left">浏览器的历史记录</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>screen</code></td>
+<td style="text-align:left">用户屏幕的信息</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>document</code></td>
+<td style="text-align:left">当前页面文档（DOM 的入口，实际上属于 DOM，但可通过 window.document 访问）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二、window-对象">二、window 对象</h2>
+<p><code>window</code> 是 BOM 的顶层对象，代表浏览器窗口或标签页。全局变量和全局函数都自动成为 <code>window</code> 对象的属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局变量自动成为 window 的属性</span></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">&quot;张三&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">name</span>);  <span class="comment">// &quot;张三&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局函数也是 window 的方法</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">sayHello</span>();  <span class="comment">// &quot;你好&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下写法实际上都是 window 的方法</span></span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;消息&quot;</span>);            <span class="comment">// 等同于 window.alert(&quot;消息&quot;)</span></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;&#125;, <span class="number">1000</span>); <span class="comment">// 等同于 window.setTimeout</span></span><br></pre></td></tr></table></figure>
+<h3 id="window-常用属性和方法">window 常用属性和方法</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性/方法</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>window.innerWidth</code></td>
+<td style="text-align:left">浏览器窗口的可视宽度（包含滚动条）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.innerHeight</code></td>
+<td style="text-align:left">浏览器窗口的可视高度</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.outerWidth</code></td>
+<td style="text-align:left">浏览器窗口的外部宽度（含工具栏等）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.outerHeight</code></td>
+<td style="text-align:left">浏览器窗口的外部高度</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.screenX</code> / <code>window.screenY</code></td>
+<td style="text-align:left">窗口相对于屏幕左上角的坐标</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.open()</code></td>
+<td style="text-align:left">打开一个新窗口或标签页</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.close()</code></td>
+<td style="text-align:left">关闭当前窗口</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.alert()</code></td>
+<td style="text-align:left">弹出提示框</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.confirm()</code></td>
+<td style="text-align:left">弹出确认框（返回布尔值）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.prompt()</code></td>
+<td style="text-align:left">弹出输入框（返回用户输入的字符串）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.print()</code></td>
+<td style="text-align:left">打开打印对话框</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.scrollTo(x, y)</code></td>
+<td style="text-align:left">滚动到指定位置</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.scrollBy(x, y)</code></td>
+<td style="text-align:left">相对于当前位置滚动</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>window.getComputedStyle()</code></td>
+<td style="text-align:left">获取元素最终计算的 CSS 样式</td>
+</tr>
+</tbody>
+</table>
+<h2 id="三、窗口大小与滚动">三、窗口大小与滚动</h2>
+<h3 id="获取窗口尺寸">获取窗口尺寸</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 浏览器可视区域大小（不含工具栏、状态栏等）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">innerWidth</span>);   <span class="comment">// 视口宽度</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">innerHeight</span>);  <span class="comment">// 视口高度</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器整体窗口大小（含工具栏等）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">outerWidth</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">outerHeight</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="控制窗口滚动">控制窗口滚动</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 滚动到页面顶部</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 滚动到指定位置</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">100</span>, <span class="number">200</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用平滑滚动</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(&#123;</span><br><span class="line">    <span class="attr">top</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">left</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">behavior</span>: <span class="string">&#x27;smooth&#x27;</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 相对于当前位置滚动 100px</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">scrollBy</span>(<span class="number">0</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取当前滚动位置</span></span><br><span class="line"><span class="keyword">let</span> scrollX = <span class="variable language_">window</span>.<span class="property">pageXOffset</span>;  <span class="comment">// 水平滚动</span></span><br><span class="line"><span class="keyword">let</span> scrollY = <span class="variable language_">window</span>.<span class="property">pageYOffset</span>;  <span class="comment">// 垂直滚动</span></span><br><span class="line"><span class="comment">// 或使用</span></span><br><span class="line"><span class="keyword">let</span> scrollX = <span class="variable language_">window</span>.<span class="property">scrollX</span>;</span><br><span class="line"><span class="keyword">let</span> scrollY = <span class="variable language_">window</span>.<span class="property">scrollY</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="四、定时器">四、定时器</h2>
+<p>JavaScript 提供了两种定时器方法，用于在指定时间后执行代码。</p>
+<h3 id="1-setTimeout-与-clearTimeout">1. <code>setTimeout</code> 与 <code>clearTimeout</code></h3>
+<p>在指定的延迟时间（毫秒）后执行一次函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 3秒后执行匿名函数</span></span><br><span class="line"><span class="keyword">let</span> timerId = <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;3秒已到！&quot;</span>);</span><br><span class="line">&#125;, <span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消定时器</span></span><br><span class="line"><span class="built_in">clearTimeout</span>(timerId);</span><br></pre></td></tr></table></figure>
+<h3 id="2-setInterval-与-clearInterval">2. <code>setInterval</code> 与 <code>clearInterval</code></h3>
+<p>每隔指定的时间间隔重复执行函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> intervalId = <span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    count++;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`已运行 <span class="subst">$&#123;count&#125;</span> 秒`</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 10秒后自动停止</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">        <span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;定时器已停止&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="五、对话框">五、对话框</h2>
+<p>JavaScript 提供了三种内置对话框，用于与用户进行简单交互。</p>
+<h3 id="1-alert-——-提示框">1. <code>alert</code> —— 提示框</h3>
+<p>显示一条信息，用户只能点击&quot;确定&quot;关闭。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;这是一个提示信息&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="2-confirm-——-确认框">2. <code>confirm</code> —— 确认框</h3>
+<p>显示信息并提供&quot;确定&quot;和&quot;取消&quot;按钮，返回布尔值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> isConfirmed = <span class="title function_">confirm</span>(<span class="string">&quot;确认删除此条目吗？&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (isConfirmed) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;用户确认删除&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;用户取消操作&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-prompt-——-输入框">3. <code>prompt</code> —— 输入框</h3>
+<p>显示输入框，让用户输入内容，返回输入的字符串，点击取消则返回 <code>null</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="title function_">prompt</span>(<span class="string">&quot;请输入您的姓名：&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (name !== <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`你好，<span class="subst">$&#123;name&#125;</span>！`</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;用户取消了输入&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="六、location-对象">六、location 对象</h2>
+<p><code>location</code> 对象包含了当前页面的 URL 信息，既可以读取也可以修改。</p>
+<h3 id="location-的属性">location 的属性</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">href</span>);      <span class="comment">// 完整的 URL</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">protocol</span>);  <span class="comment">// 协议（http: 或 https:）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">host</span>);      <span class="comment">// 主机名 + 端口号（如 example.com:8080）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">hostname</span>);  <span class="comment">// 主机名（如 example.com）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">port</span>);      <span class="comment">// 端口号</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">pathname</span>);  <span class="comment">// 路径部分（如 /page/index.html）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">search</span>);    <span class="comment">// 查询参数（如 ?id=123&amp;name=张三）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">hash</span>);      <span class="comment">// 锚点部分（如 #section1）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(location.<span class="property">origin</span>);    <span class="comment">// 协议 + 域名 + 端口（如 https://example.com）</span></span><br></pre></td></tr></table></figure>
+<h3 id="location-的方法">location 的方法</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 跳转到新页面（相当于修改 href）</span></span><br><span class="line">location.<span class="property">href</span> = <span class="string">&quot;https://example.com&quot;</span>;</span><br><span class="line"><span class="comment">// 或使用 assign 方法</span></span><br><span class="line">location.<span class="title function_">assign</span>(<span class="string">&quot;https://example.com&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重新加载当前页面</span></span><br><span class="line">location.<span class="title function_">reload</span>();       <span class="comment">// 从浏览器缓存加载</span></span><br><span class="line">location.<span class="title function_">reload</span>(<span class="literal">true</span>);   <span class="comment">// 强制从服务器重新加载</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 替换当前页面（不会在历史记录中留下记录）</span></span><br><span class="line">location.<span class="title function_">replace</span>(<span class="string">&quot;https://example.com&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="URLSearchParams-——-解析查询参数">URLSearchParams —— 解析查询参数</h3>
+<p>使用 <code>URLSearchParams</code> 可以方便地解析和处理 URL 中的查询参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设 URL 是 https://example.com/page?id=123&amp;name=张三&amp;active=true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> params = <span class="keyword">new</span> <span class="title class_">URLSearchParams</span>(location.<span class="property">search</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取参数值</span></span><br><span class="line"><span class="keyword">let</span> id = params.<span class="title function_">get</span>(<span class="string">&#x27;id&#x27;</span>);        <span class="comment">// &quot;123&quot;</span></span><br><span class="line"><span class="keyword">let</span> name = params.<span class="title function_">get</span>(<span class="string">&#x27;name&#x27;</span>);    <span class="comment">// &quot;张三&quot;</span></span><br><span class="line"><span class="keyword">let</span> active = params.<span class="title function_">get</span>(<span class="string">&#x27;active&#x27;</span>); <span class="comment">// &quot;true&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查参数是否存在</span></span><br><span class="line"><span class="keyword">if</span> (params.<span class="title function_">has</span>(<span class="string">&#x27;id&#x27;</span>)) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;存在 id 参数&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历所有参数</span></span><br><span class="line">params.<span class="title function_">forEach</span>(<span class="function">(<span class="params">value, key</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;key&#125;</span>: <span class="subst">$&#123;value&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改参数</span></span><br><span class="line">params.<span class="title function_">set</span>(<span class="string">&#x27;page&#x27;</span>, <span class="string">&#x27;2&#x27;</span>);</span><br><span class="line">params.<span class="title function_">append</span>(<span class="string">&#x27;sort&#x27;</span>, <span class="string">&#x27;desc&#x27;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(params.<span class="title function_">toString</span>());   <span class="comment">// &quot;id=123&amp;name=张三&amp;active=true&amp;page=2&amp;sort=desc&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="七、history-对象">七、history 对象</h2>
+<p><code>history</code> 对象用于操作浏览器的会话历史记录，可以实现页面间的前进、后退和跳转。</p>
+<h3 id="history-的方法">history 的方法</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 后退一页</span></span><br><span class="line">history.<span class="title function_">back</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 前进一页</span></span><br><span class="line">history.<span class="title function_">forward</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 后退或前进 n 步（负数后退，正数前进）</span></span><br><span class="line">history.<span class="title function_">go</span>(-<span class="number">2</span>);   <span class="comment">// 后退两页</span></span><br><span class="line">history.<span class="title function_">go</span>(<span class="number">1</span>);    <span class="comment">// 前进一页</span></span><br><span class="line">history.<span class="title function_">go</span>(<span class="number">0</span>);    <span class="comment">// 刷新当前页面</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取历史记录数量</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(history.<span class="property">length</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="pushState-与-replaceState-——-修改历史记录">pushState 与 replaceState —— 修改历史记录</h3>
+<p><code>pushState</code> 和 <code>replaceState</code> 可以在不刷新页面的情况下修改浏览器的 URL 和历史记录，是单页应用（SPA）路由的核心技术。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pushState：添加一条新的历史记录</span></span><br><span class="line">history.<span class="title function_">pushState</span>(</span><br><span class="line">    &#123; <span class="attr">page</span>: <span class="number">2</span>, <span class="attr">userId</span>: <span class="number">123</span> &#125;,  <span class="comment">// 状态对象</span></span><br><span class="line">    <span class="string">&quot;页面标题&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/page/2&quot;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// replaceState：替换当前历史记录</span></span><br><span class="line">history.<span class="title function_">replaceState</span>(</span><br><span class="line">    &#123; <span class="attr">page</span>: <span class="number">1</span> &#125;,</span><br><span class="line">    <span class="string">&quot;新标题&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/page/1&quot;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听历史记录变化</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;popstate&#x27;</span>, <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">    <span class="comment">// 当用户点击浏览器前进/后退按钮时触发</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;历史状态改变：&#x27;</span>, event.<span class="property">state</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="八、navigator-对象">八、navigator 对象</h2>
+<p><code>navigator</code> 对象提供了关于浏览器的信息，常用于检测浏览器类型、操作系统、设备特性等。</p>
+<h3 id="navigator-的常用属性">navigator 的常用属性</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 浏览器用户代理字符串</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">userAgent</span>);</span><br><span class="line"><span class="comment">// 示例: &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器名称</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">appName</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器版本</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">appVersion</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 操作系统平台</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">platform</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器语言</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">language</span>);   <span class="comment">// &quot;zh-CN&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 是否启用 Cookie</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">cookieEnabled</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 是否在线</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(navigator.<span class="property">onLine</span>);     <span class="comment">// true 或 false</span></span><br></pre></td></tr></table></figure>
+<h3 id="检测设备与浏览器">检测设备与浏览器</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 判断是否为移动设备</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isMobile</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="regexp">/Mobi|Android|iPhone|iPad/i</span>.<span class="title function_">test</span>(navigator.<span class="property">userAgent</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断浏览器类型</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getBrowser</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> ua = navigator.<span class="property">userAgent</span>;</span><br><span class="line">    <span class="keyword">if</span> (ua.<span class="title function_">indexOf</span>(<span class="string">&#x27;Chrome&#x27;</span>) &gt; -<span class="number">1</span>) <span class="keyword">return</span> <span class="string">&#x27;Chrome&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span> (ua.<span class="title function_">indexOf</span>(<span class="string">&#x27;Firefox&#x27;</span>) &gt; -<span class="number">1</span>) <span class="keyword">return</span> <span class="string">&#x27;Firefox&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span> (ua.<span class="title function_">indexOf</span>(<span class="string">&#x27;Safari&#x27;</span>) &gt; -<span class="number">1</span>) <span class="keyword">return</span> <span class="string">&#x27;Safari&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span> (ua.<span class="title function_">indexOf</span>(<span class="string">&#x27;Edge&#x27;</span>) &gt; -<span class="number">1</span>) <span class="keyword">return</span> <span class="string">&#x27;Edge&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Unknown&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="九、screen-对象">九、screen 对象</h2>
+<p><code>screen</code> 对象提供了用户屏幕的信息，可用于适配不同尺寸的显示设备。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 屏幕总宽度和高度（含任务栏等）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(screen.<span class="property">width</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(screen.<span class="property">height</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕可用宽度和高度（不含任务栏等系统区域）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(screen.<span class="property">availWidth</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(screen.<span class="property">availHeight</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕色彩深度</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(screen.<span class="property">colorDepth</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕像素比（如 Retina 屏幕为 2）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">window</span>.<span class="property">devicePixelRatio</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="十、本地存储">十、本地存储</h2>
+<p>BOM 提供了两种在浏览器中持久化存储数据的方式：<code>localStorage</code> 和 <code>sessionStorage</code>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">localStorage</th>
+<th style="text-align:left">sessionStorage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">生命周期</td>
+<td style="text-align:left">永久存储，除非手动清除</td>
+<td style="text-align:left">仅在当前会话有效，关闭标签页后清除</td>
+</tr>
+<tr>
+<td style="text-align:left">跨标签页</td>
+<td style="text-align:left">同源的所有标签页共享</td>
+<td style="text-align:left">仅当前标签页有效</td>
+</tr>
+<tr>
+<td style="text-align:left">容量</td>
+<td style="text-align:left">约 5-10 MB</td>
+<td style="text-align:left">约 5 MB</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 存储数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;张三&#x27;</span>);</span><br><span class="line"><span class="variable language_">sessionStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;theme&#x27;</span>, <span class="string">&#x27;dark&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取数据</span></span><br><span class="line"><span class="keyword">let</span> username = <span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> theme = <span class="variable language_">sessionStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;theme&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line"><span class="variable language_">sessionStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&#x27;theme&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">clear</span>();</span><br><span class="line"><span class="variable language_">sessionStorage</span>.<span class="title function_">clear</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 存储对象（需要转为 JSON 字符串）</span></span><br><span class="line"><span class="keyword">let</span> user = &#123; <span class="attr">name</span>: <span class="string">&#x27;张三&#x27;</span>, <span class="attr">age</span>: <span class="number">25</span> &#125;;</span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;user&#x27;</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(user));</span><br><span class="line"><span class="keyword">let</span> storedUser = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;user&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>BOM 是 JavaScript 与浏览器窗口和环境交互的桥梁。掌握 <code>window</code>、<code>location</code>、<code>history</code>、<code>navigator</code>、<code>screen</code> 以及本地存储等核心对象，可以让你更好地控制浏览器行为、管理页面导航、获取设备信息和存储用户数据。结合 DOM 操作，BOM 使你能够构建完整的、功能丰富的 Web 应用体验。在实际开发中，合理运用 BOM API 可以显著提升页面的可用性和交互体验。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260730.2.html">https://blog.yll14.cn/posts/260730.2.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E5%BB%BA%E7%AB%99/">建站</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/260730.3.html" title="[分享]JavaScript的其他WebAPI"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_3.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">[分享]JavaScript的其他WebAPI</div></div><div class="info-2"><div class="info-item-1">Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。</div></div></div></a><a class="pagination-related" href="/posts/260730.1.html" title="[分享]JavaScript的DOM操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_1.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">[分享]JavaScript的DOM操作</div></div><div class="info-2"><div class="info-item-1">DOM 操作是 JavaScript 控制网页动态交互的核心能力，涵盖元素选择、内容与样式修改、结构增删、事件处理及表单操作等完整体系。本文系统讲解 DOM 树结构及常用 API 的使用方法。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260731.html" title="[分享]CSS进阶语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260731/260731.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-31</div><div class="info-item-2">[分享]CSS进阶语法</div></div><div class="info-2"><div class="info-item-1">CSS 进阶语法涵盖自定义属性、嵌套规则与高级选择器等核心特性，用于编写更高效、可维护的样式代码。本文系统讲解 CSS 变量声明与作用域、嵌套语法及 & 选择器、结构伪类与属性选择器的进阶用法。</div></div></div></a><a class="pagination-related" href="/posts/260731.1.html" title="[分享]CSS编程"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260731/260731_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-31</div><div class="info-item-2">[分享]CSS编程</div></div><div class="info-2"><div class="info-item-1">CSS 编程是使用 CSS 变量、数学函数、条件逻辑、模块化作用域等特性构建复杂样式系统的工程化方法论。本文完整系统地讲解 CSS 自定义属性、calc/min/clamp 等运算函数、@media/@supports/@container 条件查询、@layer/@scope 模块化机制、设计系统与主题构建、CSS 与 JavaScript 协同，以及嵌套、:has()、视图过渡等最新演进特性，涵盖 CSS 从基础到工程化的完整知识体系。</div></div></div></a><a class="pagination-related" href="/posts/260727.4.html" title="[分享]HTML的各种标签与用法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260727/260727_4.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-27</div><div class="info-item-2">[分享]HTML的各种标签与用法</div></div><div class="info-2"><div class="info-item-1">HTML标签是构建网页的基础元素，每个标签都有特定的含义与用途。本文系统梳理HTML5中所有常用标签的分类、语法及用法，涵盖文档结构、内容分区、文本格式、列表表格、表单交互与多媒体嵌入等完整体系。</div></div></div></a><a class="pagination-related" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的扩展模块</div></div><div class="info-2"><div class="info-item-1">PHP 扩展是 PHP 语言功能的延伸与增强，涵盖数据库驱动、网络通信、图像处理、数据格式、加密安全、数学计算、国际化、性能优化、队列缓存、NoSQL 等完整分类。本文系统梳理 PHP 扩展的概念、完整分类列表、各扩展详细代码用法及安装管理方法，帮助开发者全面掌握 PHP 扩展的应用。</div></div></div></a><a class="pagination-related" href="/posts/260730.5.html" title="[分享]CSS的基本语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_5.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]CSS的基本语法</div></div><div class="info-2"><div class="info-item-1">CSS 基本语法是样式表语言的核心规则体系，涵盖选择器、属性、值、声明块等基础结构。本文系统讲解 CSS 的语法规则、选择器分类、单位使用、继承与层叠机制及常用样式属性。</div></div></div></a><a class="pagination-related" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的PgSQL数据库调用</div></div><div class="info-2"><div class="info-item-1">PHP 调用 PostgreSQL 数据库主要通过 pgsql 扩展和 PDO_PGSQL 驱动实现。本文系统讲解环境配置、两种连接方式、SQL 语句执行、预处理语句防护 SQL 注入、事务处理、错误处理机制及 JSON/UUID 等 PostgreSQL 特有数据类型操作，帮助 PHP 开发者安全高效地连接和使用 PostgreSQL 数据库。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JavaScript-BOM-%E6%93%8D%E4%BD%9C%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">JavaScript BOM 操作详解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF-BOM%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">一、什么是 BOM？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81window-%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.</span> <span class="toc-text">二、window 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#window-%E5%B8%B8%E7%94%A8%E5%B1%9E%E6%80%A7%E5%92%8C%E6%96%B9%E6%B3%95"><span class="toc-number">3.1.</span> <span class="toc-text">window 常用属性和方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F%E4%B8%8E%E6%BB%9A%E5%8A%A8"><span class="toc-number">4.</span> <span class="toc-text">三、窗口大小与滚动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%AA%97%E5%8F%A3%E5%B0%BA%E5%AF%B8"><span class="toc-number">4.1.</span> <span class="toc-text">获取窗口尺寸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E7%AA%97%E5%8F%A3%E6%BB%9A%E5%8A%A8"><span class="toc-number">4.2.</span> <span class="toc-text">控制窗口滚动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">四、定时器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-setTimeout-%E4%B8%8E-clearTimeout"><span class="toc-number">5.1.</span> <span class="toc-text">1. setTimeout 与 clearTimeout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-setInterval-%E4%B8%8E-clearInterval"><span class="toc-number">5.2.</span> <span class="toc-text">2. setInterval 与 clearInterval</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%AF%B9%E8%AF%9D%E6%A1%86"><span class="toc-number">6.</span> <span class="toc-text">五、对话框</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-alert-%E2%80%94%E2%80%94-%E6%8F%90%E7%A4%BA%E6%A1%86"><span class="toc-number">6.1.</span> <span class="toc-text">1. alert —— 提示框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-confirm-%E2%80%94%E2%80%94-%E7%A1%AE%E8%AE%A4%E6%A1%86"><span class="toc-number">6.2.</span> <span class="toc-text">2. confirm —— 确认框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-prompt-%E2%80%94%E2%80%94-%E8%BE%93%E5%85%A5%E6%A1%86"><span class="toc-number">6.3.</span> <span class="toc-text">3. prompt —— 输入框</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81location-%E5%AF%B9%E8%B1%A1"><span class="toc-number">7.</span> <span class="toc-text">六、location 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#location-%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-number">7.1.</span> <span class="toc-text">location 的属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#location-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">7.2.</span> <span class="toc-text">location 的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#URLSearchParams-%E2%80%94%E2%80%94-%E8%A7%A3%E6%9E%90%E6%9F%A5%E8%AF%A2%E5%8F%82%E6%95%B0"><span class="toc-number">7.3.</span> <span class="toc-text">URLSearchParams —— 解析查询参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81history-%E5%AF%B9%E8%B1%A1"><span class="toc-number">8.</span> <span class="toc-text">七、history 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#history-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">8.1.</span> <span class="toc-text">history 的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pushState-%E4%B8%8E-replaceState-%E2%80%94%E2%80%94-%E4%BF%AE%E6%94%B9%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95"><span class="toc-number">8.2.</span> <span class="toc-text">pushState 与 replaceState —— 修改历史记录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81navigator-%E5%AF%B9%E8%B1%A1"><span class="toc-number">9.</span> <span class="toc-text">八、navigator 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#navigator-%E7%9A%84%E5%B8%B8%E7%94%A8%E5%B1%9E%E6%80%A7"><span class="toc-number">9.1.</span> <span class="toc-text">navigator 的常用属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E8%AE%BE%E5%A4%87%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">9.2.</span> <span class="toc-text">检测设备与浏览器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81screen-%E5%AF%B9%E8%B1%A1"><span class="toc-number">10.</span> <span class="toc-text">九、screen 对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8"><span class="toc-number">11.</span> <span class="toc-text">十、本地存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">12.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260819/260819.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]ESA一站式网站安全服务"/></a><div class="content"><a class="title" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务">[分享]ESA一站式网站安全服务</a><time datetime="2026-08-19T03:48:00.000Z" title="发表于 2026-08-19 11:48">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的扩展模块"/></a><div class="content"><a class="title" href="/posts/260807.5.html" title="[分享]PHP的扩展模块">[分享]PHP的扩展模块</a><time datetime="2026-08-07T12:56:00.000Z" title="发表于 2026-08-07 20:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_4.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的SQLite数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用">[分享]PHP的SQLite数据库调用</a><time datetime="2026-08-07T10:06:00.000Z" title="发表于 2026-08-07 18:06">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的PgSQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用">[分享]PHP的PgSQL数据库调用</a><time datetime="2026-08-07T07:56:00.000Z" title="发表于 2026-08-07 15:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的MySQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用">[分享]PHP的MySQL数据库调用</a><time datetime="2026-08-07T05:36:00.000Z" title="发表于 2026-08-07 13:36">2026-08-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 桉南</span></div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/utils.min.js"></script><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/main.min.js"></script><script src="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.yll14.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.yll14.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.yll14.cn/npm/katex@0.17.0/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.yll14.cn/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.yll14.cn/npm/twikoo@1.7.14/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.yll14.cn/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章、标签..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/search/local-search.min.js"></script></div></div></body></html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]JavaScript的其他WebAPI | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]JavaScript的其他WebAPI">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260730.3.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260730/260730_3.webp">
+<meta property="article:published_time" content="2026-07-30T10:31:00.000Z">
+<meta property="article:modified_time" content="2026-07-30T10:31:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="建站">
+<meta property="article:tag" content="知识分享">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260730/260730_3.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]JavaScript的其他WebAPI",
+  "url": "https://blog.yll14.cn/posts/260730.3.html",
+  "image": "https://blog.yll14.cn/blogimage/260730/260730_3.webp",
+  "datePublished": "2026-07-30T10:31:00.000Z",
+  "dateModified": "2026-07-30T10:31:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260730.3.html"><link rel="preconnect" href="https://cdn.yll14.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.yll14.cn/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]JavaScript的其他WebAPI',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="baidu-site-verification" content="codeva-RltT77T5Mn" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]JavaScript的其他WebAPI</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]JavaScript的其他WebAPI</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-30T10:31:00.000Z" title="发表于 2026-07-30 18:31">2026-07-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-30T10:31:00.000Z" title="更新于 2026-07-30 18:31">2026-07-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-30 18:31&quot;}" hidden></div><blockquote>
+<p><i>引言:<br>
+Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。</i></p>
+</blockquote>
+<h2 id="JavaScript-的其他-Web-API：赋予浏览器的超能力">JavaScript 的其他 Web API：赋予浏览器的超能力</h2>
+<p>在掌握了 JavaScript 的核心语法和 DOM、BOM 操作之后，你会发现 JavaScript 的真正力量远不止于此。浏览器内置了大量的 <strong>Web API</strong>，它们像一套功能各异的工具箱，让你能调用摄像头、绘制图形、存储数据、实现实时通信——这些能力共同构成了现代 Web 应用的基石。</p>
+<h2 id="Web-API-是什么？">Web API 是什么？</h2>
+<p>Web API（应用程序编程接口）是浏览器提供的一组 JavaScript 对象和函数，让你能通过简单的代码调用复杂的底层功能。它就像家里的电源插座——你不必自己发电或铺设电线，只需要把电器插头插进去，就能获得电力。</p>
+<p>在浏览器中，JavaScript 本身只提供最基本的语言能力（变量、循环、函数等），而 <strong>Web API 则是建立在核心语言之上的一系列“超能力”</strong>。它们分为两大阵营：</p>
+<ul>
+<li><strong>浏览器 API</strong>：内置于浏览器，可直接使用。</li>
+<li><strong>第三方 API</strong>：来自外部平台（如 Google Maps、Twitter），需要额外加载。</li>
+</ul>
+<h2 id="常见的浏览器-Web-API-分类">常见的浏览器 Web API 分类</h2>
+<h3 id="1-数据获取与通信类">1. 数据获取与通信类</h3>
+<p><strong>Fetch API</strong> 是目前最主流的网络请求方式，用于从服务器获取数据或提交数据，无需刷新整个页面即可更新网页局部内容。传统上常使用 <code>XMLHttpRequest</code>，而 Fetch API 基于 Promise，语法更简洁现代。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 Fetch API 获取数据</span></span><br><span class="line"><span class="title function_">fetch</span>(<span class="string">&#x27;https://api.example.com/users&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function"><span class="params">response</span> =&gt;</span> response.<span class="title function_">json</span>())</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function"><span class="params">data</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(data))</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="function"><span class="params">error</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;请求失败:&#x27;</span>, error));</span><br></pre></td></tr></table></figure>
+<p><strong>WebSocket API</strong> 提供了全双工实时通信通道，适合聊天应用、在线游戏、实时数据推送等场景。</p>
+<p><strong>Server-Sent Events (SSE)</strong> 允许服务器主动向浏览器推送事件，适合新闻推送、股票行情等单向实时场景。</p>
+<h3 id="2-图形与动画类">2. 图形与动画类</h3>
+<p><strong>Canvas API</strong> 提供了通过 JavaScript 在 <code>&lt;canvas&gt;</code> 元素上绘制 2D 图形的能力——从简单的矩形、圆形到复杂的图像滤镜和动画，都可以实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;canvas&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> ctx = canvas.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>);</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;blue&#x27;</span>;</span><br><span class="line">ctx.<span class="title function_">fillRect</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">100</span>);  <span class="comment">// 绘制蓝色正方形</span></span><br></pre></td></tr></table></figure>
+<p><strong>WebGL API</strong> 基于 OpenGL ES，用于在浏览器中创建高性能的 3D 场景，支持光照、纹理、阴影等复杂效果，是网页游戏和 3D 可视化应用的基础。</p>
+<p><strong>Web Animations API</strong> 提供了通过 JavaScript 控制元素动画的标准方式，比 CSS 动画更灵活，比手动操作 <code>requestAnimationFrame</code> 更简洁。</p>
+<h3 id="3-多媒体类">3. 多媒体类</h3>
+<p><strong>Web Audio API</strong> 提供了在浏览器中处理音频的能力——获取音轨、调节音量、应用增益或失真效果、可视化音频频谱等。它基于“音频图”模型，将音频源、效果节点和输出节点连接在一起。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> audioCtx = <span class="keyword">new</span> <span class="title class_">AudioContext</span>();</span><br><span class="line"><span class="keyword">const</span> audioElement = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;audio&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> source = audioCtx.<span class="title function_">createMediaElementSource</span>(audioElement);</span><br><span class="line"><span class="keyword">const</span> gainNode = audioCtx.<span class="title function_">createGain</span>();</span><br><span class="line">source.<span class="title function_">connect</span>(gainNode);</span><br><span class="line">gainNode.<span class="title function_">connect</span>(audioCtx.<span class="property">destination</span>);</span><br><span class="line">gainNode.<span class="property">gain</span>.<span class="property">value</span> = <span class="number">0.5</span>;  <span class="comment">// 音量减半</span></span><br></pre></td></tr></table></figure>
+<p><strong>HTMLMediaElement API</strong> 提供了 <code>&lt;audio&gt;</code> 和 <code>&lt;video&gt;</code> 元素的播放控制方法（<code>play()</code>、<code>pause()</code>、<code>volume</code> 等），是实现自定义媒体播放器的基础。</p>
+<p><strong>WebRTC API</strong> 支持浏览器之间直接传输音视频流和数据，无需经过服务器中转，是视频会议、在线课堂、P2P 文件传输的核心技术。</p>
+<h3 id="4-客户端存储类">4. 客户端存储类</h3>
+<p><strong>Web Storage API</strong> 提供了简单的键值对存储方式，包括 <code>localStorage</code>（永久存储）和 <code>sessionStorage</code>（会话级存储）。适合保存用户偏好、表单草稿等轻量数据。</p>
+<p><strong>IndexedDB API</strong> 是一个更强大的浏览器数据库，支持存储大量结构化数据、创建索引、执行复杂查询，适合需要离线工作或处理大量数据的 Web 应用。</p>
+<h3 id="5-设备与硬件交互类">5. 设备与硬件交互类</h3>
+<p><strong>Geolocation API</strong> 通过设备的 GPS 或其他定位方式获取用户的地理位置，常用于地图应用、附近商家推荐等场景。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">navigator.<span class="property">geolocation</span>.<span class="title function_">getCurrentPosition</span>(<span class="function"><span class="params">position</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;纬度:&#x27;</span>, position.<span class="property">coords</span>.<span class="property">latitude</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;经度:&#x27;</span>, position.<span class="property">coords</span>.<span class="property">longitude</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>Device Orientation API</strong> 获取设备的物理方向（陀螺仪数据），适合游戏控制、VR 体验等场景。</p>
+<p><strong>Battery Status API</strong> 读取设备电量信息，帮助优化应用在低电量时的行为。</p>
+<p><strong>Web Share API</strong> 调用系统原生分享面板，让用户将内容分享到其他应用。</p>
+<h3 id="6-页面观察与交互类">6. 页面观察与交互类</h3>
+<p><strong>Intersection Observer API</strong> 监听元素是否进入或离开视口，是<strong>图片懒加载</strong>、<strong>无限滚动</strong>和<strong>广告曝光统计</strong>等功能的常用工具。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observer = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(<span class="function"><span class="params">entries</span> =&gt;</span> &#123;</span><br><span class="line">  entries.<span class="title function_">forEach</span>(<span class="function"><span class="params">entry</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (entry.<span class="property">isIntersecting</span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;元素已进入视口！&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line">observer.<span class="title function_">observe</span>(<span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#target&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<p><strong>Resize Observer API</strong> 监听元素尺寸变化，适合响应式布局和自适应组件。</p>
+<p><strong>Mutation Observer API</strong> 监听 DOM 树的变化（节点增删、属性修改等），是框架响应式系统的基础之一。</p>
+<h3 id="7-国际化与格式化类">7. 国际化与格式化类</h3>
+<p><strong>Intl API</strong> 提供了日期、时间、数字、列表、相对时间等格式化能力，支持多语言和区域设置，是构建国际化应用的关键工具。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 格式化日期为中文</span></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Intl</span>.<span class="title class_">DateTimeFormat</span>(<span class="string">&#x27;zh-CN&#x27;</span>).<span class="title function_">format</span>(<span class="keyword">new</span> <span class="title class_">Date</span>());  <span class="comment">// &quot;2026/7/30&quot;</span></span><br><span class="line"><span class="comment">// 格式化数字为货币</span></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Intl</span>.<span class="title class_">NumberFormat</span>(<span class="string">&#x27;zh-CN&#x27;</span>, &#123; <span class="attr">style</span>: <span class="string">&#x27;currency&#x27;</span>, <span class="attr">currency</span>: <span class="string">&#x27;CNY&#x27;</span> &#125;).<span class="title function_">format</span>(<span class="number">1234.5</span>);  <span class="comment">// &quot;¥1,234.50&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="8-其他实用-API">8. 其他实用 API</h3>
+<p><strong>Web Components API</strong> 允许开发者创建可复用的自定义 HTML 元素，封装样式和逻辑，是构建组件库的基础。</p>
+<p><strong>History API</strong> 提供了 <code>pushState</code> 和 <code>replaceState</code> 方法，让单页应用（SPA）能够在不刷新页面的情况下改变 URL 和历史记录。</p>
+<p><strong>Drag and Drop API</strong> 支持在网页中实现拖放交互，适用于文件上传、看板应用等场景。</p>
+<p><strong>Web Workers API</strong> 允许在后台线程中运行 JavaScript，避免耗时任务阻塞主线程，提升页面响应速度。</p>
+<p><strong>Performance API</strong> 提供了测量页面加载、资源加载、渲染性能的方法，帮助开发者定位性能瓶颈。</p>
+<h2 id="第三方-API">第三方 API</h2>
+<p>除了浏览器内置的 API，开发者还可以使用第三方平台提供的 API 来扩展应用功能：</p>
+<ul>
+<li><strong>Google Maps API</strong>：嵌入交互式地图、路线规划、地点搜索。</li>
+<li><strong>YouTube API</strong>：嵌入视频、搜索内容、管理播放列表。</li>
+<li><strong>Twitter/X API</strong>：嵌入推文流、发送推文。</li>
+<li><strong>GitHub API</strong>：管理代码仓库、Issue、PR。</li>
+<li><strong>支付 API</strong>（如 Stripe、PayPal）：集成在线支付功能。</li>
+</ul>
+<p>这类 API 通常需要通过 HTTP 请求调用，并需要 API Key 或 OAuth 认证。</p>
+<h2 id="如何学习和使用-Web-API">如何学习和使用 Web API</h2>
+<ol>
+<li><strong>查阅 MDN 文档</strong>：MDN Web Docs 是 Web API 最权威、最完整的参考资源，每个 API 都有详细的说明、语法示例和浏览器兼容性信息。</li>
+<li><strong>从“入口点”开始</strong>：每个 API 都有一个入口对象。例如 Canvas API 的入口是 <code>&lt;canvas&gt;</code> 元素和 <code>getContext()</code> 方法，Web Audio API 的入口是 <code>AudioContext</code> 对象。</li>
+<li><strong>关注事件驱动</strong>：许多 Web API 通过事件来通知状态变化，如 <code>fetch</code> 的响应、<code>WebSocket</code> 的消息到达、<code>IntersectionObserver</code> 的可见性变化。</li>
+<li><strong>检查浏览器兼容性</strong>：部分 API 可能只在较新版本的浏览器中支持。使用前可在 MDN 上查看兼容性表格，或通过 <code>if ('geolocation' in navigator)</code> 等方式进行功能检测。</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>Web API 是 JavaScript 从“语言”走向“平台”的关键。它们让原本需要复杂底层实现的能力——绘图、音频、视频、存储、设备访问、实时通信——变得触手可及。掌握常用的 Web API，是成为一名合格前端开发者的必经之路。随着 Web 技术的不断演进，新的 API 也在持续涌现，让浏览器真正成为一个功能完备的应用运行平台。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260730.3.html">https://blog.yll14.cn/posts/260730.3.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E5%BB%BA%E7%AB%99/">建站</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/260730.4.html" title="[分享]什么是CSS样式表"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_4.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">[分享]什么是CSS样式表</div></div><div class="info-2"><div class="info-item-1">CSS（层叠样式表）是一种用于控制网页外观与排版布局的样式表语言，与 HTML 共同构成 Web 开发的基础。本文介绍 CSS 的核心概念、语法规则、三种使用方式及版本演进。</div></div></div></a><a class="pagination-related" href="/posts/260730.2.html" title="[分享]JavaScript的BOM操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_2.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">[分享]JavaScript的BOM操作</div></div><div class="info-2"><div class="info-item-1">BOM 操作是 JavaScript 与浏览器窗口及环境交互的接口，涵盖窗口控制、页面导航、历史管理、浏览器信息、本地存储等完整能力。本文系统讲解 window、location、history、navigator 等核心 BOM 对象的属性与方法。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260730.1.html" title="[分享]JavaScript的DOM操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_1.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]JavaScript的DOM操作</div></div><div class="info-2"><div class="info-item-1">DOM 操作是 JavaScript 控制网页动态交互的核心能力，涵盖元素选择、内容与样式修改、结构增删、事件处理及表单操作等完整体系。本文系统讲解 DOM 树结构及常用 API 的使用方法。</div></div></div></a><a class="pagination-related" href="/posts/260730.2.html" title="[分享]JavaScript的BOM操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]JavaScript的BOM操作</div></div><div class="info-2"><div class="info-item-1">BOM 操作是 JavaScript 与浏览器窗口及环境交互的接口，涵盖窗口控制、页面导航、历史管理、浏览器信息、本地存储等完整能力。本文系统讲解 window、location、history、navigator 等核心 BOM 对象的属性与方法。</div></div></div></a><a class="pagination-related" href="/posts/260730.html" title="[分享]JavaScript的基本语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]JavaScript的基本语法</div></div><div class="info-2"><div class="info-item-1">JavaScript 基本语法是学习 Web 交互开发的起点，涵盖变量声明、数据类型、运算符、条件语句、循环、函数、对象与数组等核心内容。本文系统讲解 JavaScript 的基础语法规则与用法示例。</div></div></div></a><a class="pagination-related" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的MySQL数据库调用</div></div><div class="info-2"><div class="info-item-1">PHP 调用 MySQL 数据库主要通过 MySQLi 和 PDO_MySQL 两种扩展实现。本文系统讲解环境配置、连接管理、SQL 语句执行、预处理语句防护 SQL 注入、错误处理机制及 SSL 加密连接等核心内容，帮助 PHP 开发者安全高效地操作 MySQL 数据库。</div></div></div></a><a class="pagination-related" href="/posts/260730.5.html" title="[分享]CSS的基本语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_5.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]CSS的基本语法</div></div><div class="info-2"><div class="info-item-1">CSS 基本语法是样式表语言的核心规则体系，涵盖选择器、属性、值、声明块等基础结构。本文系统讲解 CSS 的语法规则、选择器分类、单位使用、继承与层叠机制及常用样式属性。</div></div></div></a><a class="pagination-related" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的PgSQL数据库调用</div></div><div class="info-2"><div class="info-item-1">PHP 调用 PostgreSQL 数据库主要通过 pgsql 扩展和 PDO_PGSQL 驱动实现。本文系统讲解环境配置、两种连接方式、SQL 语句执行、预处理语句防护 SQL 注入、事务处理、错误处理机制及 JSON/UUID 等 PostgreSQL 特有数据类型操作，帮助 PHP 开发者安全高效地连接和使用 PostgreSQL 数据库。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JavaScript-%E7%9A%84%E5%85%B6%E4%BB%96-Web-API%EF%BC%9A%E8%B5%8B%E4%BA%88%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%B6%85%E8%83%BD%E5%8A%9B"><span class="toc-number">1.</span> <span class="toc-text">JavaScript 的其他 Web API：赋予浏览器的超能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web-API-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">Web API 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8-Web-API-%E5%88%86%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">常见的浏览器 Web API 分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E4%B8%8E%E9%80%9A%E4%BF%A1%E7%B1%BB"><span class="toc-number">3.1.</span> <span class="toc-text">1. 数据获取与通信类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9B%BE%E5%BD%A2%E4%B8%8E%E5%8A%A8%E7%94%BB%E7%B1%BB"><span class="toc-number">3.2.</span> <span class="toc-text">2. 图形与动画类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A4%9A%E5%AA%92%E4%BD%93%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">3. 多媒体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="toc-number">3.4.</span> <span class="toc-text">4. 客户端存储类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%AE%BE%E5%A4%87%E4%B8%8E%E7%A1%AC%E4%BB%B6%E4%BA%A4%E4%BA%92%E7%B1%BB"><span class="toc-number">3.5.</span> <span class="toc-text">5. 设备与硬件交互类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%A1%B5%E9%9D%A2%E8%A7%82%E5%AF%9F%E4%B8%8E%E4%BA%A4%E4%BA%92%E7%B1%BB"><span class="toc-number">3.6.</span> <span class="toc-text">6. 页面观察与交互类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%9B%BD%E9%99%85%E5%8C%96%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB"><span class="toc-number">3.7.</span> <span class="toc-text">7. 国际化与格式化类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E5%85%B6%E4%BB%96%E5%AE%9E%E7%94%A8-API"><span class="toc-number">3.8.</span> <span class="toc-text">8. 其他实用 API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9-API"><span class="toc-number">4.</span> <span class="toc-text">第三方 API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E5%92%8C%E4%BD%BF%E7%94%A8-Web-API"><span class="toc-number">5.</span> <span class="toc-text">如何学习和使用 Web API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260819/260819.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]ESA一站式网站安全服务"/></a><div class="content"><a class="title" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务">[分享]ESA一站式网站安全服务</a><time datetime="2026-08-19T03:48:00.000Z" title="发表于 2026-08-19 11:48">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的扩展模块"/></a><div class="content"><a class="title" href="/posts/260807.5.html" title="[分享]PHP的扩展模块">[分享]PHP的扩展模块</a><time datetime="2026-08-07T12:56:00.000Z" title="发表于 2026-08-07 20:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_4.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的SQLite数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用">[分享]PHP的SQLite数据库调用</a><time datetime="2026-08-07T10:06:00.000Z" title="发表于 2026-08-07 18:06">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的PgSQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用">[分享]PHP的PgSQL数据库调用</a><time datetime="2026-08-07T07:56:00.000Z" title="发表于 2026-08-07 15:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的MySQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用">[分享]PHP的MySQL数据库调用</a><time datetime="2026-08-07T05:36:00.000Z" title="发表于 2026-08-07 13:36">2026-08-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 桉南</span></div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/utils.min.js"></script><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/main.min.js"></script><script src="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.yll14.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.yll14.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.yll14.cn/npm/katex@0.17.0/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.yll14.cn/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.yll14.cn/npm/twikoo@1.7.14/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.yll14.cn/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章、标签..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/search/local-search.min.js"></script></div></div></body></html>

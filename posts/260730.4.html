@@ -1,0 +1,465 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[分享]什么是CSS样式表 | 桉南的小窝</title><meta name="author" content="桉南"><meta name="copyright" content="桉南"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CSS（层叠样式表）是一种用于控制网页外观与排版布局的样式表语言，与 HTML 共同构成 Web 开发的基础。本文介绍 CSS 的核心概念、语法规则、三种使用方式及版本演进。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[分享]什么是CSS样式表">
+<meta property="og:url" content="https://blog.yll14.cn/posts/260730.4.html">
+<meta property="og:site_name" content="桉南的小窝">
+<meta property="og:description" content="CSS（层叠样式表）是一种用于控制网页外观与排版布局的样式表语言，与 HTML 共同构成 Web 开发的基础。本文介绍 CSS 的核心概念、语法规则、三种使用方式及版本演进。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.yll14.cn/blogimage/260730/260730_4.webp">
+<meta property="article:published_time" content="2026-07-30T11:48:00.000Z">
+<meta property="article:modified_time" content="2026-07-30T11:48:00.000Z">
+<meta property="article:author" content="桉南">
+<meta property="article:tag" content="建站">
+<meta property="article:tag" content="知识分享">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.yll14.cn/blogimage/260730/260730_4.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[分享]什么是CSS样式表",
+  "url": "https://blog.yll14.cn/posts/260730.4.html",
+  "image": "https://blog.yll14.cn/blogimage/260730/260730_4.webp",
+  "datePublished": "2026-07-30T11:48:00.000Z",
+  "dateModified": "2026-07-30T11:48:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "桉南",
+      "url": "https://blog.yll14.cn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.yll14.cn/posts/260730.4.html"><link rel="preconnect" href="https://cdn.yll14.cn"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":250,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":350,"languages":{"author":"作者: 桉南","link":"链接: ","source":"来源: 桉南的小窝","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.yll14.cn/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[分享]什么是CSS样式表',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" /><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" /><link rel="shortcut icon" href="/favicon.ico" /><link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" /><meta name="apple-mobile-web-app-title" content="桉南" /><link rel="manifest" href="/favicon/site.webmanifest" /><meta name="baidu-site-verification" content="codeva-RltT77T5Mn" /><meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="桉南的小窝" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="桉南的小窝" type="application/rss+xml">
+</head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/108552684_p8.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">桉南的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">[分享]什么是CSS样式表</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">[分享]什么是CSS样式表</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-30T11:48:00.000Z" title="发表于 2026-07-30 19:48">2026-07-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-30T11:48:00.000Z" title="更新于 2026-07-30 19:48">2026-07-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/%E5%BB%BA%E7%AB%99/">建站</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;自上次更新以来，已经过了&quot;,&quot;messageNext&quot;:&quot;天，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2026-07-30 19:48&quot;}" hidden></div><blockquote>
+<p><i>引言：<br>
+CSS（层叠样式表）是一种用于控制网页外观与排版布局的样式表语言，与 HTML 共同构成 Web 开发的基础。本文介绍 CSS 的核心概念、语法规则、三种使用方式及版本演进。</i></p>
+</blockquote>
+<h2 id="什么是-CSS-样式表？">什么是 CSS 样式表？</h2>
+<p>当你打开一个网页时，文字的字体、颜色、大小，图片的位置，背景的颜色，元素之间的间距——所有这些视觉呈现，都由 CSS 来定义。</p>
+<p><strong>CSS（Cascading Style Sheets，层叠样式表）</strong> 是一种用于控制网页外观和排版布局的样式表语言。它的核心功能非常简单：告诉浏览器&quot;这个元素应该长什么样&quot;。</p>
+<h2 id="为什么要用-CSS？">为什么要用 CSS？</h2>
+<p>在 CSS 出现之前，网页的样式直接在 HTML 中定义。比如要让文字变成红色，就要在 HTML 标签上写 <code>&lt;font color=&quot;red&quot;&gt;</code>。这种方式有几个明显的缺陷：</p>
+<ul>
+<li><strong>代码冗余</strong>：每个需要修改的文字都要单独加上样式属性。</li>
+<li><strong>维护困难</strong>：如果要把全站的红色文字改为蓝色，需要逐个修改每个标签。</li>
+<li><strong>内容与样式混杂</strong>：HTML 负责内容结构，样式代码穿插其中，代码可读性极差。</li>
+</ul>
+<p>CSS 解决了这些问题。它将<strong>内容的编写</strong>和<strong>样式的定义</strong>分开，让 HTML 专注于页面结构，CSS 专注于视觉呈现。</p>
+<h2 id="CSS-的核心概念">CSS 的核心概念</h2>
+<h3 id="1-层叠-的含义">1. &quot;层叠&quot;的含义</h3>
+<p>CSS 中的&quot;C&quot;代表&quot;Cascading（层叠）&quot;，这是 CSS 最核心的机制。它指的是多条样式规则可以同时作用于同一个 HTML 元素，浏览器会按照一定的优先级规则来决定最终应用哪个样式。</p>
+<p>&quot;层叠&quot;有三层含义：</p>
+<ul>
+<li><strong>样式来源的层叠</strong>：浏览器默认样式、用户自定义样式、开发者定义的样式，按优先级依次覆盖。</li>
+<li><strong>选择器优先级的层叠</strong>：不同的 CSS 选择器有不同的权重，权重高的覆盖权重低的。</li>
+<li><strong>样式位置的层叠</strong>：内联样式、页面内部样式、外部样式文件，按一定规则进行覆盖。</li>
+</ul>
+<h3 id="2-CSS-的基本语法">2. CSS 的基本语法</h3>
+<p>CSS 由一条条&quot;规则&quot;组成，每条规则包含选择器和声明块。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">选择器 &#123;</span><br><span class="line">    属性: 值;</span><br><span class="line">    属性: 值;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">组成部分</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">选择器</td>
+<td style="text-align:left">指定要应用样式的 HTML 元素</td>
+<td style="text-align:left"><code>p</code>、<code>#header</code>、<code>.intro</code></td>
+</tr>
+<tr>
+<td style="text-align:left">属性</td>
+<td style="text-align:left">要修改的样式特征</td>
+<td style="text-align:left"><code>color</code>、<code>font-size</code>、<code>margin</code></td>
+</tr>
+<tr>
+<td style="text-align:left">值</td>
+<td style="text-align:left">属性的具体设置</td>
+<td style="text-align:left"><code>red</code>、<code>16px</code>、<code>10px</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例</strong>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 将所有段落文字设为蓝色，字号为 16px */</span></span><br><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: blue;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CSS-的三种使用方式">CSS 的三种使用方式</h2>
+<h3 id="1-外部样式表">1. 外部样式表</h3>
+<p>将 CSS 代码写在独立的 <code>.css</code> 文件中，在 HTML 中通过 <code>&lt;link&gt;</code> 标签引入。这是<strong>最推荐的方式</strong>，适合多页面共享样式，便于维护。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- HTML 中引用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;style.css&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* style.css 文件内容 */</span></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#f0f0f0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-内部样式表">2. 内部样式表</h3>
+<p>在 HTML 的 <code>&lt;head&gt;</code> 中使用 <code>&lt;style&gt;</code> 标签编写 CSS。适用于单个页面的独有样式。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="selector-tag">h1</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">color</span>: green;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-内联样式">3. 内联样式</h3>
+<p>直接在 HTML 元素的 <code>style</code> 属性中定义样式。<strong>不推荐使用</strong>，因为它将样式和内容混在一起，难以维护，且优先级最高会覆盖其他所有样式。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">&quot;color: red; font-size: 20px;&quot;</span>&gt;</span>这是一段文字<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="选择器：CSS-的-瞄准镜">选择器：CSS 的&quot;瞄准镜&quot;</h2>
+<p>选择器用于定位需要应用样式的 HTML 元素，它是 CSS 最基础也最灵活的部分。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选择器类型</th>
+<th style="text-align:left">语法</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">标签选择器</td>
+<td style="text-align:left"><code>标签名</code></td>
+<td style="text-align:left">选中所有该标签的元素</td>
+<td style="text-align:left"><code>p { color: red; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">类选择器</td>
+<td style="text-align:left"><code>.类名</code></td>
+<td style="text-align:left">选中所有带有该 class 的元素</td>
+<td style="text-align:left"><code>.intro { font-weight: bold; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">ID 选择器</td>
+<td style="text-align:left"><code>#ID名</code></td>
+<td style="text-align:left">选中具有该 id 的唯一元素</td>
+<td style="text-align:left"><code>#header { height: 80px; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">后代选择器</td>
+<td style="text-align:left"><code>父 子</code></td>
+<td style="text-align:left">选中父元素内的所有子元素</td>
+<td style="text-align:left"><code>div p { color: blue; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">子选择器</td>
+<td style="text-align:left"><code>父 &gt; 子</code></td>
+<td style="text-align:left">选中父元素的直接子元素</td>
+<td style="text-align:left"><code>ul &gt; li { list-style: none; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">伪类选择器</td>
+<td style="text-align:left"><code>:状态</code></td>
+<td style="text-align:left">选中元素的特定状态</td>
+<td style="text-align:left"><code>a:hover { color: red; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left">伪元素选择器</td>
+<td style="text-align:left"><code>::位置</code></td>
+<td style="text-align:left">选中元素的特定部分</td>
+<td style="text-align:left"><code>p::first-line { font-weight: bold; }</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="层叠与优先级">层叠与优先级</h2>
+<p>当多条 CSS 规则作用于同一个元素时，浏览器会根据优先级规则决定使用哪一条。</p>
+<p><strong>优先级顺序（从高到低）</strong>：</p>
+<ol>
+<li><strong>内联样式</strong>：写在元素 <code>style</code> 属性中的样式</li>
+<li><strong>ID 选择器</strong>：如 <code>#header</code></li>
+<li><strong>类选择器、伪类、属性选择器</strong>：如 <code>.intro</code>、<code>:hover</code>、<code>[type=&quot;text&quot;]</code></li>
+<li><strong>标签选择器、伪元素</strong>：如 <code>p</code>、<code>::first-line</code></li>
+<li><strong>通配选择器</strong>：如 <code>*</code></li>
+<li><strong>浏览器默认样式</strong></li>
+</ol>
+<p>当多个选择器优先级相同且作用于同一元素时，<strong>后定义的样式覆盖先定义的样式</strong>。</p>
+<h2 id="CSS-能做什么？">CSS 能做什么？</h2>
+<p>CSS 几乎可以控制网页的所有视觉方面：</p>
+<ul>
+<li><strong>文字样式</strong>：字体、字号、颜色、粗细、行高、字间距。</li>
+<li><strong>背景</strong>：背景色、背景图、渐变。</li>
+<li><strong>盒模型</strong>：边距、边框、内边距、宽度、高度。</li>
+<li><strong>布局</strong>：浮动、弹性盒子（Flexbox）、网格（Grid）、定位。</li>
+<li><strong>动画与过渡</strong>：旋转、缩放、移动、渐变过渡。</li>
+<li><strong>响应式设计</strong>：根据屏幕尺寸、设备类型调整布局。</li>
+<li><strong>打印样式</strong>：控制页面打印时的显示效果。</li>
+</ul>
+<h2 id="CSS-的版本演进">CSS 的版本演进</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">版本</th>
+<th style="text-align:left">发布年份</th>
+<th style="text-align:left">主要特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CSS 1</td>
+<td style="text-align:left">1996</td>
+<td style="text-align:left">基本样式（字体、颜色、边距等）</td>
+</tr>
+<tr>
+<td style="text-align:left">CSS 2</td>
+<td style="text-align:left">1998</td>
+<td style="text-align:left">添加了定位、伪类、媒体类型等</td>
+</tr>
+<tr>
+<td style="text-align:left">CSS 2.1</td>
+<td style="text-align:left">2011</td>
+<td style="text-align:left">修复和规范了 CSS 2</td>
+</tr>
+<tr>
+<td style="text-align:left">CSS 3</td>
+<td style="text-align:left">2011 起持续演进</td>
+<td style="text-align:left">模块化发布，新增圆角、阴影、动画、Flexbox、Grid、渐变等</td>
+</tr>
+</tbody>
+</table>
+<p>CSS 3 与之前的版本最大的不同是采用了<strong>模块化</strong>的方式，不再有一个完整的&quot;CSS 3&quot;标准，而是将功能拆分为独立的模块（如 Selectors、Media Queries、Flexbox、Grid、Transitions、Animations 等），每个模块独立更新和推进。</p>
+<h2 id="总结">总结</h2>
+<p>CSS 是 Web 的&quot;视觉设计师&quot;——它和 HTML 共同构成了网页的基础。如果说 HTML 是房子的混凝土框架，CSS 就是墙面涂料、地板砖和窗帘，决定了房子的外观和氛围。</p>
+<p>掌握 CSS 的核心在于理解三个层面的内容：<strong>选择器</strong>（如何选中元素）、<strong>盒模型</strong>（元素如何占据空间）、<strong>布局</strong>（元素如何在页面上排列）。当你熟练运用这些概念后，就能构建出视觉美观、响应式适配的现代网页。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn">桉南</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.yll14.cn/posts/260730.4.html">https://blog.yll14.cn/posts/260730.4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer nofollow">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.yll14.cn" target="_blank">桉南的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%88%86%E4%BA%AB/">知识分享</a><a class="post-meta__tags" href="/tags/%E5%BB%BA%E7%AB%99/">建站</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/260730.5.html" title="[分享]CSS的基本语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_5.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">[分享]CSS的基本语法</div></div><div class="info-2"><div class="info-item-1">CSS 基本语法是样式表语言的核心规则体系，涵盖选择器、属性、值、声明块等基础结构。本文系统讲解 CSS 的语法规则、选择器分类、单位使用、继承与层叠机制及常用样式属性。</div></div></div></a><a class="pagination-related" href="/posts/260730.3.html" title="[分享]JavaScript的其他WebAPI"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_3.webp" onerror="onerror=null;src='/img/img404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">[分享]JavaScript的其他WebAPI</div></div><div class="info-2"><div class="info-item-1">Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/260730.html" title="[分享]JavaScript的基本语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]JavaScript的基本语法</div></div><div class="info-2"><div class="info-item-1">JavaScript 基本语法是学习 Web 交互开发的起点，涵盖变量声明、数据类型、运算符、条件语句、循环、函数、对象与数组等核心内容。本文系统讲解 JavaScript 的基础语法规则与用法示例。</div></div></div></a><a class="pagination-related" href="/posts/260730.3.html" title="[分享]JavaScript的其他WebAPI"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260730/260730_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-30</div><div class="info-item-2">[分享]JavaScript的其他WebAPI</div></div><div class="info-2"><div class="info-item-1">Web API 是浏览器内置的 JavaScript 接口，为网页应用提供绘图、音视频、网络通信、设备访问、数据存储等扩展能力。本文系统梳理 Fetch、Canvas、WebRTC、Geolocation、Intersection Observer 等常用 Web API 的分类与用途。</div></div></div></a><a class="pagination-related" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的MySQL数据库调用</div></div><div class="info-2"><div class="info-item-1">PHP 调用 MySQL 数据库主要通过 MySQLi 和 PDO_MySQL 两种扩展实现。本文系统讲解环境配置、连接管理、SQL 语句执行、预处理语句防护 SQL 注入、错误处理机制及 SSL 加密连接等核心内容，帮助 PHP 开发者安全高效地操作 MySQL 数据库。</div></div></div></a><a class="pagination-related" href="/posts/260731.3.html" title="[分享]PHP基础语法"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260731/260731_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-31</div><div class="info-item-2">[分享]PHP基础语法</div></div><div class="info-2"><div class="info-item-1">PHP 基础语法是编写 PHP 代码的核心规则，涵盖变量、常量、数据类型、运算符、控制结构、函数与超级全局变量等关键内容。本文系统讲解 PHP 的基本语法结构与用法。</div></div></div></a><a class="pagination-related" href="/posts/260727.3.html" title="[分享]什么是HTML？"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260727/260727_3.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-27</div><div class="info-item-2">[分享]什么是HTML？</div></div><div class="info-2"><div class="info-item-1">HTML（超文本标记语言）是构建网页的基础标记语言，用于定义网页的结构与内容。本文介绍HTML的定义、起源、核心优势、标签分类及学习路径。</div></div></div></a><a class="pagination-related" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-07</div><div class="info-item-2">[分享]PHP的扩展模块</div></div><div class="info-2"><div class="info-item-1">PHP 扩展是 PHP 语言功能的延伸与增强，涵盖数据库驱动、网络通信、图像处理、数据格式、加密安全、数学计算、国际化、性能优化、队列缓存、NoSQL 等完整分类。本文系统梳理 PHP 扩展的概念、完整分类列表、各扩展详细代码用法及安装管理方法，帮助开发者全面掌握 PHP 扩展的应用。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://q.qlogo.cn/headimg_dl?dst_uin=2443958507&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="avatar"/></div><div class="author-info-name">桉南</div><div class="author-info-description">如果我真的存在，也是因为你需要我</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/yll14" target="_blank" title="Github" rel="noopener noreferrer nofollow"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:ll@yll14.cn" target="_blank" title="Email" rel="noopener noreferrer nofollow"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://qm.qq.com/q/HAXlbifl2E" target="_blank" title="QQ" rel="noopener noreferrer nofollow"><i class="fab fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-CSS-%E6%A0%B7%E5%BC%8F%E8%A1%A8%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是 CSS 样式表？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-CSS%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">为什么要用 CSS？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSS-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.</span> <span class="toc-text">CSS 的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B1%82%E5%8F%A0-%E7%9A%84%E5%90%AB%E4%B9%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. &quot;层叠&quot;的含义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CSS-%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">2. CSS 的基本语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSS-%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">CSS 的三种使用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8"><span class="toc-number">4.1.</span> <span class="toc-text">1. 外部样式表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%86%85%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8"><span class="toc-number">4.2.</span> <span class="toc-text">2. 内部样式表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%86%85%E8%81%94%E6%A0%B7%E5%BC%8F"><span class="toc-number">4.3.</span> <span class="toc-text">3. 内联样式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%99%A8%EF%BC%9ACSS-%E7%9A%84-%E7%9E%84%E5%87%86%E9%95%9C"><span class="toc-number">5.</span> <span class="toc-text">选择器：CSS 的&quot;瞄准镜&quot;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%82%E5%8F%A0%E4%B8%8E%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">6.</span> <span class="toc-text">层叠与优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSS-%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">CSS 能做什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSS-%E7%9A%84%E7%89%88%E6%9C%AC%E6%BC%94%E8%BF%9B"><span class="toc-number">8.</span> <span class="toc-text">CSS 的版本演进</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">9.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260819/260819.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]ESA一站式网站安全服务"/></a><div class="content"><a class="title" href="/posts/260819.html" title="[分享]ESA一站式网站安全服务">[分享]ESA一站式网站安全服务</a><time datetime="2026-08-19T03:48:00.000Z" title="发表于 2026-08-19 11:48">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.5.html" title="[分享]PHP的扩展模块"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_5.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的扩展模块"/></a><div class="content"><a class="title" href="/posts/260807.5.html" title="[分享]PHP的扩展模块">[分享]PHP的扩展模块</a><time datetime="2026-08-07T12:56:00.000Z" title="发表于 2026-08-07 20:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_4.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的SQLite数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.4.html" title="[分享]PHP的SQLite数据库调用">[分享]PHP的SQLite数据库调用</a><time datetime="2026-08-07T10:06:00.000Z" title="发表于 2026-08-07 18:06">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_3.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的PgSQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.3.html" title="[分享]PHP的PgSQL数据库调用">[分享]PHP的PgSQL数据库调用</a><time datetime="2026-08-07T07:56:00.000Z" title="发表于 2026-08-07 15:56">2026-08-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../blogimage/260807/260807_2.webp" onerror="this.onerror=null;this.src='/img/img404.jpg'" alt="[分享]PHP的MySQL数据库调用"/></a><div class="content"><a class="title" href="/posts/260807.2.html" title="[分享]PHP的MySQL数据库调用">[分享]PHP的MySQL数据库调用</a><time datetime="2026-08-07T05:36:00.000Z" title="发表于 2026-08-07 13:36">2026-08-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 桉南</span></div><div class="footer_custom_text"><a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link" rel="noopener noreferrer nofollow">赣ICP备2025061952号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/utils.min.js"></script><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/main.min.js"></script><script src="https://cdn.yll14.cn/npm/@fancyapps/ui@6.1.14/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.yll14.cn/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.yll14.cn/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.yll14.cn/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.yll14.cn/npm/katex@0.17.0/dist/katex.min.css')
+    if (true) {
+      await btf.getScript('https://cdn.yll14.cn/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo.yll14.cn',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.yll14.cn/npm/twikoo@1.7.14/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.yll14.cn/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章、标签..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.yll14.cn/npm/hexo-theme-butterfly@5.6.1/source/js/search/local-search.min.js"></script></div></div></body></html>
